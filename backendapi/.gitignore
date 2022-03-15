@@ -1,0 +1,5 @@
+# dependencies
+node_modules
+.env
+uploads
+A Karigar.postman_collection.json

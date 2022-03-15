@@ -1,0 +1,16 @@
+# dependencies list
+
+# backend API ignore files here
+backendapi/node_modules
+backendapi/.env
+backendapi/uploads
+backendapi/package-lock.json
+backendapi/A Karigar.postman_collection.json
+
+
+# frontend admin panel ignore files here
+frontend/node_modules
+frontend/.env
+frontend/uploads
+frontend/package-lock.json
+frontend/build
