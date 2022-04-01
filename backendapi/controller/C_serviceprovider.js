@@ -38,7 +38,7 @@ const createProvider = async (req, res, next) => {
           errorMsg = { ...errorMsg, [`${error.path}`]: error.message };
         });
         return res.send({
-          isSuccess: false,
+          status: false,
           message: errorMsg,
         });
       } else {
@@ -67,20 +67,20 @@ const createProvider = async (req, res, next) => {
         const insertQry = await createProvider.save();
         if (insertQry) {
           return res.send({
-            isSuccess: true,
-            message: `Service provider craeted.`,
+            status: true,
+            message: `Service provider created.`,
           });
         } else {
           return res.send({
-            isSuccess: false,
-            message: `Service provider not craeted.`,
+            status: false,
+            message: `Service provider not created.`,
           });
         }
       }
     } else {
       if (req.file) removeFile(serProviderImage);
       return res.send({
-        isSuccess: false,
+        status: false,
         message: `Service provider image is required.`,
       });
     }
@@ -97,17 +97,23 @@ const getAllProvider = async (req, res, next) => {
     const getQry = await Serviceprovider.find({
       subserviceid: req.body.subserviceid,
       isactive: true,
-    });
+    })
+      .populate({ path: "userid", select: "name" })
+      .populate({
+        path: "subserviceid",
+        select: "subservicename subserviceimage",
+        populate: { path: "servicesid", select: "servicename serviceimage" },
+      });
 
     if (getQry.length > 0) {
       return res.send({
-        isSuccess: true,
+        status: true,
         message: `${getQry.length} Service provider found into system.`,
         data: getQry,
       });
     } else {
       return res.send({
-        isSuccess: false,
+        status: false,
         message: `${getQry.length} Service provider not found into system.`,
       });
     }
@@ -123,23 +129,30 @@ const getSingleProvider = async (req, res, next) => {
     const servicesProviderId = req.body.servicesproviderid;
 
     if (mongoose.isValidObjectId(servicesProviderId)) {
-      const getQry = await Serviceprovider.findById(servicesProviderId);
+      const getQry = await Serviceprovider.findById(servicesProviderId)
+        .where({ isactive: true })
+        .populate({ path: "userid", select: "name" })
+        .populate({
+          path: "subserviceid",
+          select: "subservicename subserviceimage",
+          populate: { path: "servicesid", select: "servicename serviceimage" },
+        });
 
       if (getQry) {
         return res.send({
-          isSuccess: true,
+          status: true,
           message: `Service provider found into system.`,
           data: getQry,
         });
       } else {
         return res.send({
-          isSuccess: false,
+          status: false,
           message: `Service provider not found into system.`,
         });
       }
     } else {
       return res.send({
-        isSuccess: false,
+        status: false,
         message: `Service provider ID is not valid.`,
       });
     }
@@ -156,7 +169,7 @@ const deleteProvider = async (req, res, next) => {
 
     if (!servicesProviderId) {
       return res.send({
-        isSuccess: false,
+        status: false,
         message: `Service provider Id is not allowed to be empty.`,
       });
     } else {
@@ -171,7 +184,7 @@ const deleteProvider = async (req, res, next) => {
 
       if (totalServices <= 0) {
         return res.send({
-          isSuccess: true,
+          status: true,
           message: `${cntServices} service provider found into system.!`,
         });
       } else {
@@ -186,17 +199,17 @@ const deleteProvider = async (req, res, next) => {
 
         if (totalServices == cntServices) {
           return res.send({
-            isSuccess: true,
+            status: true,
             message: `${cntServices} Service provider deleted.!`,
           });
         } else if (cntServices > 0) {
           return res.send({
-            isSuccess: true,
+            status: true,
             message: `Service provider deleted ${cntServices} out of ${totalServices} service provider.!`,
           });
         } else {
           return res.send({
-            isSuccess: true,
+            status: true,
             message: `We found database in ${totalServices} service provider but not deleted.!`,
           });
         }
@@ -238,8 +251,8 @@ const editProvider = async (req, res, next) => {
       removeFile(Image);
 
       return res.send({
-        isSuccess: false,
-        message: `Service provider ID is not allowed to be empty`,
+        status: false,
+        message: `Service provider ID is not allowed to be empty.`,
       });
     } else {
       // Joi validation.
@@ -254,7 +267,7 @@ const editProvider = async (req, res, next) => {
         });
 
         return res.send({
-          isSuccess: false,
+          status: false,
           message: errorMsg,
         });
       }
@@ -293,20 +306,20 @@ const editProvider = async (req, res, next) => {
           }
 
           return res.send({
-            isSuccess: true,
+            status: true,
             message: `Service provider updated.!`,
           });
         } else {
           removeFile(Image);
           return res.send({
-            isSuccess: false,
+            status: false,
             message: `Service provider not updated.!`,
           });
         }
       } else {
         removeFile(Image);
         return res.send({
-          isSuccess: false,
+          status: false,
           message: `Service provider not found into system.!`,
         });
       }

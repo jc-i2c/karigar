@@ -24,7 +24,7 @@ const createServices = async (req, res, next) => {
         });
 
         return res.send({
-          isSuccess: false,
+          status: false,
           message: errorMsg,
         });
       } else {
@@ -37,20 +37,20 @@ const createServices = async (req, res, next) => {
 
         if (insertQry) {
           return res.send({
-            isSuccess: true,
-            message: `Service craeted.`,
+            status: true,
+            message: `Service created.`,
           });
         } else {
           return res.send({
-            isSuccess: false,
-            message: `Service not craeted.`,
+            status: false,
+            message: `Service not created.`,
           });
         }
       }
     } else {
       if (req.file) removeFile(serviceImage);
       return res.send({
-        isSuccess: false,
+        status: false,
         message: `Service image is required`,
       });
     }
@@ -68,13 +68,13 @@ const getAllServices = async (req, res, next) => {
 
     if (getQry.length > 0) {
       return res.send({
-        isSuccess: true,
+        status: true,
         message: `${getQry.length} Service found into system.`,
         data: getQry,
       });
     } else {
       return res.send({
-        isSuccess: false,
+        status: false,
         message: `${getQry.length} Service not found into system.`,
       });
     }
@@ -94,19 +94,19 @@ const getSingleServices = async (req, res, next) => {
 
       if (getQry) {
         return res.send({
-          isSuccess: true,
+          status: true,
           message: `Service found into system.`,
           data: getQry,
         });
       } else {
         return res.send({
-          isSuccess: false,
+          status: false,
           message: `Service not found into system.`,
         });
       }
     } else {
       return res.send({
-        isSuccess: false,
+        status: false,
         message: `Service ID is not valid.`,
       });
     }
@@ -123,8 +123,8 @@ const deleteServices = async (req, res, next) => {
 
     if (!servicesId) {
       return res.send({
-        isSuccess: false,
-        message: `Service ID is not allowed to be empty`,
+        status: false,
+        message: `Service ID is not allowed to be empty.`,
       });
     } else {
       const findQry = await Services.find({
@@ -138,7 +138,7 @@ const deleteServices = async (req, res, next) => {
 
       if (totalServices <= 0) {
         return res.send({
-          isSuccess: true,
+          status: true,
           message: `${cntServices} services found into system.!`,
         });
       } else {
@@ -153,17 +153,17 @@ const deleteServices = async (req, res, next) => {
 
         if (totalServices == cntServices) {
           return res.send({
-            isSuccess: true,
+            status: true,
             message: `${cntServices} Services deleted.!`,
           });
         } else if (cntServices > 0) {
           return res.send({
-            isSuccess: true,
+            status: true,
             message: `Services deleted ${cntServices} out of ${totalServices} services.!`,
           });
         } else {
           return res.send({
-            isSuccess: true,
+            status: true,
             message: `We found database in ${totalServices} services but not deleted.!`,
           });
         }
@@ -191,8 +191,8 @@ const editServices = async (req, res, next) => {
       removeFile(serviceImage);
 
       return res.send({
-        isSuccess: false,
-        message: `Service ID is not allowed to be empty`,
+        status: false,
+        message: `Service ID is not allowed to be empty.`,
       });
     } else {
       // Joi validation.
@@ -207,7 +207,7 @@ const editServices = async (req, res, next) => {
         });
 
         return res.send({
-          isSuccess: false,
+          status: false,
           message: errorMsg,
         });
       }
@@ -231,20 +231,20 @@ const editServices = async (req, res, next) => {
           }
 
           return res.send({
-            isSuccess: true,
+            status: true,
             message: `Service updated.!`,
           });
         } else {
           removeFile(serviceImage);
           return res.send({
-            isSuccess: false,
+            status: false,
             message: `Service not updated.!`,
           });
         }
       } else {
         removeFile(serviceImage);
         return res.send({
-          isSuccess: false,
+          status: false,
           message: `Service not found into system.!`,
         });
       }

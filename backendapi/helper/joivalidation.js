@@ -249,6 +249,61 @@ const editSerProVal = (data) => {
   });
 };
 
+// Edit Terms condition validation.
+const editTermsConditionVal = (data) => {
+  const editTermsConditionVal = Joi.object().keys({
+    termsconditionid: Joi.string().required().label("Terms condition Id"),
+    title: Joi.string().required().min(3).label("Terms condition title"),
+    description: Joi.string().required().label("Terms condition description"),
+  });
+  return editTermsConditionVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
+// Edit customer support title validation.
+const editCusSupTitleVal = (data) => {
+  const editCusSupTitleVal = Joi.object().keys({
+    custsuptitleid: Joi.string().required().label("Customer support Id"),
+    title: Joi.string().required().min(3).label("Customer support title"),
+  });
+  return editCusSupTitleVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
+// Edit customer support subtitle validation.
+const editCusSupSubTitleVal = (data) => {
+  const editCusSupSubTitleVal = Joi.object().keys({
+    custsupsubtitleid: Joi.string()
+      .required()
+      .label("Customer support sub title Id"),
+    custsuptitleid: Joi.string()
+      .required()
+      .label("Customer support title Id"),
+    subtitle: Joi.string().required().min(3).label("Customer support subtitle"),
+    description: Joi.string().required().label("Customer support description"),
+  });
+  return editCusSupSubTitleVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
 module.exports = {
   insertDataVal,
   verifyOtpVal,
@@ -262,4 +317,7 @@ module.exports = {
   editSubServicesVal,
   createSerProVal,
   editSerProVal,
+  editTermsConditionVal,
+  editCusSupTitleVal,
+  editCusSupSubTitleVal,
 };

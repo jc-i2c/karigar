@@ -21,25 +21,25 @@ const verifyUserRoll = async (req, res, next) => {
         if (findUser.userroll == 1) next();
         else {
           return res.send({
-            isSuccess: false,
+            status: false,
             message: `Your not authorized users.`,
           });
         }
       } else {
         return res.send({
-          isSuccess: false,
+          status: false,
           message: "Invalid Token.",
         });
       }
     } else {
       return res.send({
-        isSuccess: false,
+        status: false,
         message: "A token is required for authentication.",
       });
     }
   } catch (error) {
     return res.send({
-      isSuccess: false,
+      status: false,
       message: "Invalid Token.",
     });
   }

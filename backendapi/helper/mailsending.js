@@ -14,32 +14,69 @@ const sendOtp = async (data) => {
     var userVerification = {
       from: process.env.USEREMAIL,
       to: data.emailaddress,
-      subject: "karigar Application",
-      html:
-        "<!DOCTYPE html>" +
-        "<html><head><title>Account Verification OTP</title>" +
-        "</head><body><div>" +
-        `<h3>Hi ${data.emailaddress}</h3>` +
-        `<h4>Your verification request has been received from the ${data.emailaddress}</h4>` +
-        `<h4>Your OPT is : <h2> ${data.otp} </h2></h4>` +
-        "<h4>Thank you.</h4>" +
-        "</div></body></html>",
+      subject: "Karigar account verification",
+      html: `
+              <!DOCTYPE html>
+              <html lang="en">
+                <head>
+                  <meta charset="UTF-8" />
+                  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                  <title>Account Verification OTP</title>
+                </head>
+
+                <body>
+                  <p style="font-size: medium; margin-bottom: 10px">
+                    Hi, <span style="color: #2672ec"><b>${data.emailaddress}</b></span>
+                  </p>
+                  <p style="font-size: medium">
+                    Your verification request has been received from the
+                    <span mailto:style="color:#2672ec;"><b>${data.emailaddress}</b></span>
+                  </p>
+                  <div style="font-size: medium; margin-bottom: 25px">
+                    <p>
+                      Here is your code:
+                      <span style="color: #2672ec"><b>${data.otp}</b></span>
+                    </p>
+                  </div>
+                  <p>Thanks,</p>
+                  <p style="margin-top: 0px">The Karigar account team.</p>
+                </body>
+              </html>
+              `,
     };
   } else {
     if (data.resetpassword == true) {
       var userVerification = {
         from: process.env.USEREMAIL,
         to: data.emailaddress,
-        subject: "karigar Application",
-        html:
-          "<!DOCTYPE html>" +
-          "<html><head><title>Reset password OTP</title>" +
-          "</head><body><div>" +
-          `<h3>Hi ${data.name}</h3>` +
-          `<h4>Your reset password request has been received from the ${data.emailaddress}</h4>` +
-          `<h4>Your reset password OPT is : <h2> ${data.otp} </h2></h4>` +
-          "<h4>Thank you.</h4>" +
-          "</div></body></html>",
+        subject: "Karigar password reset",
+        html: `
+                <!DOCTYPE html>
+                <html lang="en">
+
+                <head>
+                    <meta charset="UTF-8">
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>title</title>
+                </head>
+
+                <body>
+                    <p style="font-size: medium;margin-bottom: 10px;">Hi, <span style="color:#2672ec;"><b>${data.name}</b></span></p>
+                    <h2 style="color:#2672ec;">Password Reset Code</h2>
+                    <p style="font-size: medium;">Please use this code to reset the password for the Karigar Application 
+                        <span mailto:style="color:#2672ec;"><b>${data.emailaddress}</b></span>
+                    </p>
+                    <div style="font-size: medium;margin-bottom: 25px;">
+                        <p>Here is your code: <span style="color:#2672ec;"><b>${data.otp}</b></span></p>
+                    </div>
+                    <p>Thanks,</p>
+                    <p style="margin-top: 0px;">The Karigar account team.</p>
+                </body>
+
+                </html>
+                `,
       };
     }
   }

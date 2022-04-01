@@ -17,7 +17,7 @@ const ServiceProviderSchema = new mongoose.Schema(
     },
     userid: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+      ref: "user",
       required: [true, "User Id is required."],
     },
     subserviceid: {
@@ -29,8 +29,7 @@ const ServiceProviderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    details:
-    {
+    details: {
       duration: {
         type: String,
       },

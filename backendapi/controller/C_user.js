@@ -29,40 +29,49 @@ const userSignUp = async (req, res, next) => {
       });
 
       return res.send({
-        isSuccess: false,
+        status: false,
         message: errorMsg,
       });
     } else {
       var genOtp = Math.floor(100000 + Math.random() * 900000);
+
       let data = {
         emailaddress: emailaddress,
         otp: genOtp,
         verification: true,
       };
-      const mailResponse = await sendOtp(data);
-      // const mailResponse = true;
 
-      if (mailResponse) {
-        var user = new User({
-          emailaddress: emailaddress,
-          password: password,
-          otp: genOtp,
-          userroll: userroll,
-        });
+      if (Object.keys(data).length >= 0) {
+        const mailResponse = await sendOtp(data);
+        // const mailResponse = true;
 
-        user.save((err, doc) => {
-          if (!err) {
-            return res.send({
-              isSuccess: true,
-              message: `OTP sending on your email address ${emailaddress}.Please verify otp.`,
-            });
-          } else {
-            // console.log("Error during record insertion : " + err);
-            return res.send({
-              isSuccess: false,
-              message: `Error during record insertion : + ${err}`,
-            });
-          }
+        if (mailResponse) {
+          var user = new User({
+            emailaddress: emailaddress,
+            password: password,
+            otp: genOtp,
+            userroll: userroll,
+          });
+
+          user.save((err, doc) => {
+            if (!err) {
+              return res.send({
+                status: true,
+                message: `OTP sending on your email address ${emailaddress}.Please verify otp.`,
+              });
+            } else {
+              // console.log("Error during record insertion : " + err);
+              return res.send({
+                status: false,
+                message: `Error during record insertion : + ${err}`,
+              });
+            }
+          });
+        }
+      } else {
+        return res.send({
+          status: false,
+          message: `Data is required for send mail.!`,
         });
       }
     }
@@ -87,7 +96,7 @@ const userLogin = async (req, res, next) => {
       });
 
       return res.send({
-        isSuccess: false,
+        status: false,
         message: errorMsg,
       });
     } else {
@@ -106,31 +115,31 @@ const userLogin = async (req, res, next) => {
                 process.env.TOKEN_KEY
               );
               return res.send({
-                isSuccess: true,
+                status: true,
                 message: `User login successfully.`,
                 token: token,
               });
             } else {
               return res.send({
-                isSuccess: false,
+                status: false,
                 message: `You are not activated. Please contact to admin.`,
               });
             }
           } else {
             return res.send({
-              isSuccess: false,
+              status: false,
               message: `Wrong credentials.`,
             });
           }
         } else {
           return res.send({
-            isSuccess: false,
+            status: false,
             message: `User not verified. First, you need to verify your account.`,
           });
         }
       } else {
         return res.send({
-          isSuccess: false,
+          status: false,
           message: `Wrong credentials.`,
         });
       }
@@ -156,7 +165,7 @@ const verifyOtp = async (req, res, next) => {
       });
 
       return res.send({
-        isSuccess: false,
+        status: false,
         message: errorMsg,
       });
     } else {
@@ -183,24 +192,24 @@ const verifyOtp = async (req, res, next) => {
           });
           if (result) {
             return res.send({
-              isSuccess: true,
+              status: true,
               message: setMessage,
             });
           } else {
             return res.send({
-              isSuccess: false,
+              status: false,
               message: `User not verified. First, you need to verify your account.`,
             });
           }
         } else {
           return res.send({
-            isSuccess: false,
+            status: false,
             message: `Please enter valid data.`,
           });
         }
       } else {
         return res.send({
-          isSuccess: false,
+          status: false,
           message: `Please enter valid data.`,
         });
       }
@@ -227,7 +236,7 @@ const updateProfile = async (req, res, next) => {
       });
 
       return res.send({
-        isSuccess: false,
+        status: false,
         message: errorMsg,
       });
     } else {
@@ -243,8 +252,14 @@ const updateProfile = async (req, res, next) => {
 
       if (result) {
         return res.send({
-          isSuccess: true,
+          status: true,
           message: `User profile details updated.`,
+        });
+      }
+      else {
+        return res.send({
+          status: true,
+          message: `User profile details not updated.`,
         });
       }
     }
@@ -270,7 +285,7 @@ const changePassword = async (req, res, next) => {
       });
 
       return res.send({
-        isSuccess: false,
+        status: false,
         message: errorMsg,
       });
     } else {
@@ -292,18 +307,18 @@ const changePassword = async (req, res, next) => {
 
         if (result) {
           return res.send({
-            isSuccess: true,
+            status: true,
             message: `Password change successfully.`,
           });
         } else {
           return res.send({
-            isSuccess: false,
+            status: false,
             message: `Password not change.`,
           });
         }
       } else {
         return res.send({
-          isSuccess: false,
+          status: false,
           message: `Old password doesn't match.`,
         });
       }
@@ -329,7 +344,7 @@ const resetPassword = async (req, res, next) => {
       });
 
       return res.send({
-        isSuccess: false,
+        status: false,
         message: errorMsg,
       });
     } else {
@@ -338,7 +353,7 @@ const resetPassword = async (req, res, next) => {
       if (findUser) {
         if (findUser.status == 0 || findUser.status > 1) {
           return res.send({
-            isSuccess: false,
+            status: false,
             message: `User not verified. First, you need to verify your account.`,
           });
         } else {
@@ -359,25 +374,25 @@ const resetPassword = async (req, res, next) => {
 
             if (result) {
               return res.send({
-                isSuccess: true,
+                status: true,
                 message: `OTP send on your email address.`,
               });
             } else {
               return res.send({
-                isSuccess: false,
+                status: false,
                 message: `Password not change.`,
               });
             }
           } else {
             return res.send({
-              isSuccess: false,
+              status: false,
               message: `Mail send-in occurred in error.`,
             });
           }
         }
       } else {
         return res.send({
-          isSuccess: false,
+          status: false,
           message: `User not found into system.`,
         });
       }
@@ -395,7 +410,7 @@ const isActive = async (req, res, next) => {
 
     if (userId == null) {
       return res.send({
-        isSuccess: false,
+        status: false,
         message: `User Id is required.`,
       });
     } else {
@@ -409,12 +424,12 @@ const isActive = async (req, res, next) => {
           });
           if (updateQry) {
             return res.send({
-              isSuccess: true,
+              status: true,
               message: `User Deactivated.`,
             });
           } else {
             return res.send({
-              isSuccess: false,
+              status: false,
               message: `Data not updated.`,
             });
           }
@@ -425,19 +440,19 @@ const isActive = async (req, res, next) => {
           });
           if (updateQry) {
             return res.send({
-              isSuccess: true,
+              status: true,
               message: `User Activated.`,
             });
           } else {
             return res.send({
-              isSuccess: false,
+              status: false,
               message: `Data not updated.`,
             });
           }
         }
       } else {
         return res.send({
-          isSuccess: false,
+          status: false,
           message: `User not found into system.`,
         });
       }

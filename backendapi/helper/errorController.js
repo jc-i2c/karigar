@@ -3,7 +3,7 @@ const handleDuplicateKeyError = (err, res) => {
   const field = Object.keys(err.keyValue);
   const status = 409;
   const error = `${field} already exist.`;
-  return res.status(status).send({ isSuccess: false, status, message: error }); //fields: field
+  return res.status(status).send({ status: false, status, message: error }); //fields: field
 };
 
 //handle field formatting, empty fields, and mismatched passwords
@@ -14,21 +14,21 @@ const handleValidationError = (err, res) => {
   console.log(errors, "errors");
   if (errors) {
     const formattedErrors = errors.join("");
-    return res.status(status).send({ isSuccess: false, status, message: formattedErrors }); //fields: fields
+    return res.status(status).send({ status: false, status, message: formattedErrors }); //fields: fields
   } else {
-    return res.status(status).send({ isSuccess: false, status, message: errors }); // fields: fields
+    return res.status(status).send({ status: false, status, message: errors }); // fields: fields
   }
 };
 
 // handle multer related errors
 const handleMulterError = (err, res) => {
   if (err.status === "LIMIT_UNEXPECTED_FILE") {
-    return res.status(400).json({ isSuccess: false, status: 400, message: "Too many files." }); //err.message
+    return res.status(400).json({ status: false, status: 400, message: "Too many files." }); //err.message
   } else if (err.status === "LIMIT_FILE_SIZE" || err.message === "File too large") {
-    return res.status(400).json({ isSuccess: false, status: 400, message: "File is too large." }); //err.message
+    return res.status(400).json({ status: false, status: 400, message: "File is too large." }); //err.message
   } else {
     return res.status(400).json({
-      isSuccess: false,
+      status: false,
       status: 400,
       message: "Something wrong in file uploading.",
     });
@@ -38,7 +38,7 @@ const handleMulterError = (err, res) => {
 // handle file type realted errors
 const handleMulterFileTypeError = (err, res) => {
   return res.status(400).json({
-    isSuccess: false,
+    status: false,
     status: 400,
     message: "File type is not supported.",
     Note: "Support type is :JPEG,PNG,JPG",
@@ -66,7 +66,7 @@ module.exports = (err, req, res, next) => {
     next();
   } catch (err) {
     return res.status(500).json({
-      isSuccess: false,
+      status: false,
       status: 500,
       message: "Internal server error.",
     });

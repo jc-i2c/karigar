@@ -21,14 +21,14 @@ const verifyToken = async (req, res, next) => {
         if (findUser.status) res.user = findUser;
         else {
           return res.send({
-            isSuccess: false,
+            status: false,
             message: `User not verified. First, you need to verify your account.`,
           });
         }
       }
       else {
         return res.send({
-          isSuccess: false,
+          status: false,
           message: "Invalid Token.",
         });
       }
@@ -37,13 +37,13 @@ const verifyToken = async (req, res, next) => {
       next();
     } else {
       return res.send({
-        isSuccess: false,
+        status: false,
         message: "A token is required for authentication.",
       });
     }
   } catch (error) {
     return res.send({
-      isSuccess: false,
+      status: false,
       message: "Invalid Token.",
     });
   }
