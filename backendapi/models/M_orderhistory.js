@@ -2,6 +2,16 @@ const mongoose = require("mongoose");
 
 const OrderHistorySchema = new mongoose.Schema(
   {
+    serviceproviderid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "serviceprovider",
+      required: [true, "Service provider Id is required."],
+    },
+    customerid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: [true, "Customer Id is required."],
+    },
     addresstype: {
       type: Number,
       enum: [1, 2],
@@ -30,13 +40,23 @@ const OrderHistorySchema = new mongoose.Schema(
       type: Date,
       required: [true, "Order date is required."], // 14-03-2022
     },
-    session: {
-      type: String,
-      enum: [1, 2],
-      default: 1,
-      required: [true, "Session is required."], // 1-Morning, 2-Afternooon
+    ordertime: {
+      sessiontype: {
+        type: String,
+        enum: [1, 2],
+        default: 1,
+        required: [true, "Session type is required."], // 1-Morning, 2-Afternooon
+      },
+      sessiontime: {
+        type: String,
+        required: [true, "Session time is required"], // 10:00, 07:45 etc.
+      },
     },
-    time: { type: String, required: [true, "Time is required."] }, // 11:50
+    orderstatus: {
+      type: String,
+      enum: ["1", "2", "3", "4", "5"],
+      default: "1", // 1-Booking_request_sent(Pending), 2-Booking_confirmed 3-Job_started 4-Job_Completed 5-Reject
+    },
   },
   {
     timestamps: true,
@@ -52,4 +72,4 @@ OrderHistorySchema.methods.toJSON = function () {
   return orderHistoryObj;
 };
 
-module.exports = mongoose.model("serviceprovider", OrderHistorySchema);
+module.exports = mongoose.model("orderhistory", OrderHistorySchema);

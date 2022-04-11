@@ -255,8 +255,7 @@ const updateProfile = async (req, res, next) => {
           status: true,
           message: `User profile details updated.`,
         });
-      }
-      else {
+      } else {
         return res.send({
           status: true,
           message: `User profile details not updated.`,

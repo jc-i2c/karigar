@@ -8,6 +8,8 @@ const privacypolicy = require("../routes/privacypolicy");
 const termscondition = require("../routes/termscondition");
 const custsuptitle = require("../routes/custsuptitle");
 const custsupsubtitle = require("../routes/custsupsubtitle");
+const orderhistory = require("../routes/orderhistory");
+const payment = require("../routes/payment");
 
 router.use("/karigar/user", user);
 
@@ -24,5 +26,9 @@ router.use("/karigar/termscondition", termscondition);
 router.use("/karigar/custsuptitle", custsuptitle);
 
 router.use("/karigar/custsupsubtitle", custsupsubtitle);
+
+router.use("/karigar/orderhistory", orderhistory);
+
+router.use("/karigar/payment", payment);
 
 module.exports = router;

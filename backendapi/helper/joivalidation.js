@@ -288,13 +288,82 @@ const editCusSupSubTitleVal = (data) => {
     custsupsubtitleid: Joi.string()
       .required()
       .label("Customer support sub title Id"),
-    custsuptitleid: Joi.string()
-      .required()
-      .label("Customer support title Id"),
+    custsuptitleid: Joi.string().required().label("Customer support title Id"),
     subtitle: Joi.string().required().min(3).label("Customer support subtitle"),
     description: Joi.string().required().label("Customer support description"),
   });
   return editCusSupSubTitleVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
+// Craete order history validation.
+const createOrderHisVal = (data) => {
+  const createOrderHisVal = Joi.object().keys({
+    serviceproviderid: Joi.string().required().label("Service provider Id"),
+    customerid: Joi.string().required().label("Customer Id"),
+    addresstype: Joi.string().required().valid("1", "2").label("Address type"),
+    street: Joi.string().required().label("Address street"),
+    area: Joi.string().required().label("Address area"),
+    pincode: Joi.string().required().label("Address pincode"),
+    name: Joi.string().required().label("Service provider name"),
+    orderdate: Joi.string().required().label("Order date"),
+    sessiontype: Joi.string().required().valid("1", "2").label("Session type"),
+    sessiontime: Joi.string().required().label("Session time"),
+    orderstatus: Joi.string()
+      .required()
+      .valid("1", "2", "3")
+      .label("Order status type"),
+  });
+  return createOrderHisVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
+// Edit order history validation.
+const editOrderHisVal = (data) => {
+  const editOrderHisVal = Joi.object().keys({
+    orderhistoryid: Joi.string().required().label("Order history Id"),
+    serviceproviderid: Joi.string().required().label("Service provider Id"),
+    addresstype: Joi.string().required().valid("1", "2").label("Address type"),
+    street: Joi.string().required().label("Address street"),
+    area: Joi.string().required().label("Address area"),
+    pincode: Joi.string().required().label("Address pincode"),
+    name: Joi.string().required().label("Service provider name"),
+    orderdate: Joi.string().required().label("Order date"),
+    sessiontype: Joi.string().required().valid("1", "2").label("Session type"),
+    sessiontime: Joi.string().required().label("Session time"),
+  });
+  return editOrderHisVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
+// Change order status BY Service Provider validation.
+const changeOrderStatusVal = (data) => {
+  const changeOrderStatusVal = Joi.object().keys({
+    orderhistoryid: Joi.string().required().label("Order history Id"),
+    orderstatus: Joi.string()
+      .required()
+      .valid("1", "2", "3", "4", "5")
+      .label("Order status type"),
+  });
+  return changeOrderStatusVal.validate(data, {
     abortEarly: false,
     errors: {
       wrap: {
@@ -320,4 +389,7 @@ module.exports = {
   editTermsConditionVal,
   editCusSupTitleVal,
   editCusSupSubTitleVal,
+  createOrderHisVal,
+  editOrderHisVal,
+  changeOrderStatusVal,
 };
