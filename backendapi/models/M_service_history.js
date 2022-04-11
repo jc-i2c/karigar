@@ -56,6 +56,7 @@ const OrderHistorySchema = new mongoose.Schema(
       type: String,
       enum: ["1", "2", "3", "4", "5"],
       default: "1", // 1-Booking_request_sent(Pending), 2-Booking_confirmed 3-Job_started 4-Job_Completed 5-Reject
+      required: [true, "Order status is required."],
     },
   },
   {
@@ -72,4 +73,4 @@ OrderHistorySchema.methods.toJSON = function () {
   return orderHistoryObj;
 };
 
-module.exports = mongoose.model("orderhistory", OrderHistorySchema);
+module.exports = mongoose.model("servicehistory", OrderHistorySchema);

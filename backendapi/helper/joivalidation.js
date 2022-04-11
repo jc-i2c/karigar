@@ -303,7 +303,7 @@ const editCusSupSubTitleVal = (data) => {
 };
 
 // Craete order history validation.
-const createOrderHisVal = (data) => {
+const createServiceHisVal = (data) => {
   const createOrderHisVal = Joi.object().keys({
     serviceproviderid: Joi.string().required().label("Service provider Id"),
     customerid: Joi.string().required().label("Customer Id"),
@@ -331,7 +331,7 @@ const createOrderHisVal = (data) => {
 };
 
 // Edit order history validation.
-const editOrderHisVal = (data) => {
+const editServiceHisVal = (data) => {
   const editOrderHisVal = Joi.object().keys({
     orderhistoryid: Joi.string().required().label("Order history Id"),
     serviceproviderid: Joi.string().required().label("Service provider Id"),
@@ -355,7 +355,7 @@ const editOrderHisVal = (data) => {
 };
 
 // Change order status BY Service Provider validation.
-const changeOrderStatusVal = (data) => {
+const changeServiceStatusVal = (data) => {
   const changeOrderStatusVal = Joi.object().keys({
     orderhistoryid: Joi.string().required().label("Order history Id"),
     orderstatus: Joi.string()
@@ -373,6 +373,20 @@ const changeOrderStatusVal = (data) => {
   });
 };
 
+// Get customer owned service orderrating validation.
+const getCusOwnedRateVal = (data) => {
+  const getCusOwnedRateVal = Joi.object().keys({
+    customerid: Joi.string().required().label("customer Id"),
+  });
+  return getCusOwnedRateVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
 module.exports = {
   insertDataVal,
   verifyOtpVal,
@@ -389,7 +403,8 @@ module.exports = {
   editTermsConditionVal,
   editCusSupTitleVal,
   editCusSupSubTitleVal,
-  createOrderHisVal,
-  editOrderHisVal,
-  changeOrderStatusVal,
+  createServiceHisVal,
+  editServiceHisVal,
+  changeServiceStatusVal,
+  getCusOwnedRateVal,
 };
