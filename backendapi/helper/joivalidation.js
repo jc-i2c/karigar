@@ -387,6 +387,8 @@ const getCusOwnedRateVal = (data) => {
     },
   });
 };
+
+
 module.exports = {
   insertDataVal,
   verifyOtpVal,

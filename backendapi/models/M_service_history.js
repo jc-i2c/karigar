@@ -55,7 +55,7 @@ const ServiceHistorySchema = new mongoose.Schema(
     servicestatus: {
       type: String,
       enum: ["1", "2", "3", "4", "5"],
-      default: "1", // 1-Booking_request_sent(Pending), 2-Booking_confirmed 3-Job_started 4-Job_Completed 5-Reject
+      default: "0", // 0-Booking_request_sent(Pending), 1-accept, 2-Booking_confirmed 3-Job_started 4-Job_Completed 5-Reject
       required: [true, "Service status is required."],
     },
   },

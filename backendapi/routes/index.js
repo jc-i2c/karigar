@@ -11,6 +11,7 @@ const custsupsubtitle = require("../routes/custsupsubtitle");
 const servicehistory = require("../routes/service_history");
 const payment = require("../routes/payment");
 const servicerating = require("../routes/service_rating");
+const favoriteservice = require("../routes/favorite_service");
 
 router.use("/karigar/user", user);
 
@@ -33,5 +34,7 @@ router.use("/karigar/servicehistory", servicehistory);
 router.use("/karigar/payment", payment);
 
 router.use("/karigar/servicerating", servicerating);
+
+router.use("/karigar/favoriteservice", favoriteservice);
 
 module.exports = router;

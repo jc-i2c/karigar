@@ -1,13 +1,23 @@
 const express = require("express");
+const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
+
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 
 // Database file include.
 require("./server/database")
   .connect()
   .then(async (data) => {
-    const app = express();
+    // Socket connection
+    io.on("connection", (socket) => {
+      console.log("a user connected");
+    });
+
     app.use(express.json());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));

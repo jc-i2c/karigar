@@ -102,8 +102,10 @@ const getAllServicehistory = async (req, res, next) => {
         }
 
         // Set service status.
-        if (data.servicestatus == 1) {
+        if (data.servicestatus == 0) {
           data.servicestatus = "Booking_request_sent";
+        } else if (data.servicestatus == 1) {
+          data.servicestatus = "accept";
         } else if (data.servicestatus == 2) {
           data.servicestatus = "Booking_confirmed";
         } else if (data.servicestatus == 3) {
@@ -158,16 +160,18 @@ const getSingleServicehistory = async (req, res, next) => {
         }
 
         // Set service status.
-        if (getQry.servicestatus == 1) {
-          getQry.servicestatus = "Booking_request_sent";
-        } else if (getQry.servicestatus == 2) {
-          getQry.servicestatus = "Booking_confirmed";
-        } else if (getQry.servicestatus == 3) {
-          getQry.servicestatus = "Job_started";
-        } else if (getQry.servicestatus == 4) {
-          getQry.servicestatus = "Job_Completed";
-        } else if (getQry.servicestatus == 5) {
-          getQry.servicestatus = "Reject";
+        if (data.servicestatus == 0) {
+          data.servicestatus = "Booking_request_sent";
+        } else if (data.servicestatus == 1) {
+          data.servicestatus = "accept";
+        } else if (data.servicestatus == 2) {
+          data.servicestatus = "Booking_confirmed";
+        } else if (data.servicestatus == 3) {
+          data.servicestatus = "Job_started";
+        } else if (data.servicestatus == 4) {
+          data.servicestatus = "Job_Completed";
+        } else if (data.servicestatus == 5) {
+          data.servicestatus = "Reject";
         }
 
         return res.send({
@@ -365,8 +369,10 @@ const getServiceSerProvider = async (req, res, next) => {
           }
 
           // Set service status.
-          if (data.servicestatus == 1) {
+          if (data.servicestatus == 0) {
             data.servicestatus = "Booking_request_sent";
+          } else if (data.servicestatus == 1) {
+            data.servicestatus = "accept";
           } else if (data.servicestatus == 2) {
             data.servicestatus = "Booking_confirmed";
           } else if (data.servicestatus == 3) {
@@ -500,8 +506,10 @@ const customerBookService = async (req, res, next) => {
           }
 
           // Set service status.
-          if (data.servicestatus == 1) {
+          if (data.servicestatus == 0) {
             data.servicestatus = "Booking_request_sent";
+          } else if (data.servicestatus == 1) {
+            data.servicestatus = "accept";
           } else if (data.servicestatus == 2) {
             data.servicestatus = "Booking_confirmed";
           } else if (data.servicestatus == 3) {
