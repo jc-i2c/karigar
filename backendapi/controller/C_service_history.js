@@ -18,10 +18,10 @@ const createServicehistory = async (req, res, next) => {
       area: req.body.area,
       pincode: req.body.pincode,
       name: req.body.name,
-      orderdate: req.body.orderdate,
+      servicedate: req.body.servicedate,
       sessiontype: req.body.sessiontype,
       sessiontime: req.body.sessiontime,
-      orderstatus: req.body.orderstatus,
+      servicestatus: req.body.servicestatus,
     };
 
     // Joi validation.
@@ -44,23 +44,23 @@ const createServicehistory = async (req, res, next) => {
         pincode: data.pincode,
       };
 
-      let ordertime = {
+      let servicetime = {
         sessiontype: data.sessiontype,
         sessiontime: data.sessiontime,
       };
 
-      let createOrderHistory = new ServiceHistory({
+      let createServiceHistory = new ServiceHistory({
         serviceproviderid: data.serviceproviderid,
         customerid: data.customerid,
         addresstype: data.addresstype,
         address: address,
         name: data.name,
-        orderdate: data.orderdate,
-        ordertime: ordertime,
-        orderstatus: data.orderstatus,
+        servicedate: data.servicedate,
+        servicetime: servicetime,
+        servicestatus: data.servicestatus,
       });
 
-      const insertQry = await createOrderHistory.save();
+      const insertQry = await createServiceHistory.save();
 
       if (insertQry) {
         return res.send({
@@ -83,9 +83,38 @@ const createServicehistory = async (req, res, next) => {
 // Get all service history API.
 const getAllServicehistory = async (req, res, next) => {
   try {
-    const getQry = await ServiceHistory.find();
+    let getQry = await ServiceHistory.find();
 
     if (getQry.length > 0) {
+      getQry.forEach((data) => {
+        // Set time morning or afternoon.
+        if (data.servicetime.sessiontype == 1) {
+          data.servicetime.sessiontype = "Morning";
+        } else if (data.servicetime.sessiontype == 2) {
+          data.servicetime.sessiontype = "Afternoon";
+        }
+
+        // Set address type.
+        if (data.addresstype == 1) {
+          data.addresstype = "Office";
+        } else if (data.addresstype == 2) {
+          data.addresstype = "Home";
+        }
+
+        // Set service status.
+        if (data.servicestatus == 1) {
+          data.servicestatus = "Booking_request_sent";
+        } else if (data.servicestatus == 2) {
+          data.servicestatus = "Booking_confirmed";
+        } else if (data.servicestatus == 3) {
+          data.servicestatus = "Job_started";
+        } else if (data.servicestatus == 4) {
+          data.servicestatus = "Job_Completed";
+        } else if (data.servicestatus == 5) {
+          data.servicestatus = "Reject";
+        }
+      });
+
       return res.send({
         status: true,
         message: `${getQry.length} service history found into system.`,
@@ -106,12 +135,41 @@ const getAllServicehistory = async (req, res, next) => {
 // Get single service history API.
 const getSingleServicehistory = async (req, res, next) => {
   try {
-    const orderHistoryId = req.body.orderhistoryid;
+    const serviceHistoryId = req.body.servicehistoryid;
 
-    if (mongoose.isValidObjectId(orderHistoryId)) {
-      const getQry = await ServiceHistory.findById(orderHistoryId);
+    if (mongoose.isValidObjectId(serviceHistoryId)) {
+      let getQry = await ServiceHistory.findById(serviceHistoryId);
 
       if (getQry) {
+        console.log(typeof getQry.addresstype, "TYPE");
+
+        // Set time morning or afternoon.
+        if (getQry.servicetime.sessiontype == 1) {
+          getQry.servicetime.sessiontype = "Morning";
+        } else if (getQry.servicetime.sessiontype == 2) {
+          getQry.servicetime.sessiontype = "Afternoon";
+        }
+
+        // Set address type.
+        if (getQry.addresstype == 1) {
+          getQry.addresstype = "Office";
+        } else if (getQry.addresstype == 2) {
+          getQry.addresstype = "Home";
+        }
+
+        // Set service status.
+        if (getQry.servicestatus == 1) {
+          getQry.servicestatus = "Booking_request_sent";
+        } else if (getQry.servicestatus == 2) {
+          getQry.servicestatus = "Booking_confirmed";
+        } else if (getQry.servicestatus == 3) {
+          getQry.servicestatus = "Job_started";
+        } else if (getQry.servicestatus == 4) {
+          getQry.servicestatus = "Job_Completed";
+        } else if (getQry.servicestatus == 5) {
+          getQry.servicestatus = "Reject";
+        }
+
         return res.send({
           status: true,
           message: `Service history found into system.`,
@@ -138,9 +196,9 @@ const getSingleServicehistory = async (req, res, next) => {
 // Delete single service history API.
 const deleteServicehistory = async (req, res, next) => {
   try {
-    const orderHistoryId = req.body.orderhistoryid;
+    const serviceHistoryId = req.body.servicehistoryid;
 
-    if (!orderHistoryId) {
+    if (!serviceHistoryId) {
       return res.send({
         status: false,
         message: `Service history ID is not allowed to be empty.`,
@@ -148,7 +206,7 @@ const deleteServicehistory = async (req, res, next) => {
     } else {
       const findQry = await ServiceHistory.find({
         _id: {
-          $in: orderHistoryId,
+          $in: serviceHistoryId,
         },
       });
 
@@ -161,7 +219,7 @@ const deleteServicehistory = async (req, res, next) => {
           message: `${cntServices} Service history found into system.!`,
         });
       } else {
-        // Array of all order history.
+        // Array of all service history.
         await Promise.all(
           findQry.map(async (allServices) => {
             cntServices = cntServices + 1;
@@ -197,14 +255,14 @@ const deleteServicehistory = async (req, res, next) => {
 const editServicehistory = async (req, res, next) => {
   try {
     let data = {
-      orderhistoryid: req.body.orderhistoryid,
+      servicehistoryid: req.body.servicehistoryid,
       serviceproviderid: req.body.serviceproviderid,
       addresstype: req.body.addresstype,
       street: req.body.street,
       area: req.body.area,
       pincode: req.body.pincode,
       name: req.body.name,
-      orderdate: req.body.orderdate,
+      servicedate: req.body.servicedate,
       sessiontype: req.body.sessiontype,
       sessiontime: req.body.sessiontime,
     };
@@ -215,12 +273,12 @@ const editServicehistory = async (req, res, next) => {
       pincode: data.pincode,
     };
 
-    let ordertime = {
+    let servicetime = {
       sessiontype: data.sessiontype,
       sessiontime: data.sessiontime,
     };
 
-    if (!data.orderhistoryid) {
+    if (!data.servicehistoryid) {
       return res.send({
         status: false,
         message: `Service history ID is not allowed to be empty.`,
@@ -240,7 +298,7 @@ const editServicehistory = async (req, res, next) => {
           message: errorMsg,
         });
       }
-      let findQry = await ServiceHistory.findById(data.orderhistoryid);
+      let findQry = await ServiceHistory.findById(data.servicehistoryid);
 
       if (findQry) {
         var updateData = {
@@ -248,8 +306,8 @@ const editServicehistory = async (req, res, next) => {
           addresstype: data.addresstype,
           address: address,
           name: data.name,
-          orderdate: data.orderdate,
-          ordertime: ordertime,
+          servicedate: data.servicedate,
+          servicetime: servicetime,
         };
 
         let updateQry = await ServiceHistory.findByIdAndUpdate(findQry._id, {
@@ -290,7 +348,36 @@ const getServiceSerProvider = async (req, res, next) => {
     if (mongoose.isValidObjectId(serProviderId)) {
       const getQry = await ServiceHistory.find(serProviderId);
 
-      if (getQry) {
+      if (getQry.length > 0) {
+        getQry.forEach((data) => {
+          // Set time morning or afternoon.
+          if (data.servicetime.sessiontype == 1) {
+            data.servicetime.sessiontype = "Morning";
+          } else if (data.servicetime.sessiontype == 2) {
+            data.servicetime.sessiontype = "Afternoon";
+          }
+
+          // Set address type.
+          if (data.addresstype == 1) {
+            data.addresstype = "Office";
+          } else if (data.addresstype == 2) {
+            data.addresstype = "Home";
+          }
+
+          // Set service status.
+          if (data.servicestatus == 1) {
+            data.servicestatus = "Booking_request_sent";
+          } else if (data.servicestatus == 2) {
+            data.servicestatus = "Booking_confirmed";
+          } else if (data.servicestatus == 3) {
+            data.servicestatus = "Job_started";
+          } else if (data.servicestatus == 4) {
+            data.servicestatus = "Job_Completed";
+          } else if (data.servicestatus == 5) {
+            data.servicestatus = "Reject";
+          }
+        });
+
         return res.send({
           status: true,
           message: `Service history found into system.`,
@@ -318,8 +405,8 @@ const getServiceSerProvider = async (req, res, next) => {
 const changeServiceStatus = async (req, res, next) => {
   try {
     let data = {
-      orderhistoryid: req.body.orderhistoryid,
-      orderstatus: req.body.orderstatus,
+      servicehistoryid: req.body.servicehistoryid,
+      servicestatus: req.body.servicestatus,
     };
 
     // Joi validation.
@@ -337,21 +424,24 @@ const changeServiceStatus = async (req, res, next) => {
       });
     }
 
-    let orderHistoryId = mongoose.Types.ObjectId(data.orderhistoryid);
+    let serviceHistoryId = mongoose.Types.ObjectId(data.servicehistoryid);
 
-    if (mongoose.isValidObjectId(orderHistoryId)) {
-      const getQry = await ServiceHistory.findById(orderHistoryId);
+    if (mongoose.isValidObjectId(serviceHistoryId)) {
+      const getQry = await ServiceHistory.findById(serviceHistoryId);
 
       if (getQry) {
-        if (req.body.orderstatus == "") {
+        if (req.body.servicestatus == "") {
           return res.send({
             status: false,
             message: `Service history status is required.`,
           });
         } else {
-          let updateQry = await ServiceHistory.findByIdAndUpdate(orderHistoryId, {
-            $set: { orderstatus: data.orderstatus },
-          });
+          let updateQry = await ServiceHistory.findByIdAndUpdate(
+            serviceHistoryId,
+            {
+              $set: { servicestatus: data.servicestatus },
+            }
+          );
           if (updateQry) {
             return res.send({
               status: true,
@@ -382,6 +472,70 @@ const changeServiceStatus = async (req, res, next) => {
   }
 };
 
+// get customer book service based on customer ID API.
+const customerBookService = async (req, res, next) => {
+  try {
+    let customerId = req.body.customerid;
+    customerId = mongoose.Types.ObjectId(customerId);
+
+    if (mongoose.isValidObjectId(customerId)) {
+      let getQry = await ServiceHistory.find().where({
+        customerid: customerId,
+      });
+
+      if (getQry.length > 0) {
+        getQry.forEach((data) => {
+          // Set time morning or afternoon.
+          if (data.servicetime.sessiontype == 1) {
+            data.servicetime.sessiontype = "Morning";
+          } else if (data.servicetime.sessiontype == 2) {
+            data.servicetime.sessiontype = "Afternoon";
+          }
+
+          // Set address type.
+          if (data.addresstype == 1) {
+            data.addresstype = "Office";
+          } else if (data.addresstype == 2) {
+            data.addresstype = "Home";
+          }
+
+          // Set service status.
+          if (data.servicestatus == 1) {
+            data.servicestatus = "Booking_request_sent";
+          } else if (data.servicestatus == 2) {
+            data.servicestatus = "Booking_confirmed";
+          } else if (data.servicestatus == 3) {
+            data.servicestatus = "Job_started";
+          } else if (data.servicestatus == 4) {
+            data.servicestatus = "Job_Completed";
+          } else if (data.servicestatus == 5) {
+            data.servicestatus = "Reject";
+          }
+        });
+
+        return res.send({
+          status: true,
+          message: `Customer service history found into system.`,
+          data: getQry,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `Customer service history not found into system.`,
+        });
+      }
+    } else {
+      return res.send({
+        status: false,
+        message: `Customer service history ID is not valid.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createServicehistory,
   getAllServicehistory,
@@ -390,4 +544,5 @@ module.exports = {
   editServicehistory,
   getServiceSerProvider,
   changeServiceStatus,
+  customerBookService,
 };

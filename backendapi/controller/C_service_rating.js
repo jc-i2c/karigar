@@ -2,19 +2,26 @@ const ServiceRating = require("../models/M_service_rating");
 
 const { getCusOwnedRateVal } = require("../helper/joivalidation");
 
-// Create service orderrating API.
-const createOrderRate = async (req, res, next) => {
+// Create service servicerating API.
+const createServiceRate = async (req, res, next) => {
   try {
-    const { customerid, orderhistoryid, rate, description } = req.body;
+    const {
+      customerid,
+      serviceproviderid,
+      servicehistoryid,
+      rate,
+      description,
+    } = req.body;
 
-    var orderRating = new ServiceRating({
+    var serviceRating = new ServiceRating({
       customerid: customerid,
-      orderhistoryid: orderhistoryid,
+      serviceproviderid: serviceproviderid,
+      servicehistoryid: servicehistoryid,
       rate: rate,
       description: description,
     });
 
-    const insertQry = await orderRating.save();
+    const insertQry = await serviceRating.save();
 
     if (insertQry) {
       return res.send({
@@ -34,11 +41,11 @@ const createOrderRate = async (req, res, next) => {
 };
 
 // Delete service orderrating API.
-const deleteOrderRate = async (req, res, next) => {
+const deleteServiceRate = async (req, res, next) => {
   try {
-    const orderRateId = req.body.orderrateid;
+    const serviceRateId = req.body.servicerateid;
 
-    if (!orderRateId) {
+    if (!serviceRateId) {
       return res.send({
         status: false,
         message: `Service rating Id is not allowed to be empty.`,
@@ -46,7 +53,7 @@ const deleteOrderRate = async (req, res, next) => {
     } else {
       const findQry = await ServiceRating.find({
         _id: {
-          $in: orderRateId,
+          $in: serviceRateId,
         },
       });
 
@@ -137,12 +144,10 @@ const getCusOwnedRate = async (req, res, next) => {
 const getServiceRate = async (req, res, next) => {
   try {
     const serviceProviderId = req.body.serviceproviderid;
-    console.log(serviceProviderId, "serviceProviderId");
+    // console.log(serviceProviderId, "serviceProviderId");
 
-    const findQry = await ServiceRating.find().populate({
-      path: "orderhistoryid",
-      match: { serviceproviderid: serviceProviderId },
-      select: "customerid serviceproviderid",
+    const findQry = await ServiceRating.find().where({
+      serviceproviderid: serviceProviderId,
     });
 
     if (findQry.length > 0) {
@@ -164,8 +169,8 @@ const getServiceRate = async (req, res, next) => {
 };
 
 module.exports = {
-  createOrderRate,
-  deleteOrderRate,
+  createServiceRate,
+  deleteServiceRate,
   getCusOwnedRate,
   getServiceRate,
 };

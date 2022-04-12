@@ -12,6 +12,7 @@ const {
   editServicehistory,
   getServiceSerProvider,
   changeServiceStatus,
+  customerBookService,
 } = require("../controller/C_service_history");
 
 router.post("/create", auth, multipartMiddleware, createServicehistory);
@@ -34,7 +35,13 @@ router.post(
   deleteServicehistory
 );
 
-router.post("/edit", auth, userrollauth, multipartMiddleware, editServicehistory);
+router.post(
+  "/edit",
+  auth,
+  userrollauth,
+  multipartMiddleware,
+  editServicehistory
+);
 
 router.post(
   "/getorderserprovider",
@@ -44,5 +51,12 @@ router.post(
 );
 
 router.post("/statuschange", auth, multipartMiddleware, changeServiceStatus);
+
+router.post(
+  "/customerbookservice",
+  auth,
+  multipartMiddleware,
+  customerBookService
+);
 
 module.exports = router;

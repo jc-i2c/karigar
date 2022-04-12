@@ -302,9 +302,9 @@ const editCusSupSubTitleVal = (data) => {
   });
 };
 
-// Craete order history validation.
+// Craete service history validation.
 const createServiceHisVal = (data) => {
-  const createOrderHisVal = Joi.object().keys({
+  const createServiceHisVal = Joi.object().keys({
     serviceproviderid: Joi.string().required().label("Service provider Id"),
     customerid: Joi.string().required().label("Customer Id"),
     addresstype: Joi.string().required().valid("1", "2").label("Address type"),
@@ -312,15 +312,15 @@ const createServiceHisVal = (data) => {
     area: Joi.string().required().label("Address area"),
     pincode: Joi.string().required().label("Address pincode"),
     name: Joi.string().required().label("Service provider name"),
-    orderdate: Joi.string().required().label("Order date"),
+    servicedate: Joi.string().required().label("service date"),
     sessiontype: Joi.string().required().valid("1", "2").label("Session type"),
     sessiontime: Joi.string().required().label("Session time"),
-    orderstatus: Joi.string()
+    servicestatus: Joi.string()
       .required()
       .valid("1", "2", "3")
-      .label("Order status type"),
+      .label("Service status type"),
   });
-  return createOrderHisVal.validate(data, {
+  return createServiceHisVal.validate(data, {
     abortEarly: false,
     errors: {
       wrap: {
@@ -330,21 +330,21 @@ const createServiceHisVal = (data) => {
   });
 };
 
-// Edit order history validation.
+// Edit service history validation.
 const editServiceHisVal = (data) => {
-  const editOrderHisVal = Joi.object().keys({
-    orderhistoryid: Joi.string().required().label("Order history Id"),
+  const editServiceHisVal = Joi.object().keys({
+    servicehistoryid: Joi.string().required().label("Service history Id"),
     serviceproviderid: Joi.string().required().label("Service provider Id"),
     addresstype: Joi.string().required().valid("1", "2").label("Address type"),
     street: Joi.string().required().label("Address street"),
     area: Joi.string().required().label("Address area"),
     pincode: Joi.string().required().label("Address pincode"),
     name: Joi.string().required().label("Service provider name"),
-    orderdate: Joi.string().required().label("Order date"),
+    servicedate: Joi.string().required().label("Service date"),
     sessiontype: Joi.string().required().valid("1", "2").label("Session type"),
     sessiontime: Joi.string().required().label("Session time"),
   });
-  return editOrderHisVal.validate(data, {
+  return editServiceHisVal.validate(data, {
     abortEarly: false,
     errors: {
       wrap: {
@@ -354,16 +354,16 @@ const editServiceHisVal = (data) => {
   });
 };
 
-// Change order status BY Service Provider validation.
+// Change service status BY Service Provider validation.
 const changeServiceStatusVal = (data) => {
-  const changeOrderStatusVal = Joi.object().keys({
-    orderhistoryid: Joi.string().required().label("Order history Id"),
-    orderstatus: Joi.string()
+  const changeServiceStatusVal = Joi.object().keys({
+    servicehistoryid: Joi.string().required().label("Service history Id"),
+    servicestatus: Joi.string()
       .required()
       .valid("1", "2", "3", "4", "5")
-      .label("Order status type"),
+      .label("Service status type"),
   });
-  return changeOrderStatusVal.validate(data, {
+  return changeServiceStatusVal.validate(data, {
     abortEarly: false,
     errors: {
       wrap: {
@@ -373,7 +373,7 @@ const changeServiceStatusVal = (data) => {
   });
 };
 
-// Get customer owned service orderrating validation.
+// Get customer owned service servicerating validation.
 const getCusOwnedRateVal = (data) => {
   const getCusOwnedRateVal = Joi.object().keys({
     customerid: Joi.string().required().label("customer Id"),

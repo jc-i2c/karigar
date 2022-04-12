@@ -1,16 +1,21 @@
 const mongoose = require("mongoose");
 
-const OrderRatingSchema = new mongoose.Schema(
+const ServiceRatingSchema = new mongoose.Schema(
   {
     customerid: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       required: [true, "Customer Id is required."],
     },
-    orderhistoryid: {
+    servicehistoryid: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "servicehistory",
-      required: [true, "Service order history Id is required."],
+      required: [true, "Service history Id is required."],
+    },
+    serviceproviderid: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "serviceprovider",
+      required: [true, "Service provider Id is required."],
     },
     rate: {
       type: String,
@@ -28,13 +33,13 @@ const OrderRatingSchema = new mongoose.Schema(
   }
 );
 
-OrderRatingSchema.methods.toJSON = function () {
-  const orderRating = this;
-  const orderRatingObj = orderRating.toObject();
-  delete orderRatingObj.__v;
-  delete orderRatingObj.createdAt;
-  delete orderRatingObj.updatedAt;
-  return orderRatingObj;
+ServiceRatingSchema.methods.toJSON = function () {
+  const serviceRating = this;
+  const serviceRatingObj = serviceRating.toObject();
+  delete serviceRatingObj.__v;
+  delete serviceRatingObj.createdAt;
+  delete serviceRatingObj.updatedAt;
+  return serviceRatingObj;
 };
 
-module.exports = mongoose.model("servicerating", OrderRatingSchema);
+module.exports = mongoose.model("servicerating", ServiceRatingSchema);

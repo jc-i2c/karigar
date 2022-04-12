@@ -5,20 +5,20 @@ const auth = require("../middleware/auth");
 const userrollauth = require("../middleware/userrollauth");
 
 const {
-  createOrderRate,
-  deleteOrderRate,
+  createServiceRate,
+  deleteServiceRate,
   getCusOwnedRate,
-  getServiceRate,
+  getServiceRate
 } = require("../controller/C_service_rating");
 
-router.post("/create", auth, multipartMiddleware, createOrderRate);
+router.post("/create", auth, multipartMiddleware, createServiceRate);
 
 router.post(
   "/delete",
   auth,
   userrollauth,
   multipartMiddleware,
-  deleteOrderRate
+  deleteServiceRate
 );
 
 router.post("/customerrate", auth, multipartMiddleware, getCusOwnedRate);

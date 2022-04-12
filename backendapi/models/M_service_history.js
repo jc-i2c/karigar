@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const OrderHistorySchema = new mongoose.Schema(
+const ServiceHistorySchema = new mongoose.Schema(
   {
     serviceproviderid: {
       type: mongoose.Schema.Types.ObjectId,
@@ -13,7 +13,7 @@ const OrderHistorySchema = new mongoose.Schema(
       required: [true, "Customer Id is required."],
     },
     addresstype: {
-      type: Number,
+      type: String,
       enum: [1, 2],
       default: 1, // 1-office, 2-home
       required: [true, "Address type is required."],
@@ -28,7 +28,7 @@ const OrderHistorySchema = new mongoose.Schema(
         required: [true, "Area name is required."],
       },
       pincode: {
-        type: Number,
+        type: String,
         required: [true, "Pincode is required."],
       },
     },
@@ -36,11 +36,11 @@ const OrderHistorySchema = new mongoose.Schema(
       type: String,
       required: [true, "Name is required."],
     },
-    orderdate: {
+    servicedate: {
       type: Date,
-      required: [true, "Order date is required."], // 14-03-2022
+      required: [true, "Service date is required."], // 14-03-2022
     },
-    ordertime: {
+    servicetime: {
       sessiontype: {
         type: String,
         enum: [1, 2],
@@ -52,11 +52,11 @@ const OrderHistorySchema = new mongoose.Schema(
         required: [true, "Session time is required"], // 10:00, 07:45 etc.
       },
     },
-    orderstatus: {
+    servicestatus: {
       type: String,
       enum: ["1", "2", "3", "4", "5"],
       default: "1", // 1-Booking_request_sent(Pending), 2-Booking_confirmed 3-Job_started 4-Job_Completed 5-Reject
-      required: [true, "Order status is required."],
+      required: [true, "Service status is required."],
     },
   },
   {
@@ -64,13 +64,13 @@ const OrderHistorySchema = new mongoose.Schema(
   }
 );
 
-OrderHistorySchema.methods.toJSON = function () {
-  const orderHistory = this;
-  const orderHistoryObj = orderHistory.toObject();
-  delete orderHistoryObj.__v;
-  delete orderHistoryObj.createdAt;
-  delete orderHistoryObj.updatedAt;
-  return orderHistoryObj;
+ServiceHistorySchema.methods.toJSON = function () {
+  const serviceHistory = this;
+  const serviceHistoryObj = serviceHistory.toObject();
+  delete serviceHistoryObj.__v;
+  delete serviceHistoryObj.createdAt;
+  delete serviceHistoryObj.updatedAt;
+  return serviceHistoryObj;
 };
 
-module.exports = mongoose.model("servicehistory", OrderHistorySchema);
+module.exports = mongoose.model("servicehistory", ServiceHistorySchema);
