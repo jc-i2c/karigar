@@ -76,10 +76,12 @@ const getCustomerFavSer = async (req, res, next) => {
   try {
     const { customerid } = req.body;
 
-    const getQry = await FavoriteService.find().where({
-      customerid: customerid,
-      isfavorite: true,
-    }).select("subserviceid isfavorite");
+    const getQry = await FavoriteService.find()
+      .where({
+        customerid: customerid,
+        isfavorite: true,
+      })
+      .select("subserviceid isfavorite");
 
     if (getQry.length > 0) {
       return res.send({

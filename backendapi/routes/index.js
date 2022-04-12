@@ -9,7 +9,7 @@ const termscondition = require("../routes/termscondition");
 const custsuptitle = require("../routes/custsuptitle");
 const custsupsubtitle = require("../routes/custsupsubtitle");
 const servicehistory = require("../routes/service_history");
-const payment = require("../routes/payment");
+const paymenthistory = require("./payment_history");
 const servicerating = require("../routes/service_rating");
 const favoriteservice = require("../routes/favorite_service");
 
@@ -31,7 +31,7 @@ router.use("/karigar/custsupsubtitle", custsupsubtitle);
 
 router.use("/karigar/servicehistory", servicehistory);
 
-router.use("/karigar/payment", payment);
+router.use("/karigar/paymenthistory", paymenthistory);
 
 router.use("/karigar/servicerating", servicerating);
 

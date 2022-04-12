@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const Privacypolicy = require("../models/M_privacypolicy");
 
 // Create or update privacy policy API.

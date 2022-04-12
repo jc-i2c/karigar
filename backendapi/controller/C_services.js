@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Services = require("../models/M_services");
 const {
-  craeteServicesVal,
+  createServicesVal,
   editServicesVal,
 } = require("../helper/joivalidation");
 const { removeFile } = require("../helper/removefile");
@@ -14,7 +14,7 @@ const createServices = async (req, res, next) => {
     if (req.file) {
       var serviceImage = req.file.filename;
       // Joi validation.
-      const { error } = craeteServicesVal(req.body);
+      const { error } = createServicesVal(req.body);
 
       if (error) {
         removeFile(serviceImage);

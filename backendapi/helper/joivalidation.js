@@ -120,11 +120,11 @@ const resetPasswordVal = (data) => {
 };
 
 // Create services validation.
-const craeteServicesVal = (data) => {
-  const craeteServicesVal = Joi.object().keys({
+const createServicesVal = (data) => {
+  const createServicesVal = Joi.object().keys({
     servicename: Joi.string().required().min(3).label("Service name"),
   });
-  return craeteServicesVal.validate(data, {
+  return createServicesVal.validate(data, {
     abortEarly: false,
     errors: {
       wrap: {
@@ -136,11 +136,11 @@ const craeteServicesVal = (data) => {
 
 // Edit services validation.
 const editServicesVal = (data) => {
-  const craeteServicesVal = Joi.object().keys({
+  const createServicesVal = Joi.object().keys({
     servicesid: Joi.string().required().label("Service Id"),
     servicename: Joi.string().required().min(3).label("Service name"),
   });
-  return craeteServicesVal.validate(data, {
+  return createServicesVal.validate(data, {
     abortEarly: false,
     errors: {
       wrap: {
@@ -151,12 +151,12 @@ const editServicesVal = (data) => {
 };
 
 // Create sub services validation.
-const craeteSubServicesVal = (data) => {
-  const craeteSubServicesVal = Joi.object().keys({
+const createSubServicesVal = (data) => {
+  const createSubServicesVal = Joi.object().keys({
     servicesid: Joi.string().required().label("Service Id"),
     subservicename: Joi.string().required().min(3).label("Sub service name"),
   });
-  return craeteSubServicesVal.validate(data, {
+  return createSubServicesVal.validate(data, {
     abortEarly: false,
     errors: {
       wrap: {
@@ -302,7 +302,7 @@ const editCusSupSubTitleVal = (data) => {
   });
 };
 
-// Craete service history validation.
+// create service history validation.
 const createServiceHisVal = (data) => {
   const createServiceHisVal = Joi.object().keys({
     serviceproviderid: Joi.string().required().label("Service provider Id"),
@@ -317,7 +317,7 @@ const createServiceHisVal = (data) => {
     sessiontime: Joi.string().required().label("Session time"),
     servicestatus: Joi.string()
       .required()
-      .valid("1", "2", "3")
+      .valid("0", "1", "2", "3", "4", "5")
       .label("Service status type"),
   });
   return createServiceHisVal.validate(data, {
@@ -360,7 +360,7 @@ const changeServiceStatusVal = (data) => {
     servicehistoryid: Joi.string().required().label("Service history Id"),
     servicestatus: Joi.string()
       .required()
-      .valid("1", "2", "3", "4", "5")
+      .valid("0", "1", "2", "3", "4", "5")
       .label("Service status type"),
   });
   return changeServiceStatusVal.validate(data, {
@@ -396,9 +396,9 @@ module.exports = {
   updateProfileDataVal,
   changePasswordVal,
   resetPasswordVal,
-  craeteServicesVal,
+  createServicesVal,
   editServicesVal,
-  craeteSubServicesVal,
+  createSubServicesVal,
   editSubServicesVal,
   createSerProVal,
   editSerProVal,

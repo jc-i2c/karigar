@@ -3,7 +3,7 @@ const Subservices = require("../models/M_subservices");
 const Services = require("../models/M_services");
 
 const {
-  craeteSubServicesVal,
+  createSubServicesVal,
   editSubServicesVal,
 } = require("../helper/joivalidation");
 
@@ -18,7 +18,7 @@ const createSubServices = async (req, res, next) => {
       var subServiceImage = req.file.filename;
 
       // Joi validation.
-      const { error } = craeteSubServicesVal(req.body);
+      const { error } = createSubServicesVal(req.body);
 
       if (error) {
         removeFile(subServiceImage);
