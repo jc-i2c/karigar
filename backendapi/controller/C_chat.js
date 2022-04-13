@@ -84,7 +84,35 @@ const changeStatus = async (req, res, next) => {
   }
 };
 
+// Get all message based on roomId API.
+const getAllMessage = async (req, res, next) => {
+  try {
+    const { chatroomid } = req.body;
+
+    const getQry = await Chat.find().where({
+      chatroomid: chatroomid,
+    });
+
+    if (getQry.length > 0) {
+      return res.send({
+        status: true,
+        message: `${getQry.length} Sub service found into system.`,
+        data: getQry,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `${getQry.length} Sub service not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createChat,
   changeStatus,
+  getAllMessage,
 };

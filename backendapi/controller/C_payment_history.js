@@ -80,7 +80,7 @@ const getPayment = async (req, res, next) => {
         message: `Payment not found into system.`,
       });
     }
-  } catch (error) {}
+  } catch (error) { }
 };
 
 module.exports = { createPayment, getPayment };

@@ -15,10 +15,8 @@ require("./server/database")
   .then(async (data) => {
     // Socket connection
     io.on("connection", (socket) => {
-      console.log("user connected");
-      socket.on("chat message", (msg) => {
-        io.emit("chat message", msg);
-        console.log(msg);
+      socket.on("on karigar", (msg) => {
+        io.emit("emit karigar", msg);
       });
     });
 
