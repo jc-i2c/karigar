@@ -15,7 +15,11 @@ require("./server/database")
   .then(async (data) => {
     // Socket connection
     io.on("connection", (socket) => {
-      console.log("a user connected");
+      console.log("user connected");
+      socket.on("chat message", (msg) => {
+        io.emit("chat message", msg);
+        console.log(msg);
+      });
     });
 
     app.use(express.json());

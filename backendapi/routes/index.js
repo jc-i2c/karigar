@@ -12,6 +12,9 @@ const servicehistory = require("../routes/service_history");
 const paymenthistory = require("./payment_history");
 const servicerating = require("../routes/service_rating");
 const favoriteservice = require("../routes/favorite_service");
+const chat_request = require("../routes/chat_request");
+const chat_room = require("../routes/chat_room");
+const chat = require("../routes/chat");
 
 router.use("/karigar/user", user);
 
@@ -36,5 +39,11 @@ router.use("/karigar/paymenthistory", paymenthistory);
 router.use("/karigar/servicerating", servicerating);
 
 router.use("/karigar/favoriteservice", favoriteservice);
+
+router.use("/karigar/chatrequest", chat_request);
+
+router.use("/karigar/chatroom", chat_room);
+
+router.use("/karigar/chat", chat);
 
 module.exports = router;

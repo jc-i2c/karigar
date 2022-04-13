@@ -388,6 +388,24 @@ const getCusOwnedRateVal = (data) => {
   });
 };
 
+// Get customer owned service servicerating validation.
+const chatReqStatusVal = (data) => {
+  const chatReqStatusVal = Joi.object().keys({
+    chatrequestid: Joi.string().required().label("Chat request Id"),
+    chatstatus: Joi.string()
+      .required()
+      .valid("2", "3")
+      .label("Chat request status"),
+  });
+  return chatReqStatusVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
 
 module.exports = {
   insertDataVal,
@@ -409,4 +427,5 @@ module.exports = {
   editServiceHisVal,
   changeServiceStatusVal,
   getCusOwnedRateVal,
+  chatReqStatusVal,
 };

@@ -86,41 +86,69 @@ const getAllServicehistory = async (req, res, next) => {
     let getQry = await ServiceHistory.find();
 
     if (getQry.length > 0) {
+      let findData = [];
+      let resData = {};
       getQry.forEach((data) => {
+        resData = data.toObject();
+
+        delete resData.updatedAt; // delete person["updatedAt"]
+        delete resData.__v; // delete person["__v"]
+
         // Set time morning or afternoon.
-        if (data.servicetime.sessiontype == 1) {
-          data.servicetime.sessiontype = "Morning";
-        } else if (data.servicetime.sessiontype == 2) {
-          data.servicetime.sessiontype = "Afternoon";
+        if (resData.servicetime.sessiontype == 1) {
+          resData.servicetime.sessiontype = "Morning";
+        } else if (resData.servicetime.sessiontype == 2) {
+          resData.servicetime.sessiontype = "Afternoon";
         }
 
         // Set address type.
-        if (data.addresstype == 1) {
-          data.addresstype = "Office";
-        } else if (data.addresstype == 2) {
-          data.addresstype = "Home";
+        if (resData.addresstype == 1) {
+          resData.addresstype = "Office";
+        } else if (resData.addresstype == 2) {
+          resData.addresstype = "Home";
         }
 
         // Set service status.
-        if (data.servicestatus == 0) {
-          data.servicestatus = "Booking_request_sent";
-        } else if (data.servicestatus == 1) {
-          data.servicestatus = "accept";
-        } else if (data.servicestatus == 2) {
-          data.servicestatus = "Booking_confirmed";
-        } else if (data.servicestatus == 3) {
-          data.servicestatus = "Job_started";
-        } else if (data.servicestatus == 4) {
-          data.servicestatus = "Job_Completed";
-        } else if (data.servicestatus == 5) {
-          data.servicestatus = "Reject";
+        if (resData.servicestatus == 0) {
+          resData.servicestatus = "Booking_request_sent";
+        } else if (resData.servicestatus == 1) {
+          resData.servicestatus = "accept";
+        } else if (resData.servicestatus == 2) {
+          resData.servicestatus = "Booking_confirmed";
+        } else if (resData.servicestatus == 3) {
+          resData.servicestatus = "Job_started";
+        } else if (resData.servicestatus == 4) {
+          resData.servicestatus = "Job_Completed";
+        } else if (resData.servicestatus == 5) {
+          resData.servicestatus = "Reject";
         }
+
+        // Set payment status.
+        if (resData.paymentstatus) {
+          resData.paymentstatus = "Completed";
+        } else {
+          resData.paymentstatus = "Pending";
+        }
+
+        // Servicedate date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.servicedate = resData.servicedate
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.createdAt = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        findData.push(resData);
       });
 
       return res.send({
         status: true,
         message: `${getQry.length} service history found into system.`,
-        data: getQry,
+        data: findData,
       });
     } else {
       return res.send({
@@ -143,41 +171,64 @@ const getSingleServicehistory = async (req, res, next) => {
       let getQry = await ServiceHistory.findById(serviceHistoryId);
 
       if (getQry) {
-        console.log(typeof getQry.addresstype, "TYPE");
+        let resData = {};
+        resData = getQry.toObject();
+
+        delete resData.updatedAt; // delete person["updatedAt"]
+        delete resData.__v; // delete person["__v"]
 
         // Set time morning or afternoon.
-        if (getQry.servicetime.sessiontype == 1) {
-          getQry.servicetime.sessiontype = "Morning";
-        } else if (getQry.servicetime.sessiontype == 2) {
-          getQry.servicetime.sessiontype = "Afternoon";
+        if (resData.servicetime.sessiontype == 1) {
+          resData.servicetime.sessiontype = "Morning";
+        } else if (resData.servicetime.sessiontype == 2) {
+          resData.servicetime.sessiontype = "Afternoon";
         }
 
         // Set address type.
-        if (getQry.addresstype == 1) {
-          getQry.addresstype = "Office";
-        } else if (getQry.addresstype == 2) {
-          getQry.addresstype = "Home";
+        if (resData.addresstype == 1) {
+          resData.addresstype = "Office";
+        } else if (resData.addresstype == 2) {
+          resData.addresstype = "Home";
         }
 
         // Set service status.
-        if (data.servicestatus == 0) {
-          data.servicestatus = "Booking_request_sent";
-        } else if (data.servicestatus == 1) {
-          data.servicestatus = "accept";
-        } else if (data.servicestatus == 2) {
-          data.servicestatus = "Booking_confirmed";
-        } else if (data.servicestatus == 3) {
-          data.servicestatus = "Job_started";
-        } else if (data.servicestatus == 4) {
-          data.servicestatus = "Job_Completed";
-        } else if (data.servicestatus == 5) {
-          data.servicestatus = "Reject";
+        if (resData.servicestatus == 0) {
+          resData.servicestatus = "Booking_request_sent";
+        } else if (resData.servicestatus == 1) {
+          resData.servicestatus = "accept";
+        } else if (resData.servicestatus == 2) {
+          resData.servicestatus = "Booking_confirmed";
+        } else if (resData.servicestatus == 3) {
+          resData.servicestatus = "Job_started";
+        } else if (resData.servicestatus == 4) {
+          resData.servicestatus = "Job_Completed";
+        } else if (resData.servicestatus == 5) {
+          resData.servicestatus = "Reject";
         }
+
+        // Set payment status.
+        if (resData.paymentstatus) {
+          resData.paymentstatus = "Completed";
+        } else {
+          resData.paymentstatus = "Pending";
+        }
+
+        // servicedate date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.servicedate = resData.servicedate
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.createdAt = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
 
         return res.send({
           status: true,
           message: `Service history found into system.`,
-          data: getQry,
+          data: resData,
         });
       } else {
         return res.send({
@@ -353,41 +404,69 @@ const getServiceSerProvider = async (req, res, next) => {
       const getQry = await ServiceHistory.find(serProviderId);
 
       if (getQry.length > 0) {
+        let findData = [];
+        let resData = {};
         getQry.forEach((data) => {
+          resData = data.toObject();
+
+          delete resData.updatedAt; // delete person["updatedAt"]
+          delete resData.__v; // delete person["__v"]
+
           // Set time morning or afternoon.
-          if (data.servicetime.sessiontype == 1) {
-            data.servicetime.sessiontype = "Morning";
-          } else if (data.servicetime.sessiontype == 2) {
-            data.servicetime.sessiontype = "Afternoon";
+          if (resData.servicetime.sessiontype == 1) {
+            resData.servicetime.sessiontype = "Morning";
+          } else if (resData.servicetime.sessiontype == 2) {
+            resData.servicetime.sessiontype = "Afternoon";
           }
 
           // Set address type.
-          if (data.addresstype == 1) {
-            data.addresstype = "Office";
-          } else if (data.addresstype == 2) {
-            data.addresstype = "Home";
+          if (resData.addresstype == 1) {
+            resData.addresstype = "Office";
+          } else if (resData.addresstype == 2) {
+            resData.addresstype = "Home";
           }
 
           // Set service status.
-          if (data.servicestatus == 0) {
-            data.servicestatus = "Booking_request_sent";
-          } else if (data.servicestatus == 1) {
-            data.servicestatus = "accept";
-          } else if (data.servicestatus == 2) {
-            data.servicestatus = "Booking_confirmed";
-          } else if (data.servicestatus == 3) {
-            data.servicestatus = "Job_started";
-          } else if (data.servicestatus == 4) {
-            data.servicestatus = "Job_Completed";
-          } else if (data.servicestatus == 5) {
-            data.servicestatus = "Reject";
+          if (resData.servicestatus == 0) {
+            resData.servicestatus = "Booking_request_sent";
+          } else if (resData.servicestatus == 1) {
+            resData.servicestatus = "accept";
+          } else if (resData.servicestatus == 2) {
+            resData.servicestatus = "Booking_confirmed";
+          } else if (resData.servicestatus == 3) {
+            resData.servicestatus = "Job_started";
+          } else if (resData.servicestatus == 4) {
+            resData.servicestatus = "Job_Completed";
+          } else if (resData.servicestatus == 5) {
+            resData.servicestatus = "Reject";
           }
+
+          // Set payment status.
+          if (resData.paymentstatus) {
+            resData.paymentstatus = "Completed";
+          } else {
+            resData.paymentstatus = "Pending";
+          }
+
+          // Servicedate date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+          resData.servicedate = resData.servicedate
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+          resData.createdAt = resData.createdAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          findData.push(resData);
         });
 
         return res.send({
           status: true,
           message: `Service history found into system.`,
-          data: getQry,
+          data: findData,
         });
       } else {
         return res.send({
@@ -490,41 +569,69 @@ const customerBookService = async (req, res, next) => {
       });
 
       if (getQry.length > 0) {
+        let findData = [];
+        let resData = {};
         getQry.forEach((data) => {
+          resData = data.toObject();
+
+          delete resData.updatedAt; // delete person["updatedAt"]
+          delete resData.__v; // delete person["__v"]
+
           // Set time morning or afternoon.
-          if (data.servicetime.sessiontype == 1) {
-            data.servicetime.sessiontype = "Morning";
-          } else if (data.servicetime.sessiontype == 2) {
-            data.servicetime.sessiontype = "Afternoon";
+          if (resData.servicetime.sessiontype == 1) {
+            resData.servicetime.sessiontype = "Morning";
+          } else if (resData.servicetime.sessiontype == 2) {
+            resData.servicetime.sessiontype = "Afternoon";
           }
 
           // Set address type.
-          if (data.addresstype == 1) {
-            data.addresstype = "Office";
-          } else if (data.addresstype == 2) {
-            data.addresstype = "Home";
+          if (resData.addresstype == 1) {
+            resData.addresstype = "Office";
+          } else if (resData.addresstype == 2) {
+            resData.addresstype = "Home";
           }
 
           // Set service status.
-          if (data.servicestatus == 0) {
-            data.servicestatus = "Booking_request_sent";
-          } else if (data.servicestatus == 1) {
-            data.servicestatus = "accept";
-          } else if (data.servicestatus == 2) {
-            data.servicestatus = "Booking_confirmed";
-          } else if (data.servicestatus == 3) {
-            data.servicestatus = "Job_started";
-          } else if (data.servicestatus == 4) {
-            data.servicestatus = "Job_Completed";
-          } else if (data.servicestatus == 5) {
-            data.servicestatus = "Reject";
+          if (resData.servicestatus == 0) {
+            resData.servicestatus = "Booking_request_sent";
+          } else if (resData.servicestatus == 1) {
+            resData.servicestatus = "accept";
+          } else if (resData.servicestatus == 2) {
+            resData.servicestatus = "Booking_confirmed";
+          } else if (resData.servicestatus == 3) {
+            resData.servicestatus = "Job_started";
+          } else if (resData.servicestatus == 4) {
+            resData.servicestatus = "Job_Completed";
+          } else if (resData.servicestatus == 5) {
+            resData.servicestatus = "Reject";
           }
+
+          // Set payment status.
+          if (resData.paymentstatus) {
+            resData.paymentstatus = "Completed";
+          } else {
+            resData.paymentstatus = "Pending";
+          }
+
+          // Servicedate date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+          resData.servicedate = resData.servicedate
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+          resData.createdAt = resData.createdAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          findData.push(resData);
         });
 
         return res.send({
           status: true,
           message: `Customer service history found into system.`,
-          data: getQry,
+          data: findData,
         });
       } else {
         return res.send({

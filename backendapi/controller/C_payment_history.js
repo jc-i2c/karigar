@@ -60,12 +60,12 @@ const getPayment = async (req, res, next) => {
       transactionid: transactionid,
     });
 
+    getQry = getQry.toJSON();
+
     if (getQry) {
-      if (getQry.paymentstatus == "true") {
-        console.log(getQry.paymentstatus, "IN");
+      if (getQry.paymentstatus) {
         getQry.paymentstatus = "success";
-        console.log(getQry.paymentstatus, "CHANGE");
-      } else if (getQry.paymentstatus == "false") {
+      } else {
         getQry.paymentstatus = "fail";
       }
 
