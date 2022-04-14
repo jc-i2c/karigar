@@ -3,7 +3,11 @@ var multipart = require("connect-multiparty");
 var multipartMiddleware = multipart();
 const auth = require("../middleware/auth");
 
-const { createChat, changeStatus, getAllMessage } = require("../controller/C_chat");
+const {
+  createChat,
+  changeStatus,
+  getAllMessage,
+} = require("../controller/C_chat");
 
 router.post("/create", auth, multipartMiddleware, createChat);
 

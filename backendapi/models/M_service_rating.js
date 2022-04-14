@@ -18,9 +18,8 @@ const ServiceRatingSchema = new mongoose.Schema(
       required: [true, "Service provider Id is required."],
     },
     rate: {
-      type: String,
-      enum: ["1", "2", "3", "4", "5"],
-      default: "1",
+      type: Number,
+      enum: [1, 2, 3, 4, 5],
       required: [true, "Rate is required."],
     },
     description: {

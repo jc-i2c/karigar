@@ -8,7 +8,8 @@ const {
   createServiceRate,
   deleteServiceRate,
   getCusOwnedRate,
-  getServiceRate
+  getServiceRate,
+  countRate,
 } = require("../controller/C_service_rating");
 
 router.post("/create", auth, multipartMiddleware, createServiceRate);
@@ -24,5 +25,7 @@ router.post(
 router.post("/customerrate", auth, multipartMiddleware, getCusOwnedRate);
 
 router.post("/getservicerate", auth, multipartMiddleware, getServiceRate);
+
+router.post("/countrate", auth, multipartMiddleware, countRate);
 
 module.exports = router;

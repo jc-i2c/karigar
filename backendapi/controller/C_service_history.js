@@ -651,6 +651,181 @@ const customerBookService = async (req, res, next) => {
   }
 };
 
+// get service status based on service history ID API.
+const getServiceStatus = async (req, res, next) => {
+  try {
+    let serviceHistoryId = req.body.servicehistoryid;
+    if (!serviceHistoryId) {
+      return res.send({
+        status: false,
+        message: `Customer service Id is required.`,
+      });
+    } else {
+      serviceHistoryId = mongoose.Types.ObjectId(serviceHistoryId);
+
+      if (mongoose.isValidObjectId(serviceHistoryId)) {
+        let getQry = await ServiceHistory.findById(serviceHistoryId).select(
+          "servicestatus"
+        );
+        if (getQry == null) {
+          return res.send({
+            status: false,
+            message: `Customer service status not found into system.`,
+          });
+        } else {
+          if (getQry) {
+            let resData = {};
+            resData = getQry.toObject();
+
+            delete resData.updatedAt; // delete person["updatedAt"]
+            delete resData.__v; // delete person["__v"]
+
+            // Set service status.
+            if (resData.servicestatus == 0) {
+              resData.servicestatus = "Booking_request_sent";
+            } else if (resData.servicestatus == 1) {
+              resData.servicestatus = "accept";
+            } else if (resData.servicestatus == 2) {
+              resData.servicestatus = "Booking_confirmed";
+            } else if (resData.servicestatus == 3) {
+              resData.servicestatus = "Job_started";
+            } else if (resData.servicestatus == 4) {
+              resData.servicestatus = "Job_Completed";
+            } else if (resData.servicestatus == 5) {
+              resData.servicestatus = "Reject";
+            }
+
+            return res.send({
+              status: true,
+              message: `Customer service status found into system.`,
+              data: resData,
+            });
+          } else {
+            return res.send({
+              status: false,
+              message: `Customer service status not found into system.`,
+            });
+          }
+        }
+      } else {
+        return res.send({
+          status: false,
+          message: `Customer service status not found into system.`,
+        });
+      }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
+// get payment status based on service history ID API.
+const getPaymentStatus = async (req, res, next) => {
+  try {
+    let serviceHistoryId = req.body.servicehistoryid;
+    if (!serviceHistoryId) {
+      return res.send({
+        status: false,
+        message: `Payment Id is required.`,
+      });
+    } else {
+      serviceHistoryId = mongoose.Types.ObjectId(serviceHistoryId);
+
+      if (mongoose.isValidObjectId(serviceHistoryId)) {
+        let getQry = await ServiceHistory.findById(serviceHistoryId).select(
+          "paymentstatus"
+        );
+
+        if (getQry == null) {
+          return res.send({
+            status: false,
+            message: `Payment status not found into system.`,
+          });
+        } else {
+          if (getQry) {
+            let resData = {};
+            resData = getQry.toObject();
+
+            delete resData.updatedAt; // delete person["updatedAt"]
+            delete resData.__v; // delete person["__v"]
+
+            // Set payment status.
+            if (resData.paymentstatus) {
+              resData.paymentstatus = "Completed";
+            } else {
+              resData.paymentstatus = "Pending";
+            }
+
+            return res.send({
+              status: true,
+              message: `Payment status found into system.`,
+              data: resData,
+            });
+          } else {
+            return res.send({
+              status: false,
+              message: `Payment status not found into system.`,
+            });
+          }
+        }
+      } else {
+        return res.send({
+          status: false,
+          message: `${serviceHistoryId} Id is not valid. Please enter valid ID`,
+        });
+      }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
+// Count serivice provider job API.
+const countJob = async (req, res, next) => {
+  try {
+    let serviceProviderId = req.body.serviceproviderid;
+
+    if (!serviceProviderId) {
+      return res.send({
+        status: false,
+        message: `Payment Id is required.`,
+      });
+    } else {
+      serviceProviderId = new mongoose.Types.ObjectId(serviceProviderId);
+
+      if (mongoose.isValidObjectId(serviceProviderId)) {
+        let getQry = await ServiceHistory.find()
+          .where({ serviceproviderid: serviceProviderId })
+          .count();
+
+        if (getQry > 0 && getQry > -1) {
+          return res.send({
+            status: true,
+            message: `Job count.`,
+            count: getQry,
+          });
+        } else {
+          return res.send({
+            status: true,
+            message: `Job count.`,
+            count: 0,
+          });
+        }
+      } else {
+        return res.send({
+          status: false,
+          message: `${serviceProviderId} Id is not valid. Please enter valid ID`,
+        });
+      }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createServicehistory,
   getAllServicehistory,
@@ -660,4 +835,7 @@ module.exports = {
   getServiceSerProvider,
   changeServiceStatus,
   customerBookService,
+  getServiceStatus,
+  getPaymentStatus,
+  countJob,
 };

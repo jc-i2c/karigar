@@ -7,23 +7,35 @@ const createChatReq = async (req, res, next) => {
   try {
     const { customerid, serviceprovid } = req.body;
 
-    var chatRequest = new ChatRequest({
+    const getQry = await ChatRequest.find().where({
       customerid: customerid,
       serviceprovid: serviceprovid,
     });
 
-    const insertQry = await chatRequest.save();
-
-    if (insertQry) {
+    if (getQry.length > 0) {
       return res.send({
         status: true,
-        message: `Chat request created.`,
+        message: `Chat request is already created.`,
       });
     } else {
-      return res.send({
-        status: false,
-        message: `Chat request not created.`,
+      var chatRequest = new ChatRequest({
+        customerid: customerid,
+        serviceprovid: serviceprovid,
       });
+
+      const insertQry = await chatRequest.save();
+
+      if (insertQry) {
+        return res.send({
+          status: true,
+          message: `Chat request created.`,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `Chat request not created.`,
+        });
+      }
     }
   } catch (error) {
     // console.log(error, "ERROR");
@@ -144,8 +156,63 @@ const getAllChatRequest = async (req, res, next) => {
   }
 };
 
+// Get all chat Request based on customer Id API.
+const getAllCusChatRequest = async (req, res, next) => {
+  try {
+    const { customerid } = req.body;
+
+    let getQry = await ChatRequest.find().where({
+      customerid: customerid,
+    });
+
+    if (getQry.length > 0) {
+      let findData = [];
+      let resData = {};
+
+      getQry.forEach((data) => {
+        resData = data.toObject();
+
+        delete resData.updatedAt; // delete person["updatedAt"]
+        delete resData.__v; // delete person["__v"]
+
+        // Set chat request status.
+        if (resData.chatstatus == 1) {
+          resData.chatstatus = "Pending";
+        } else if (resData.chatstatus == 2) {
+          resData.chatstatus = "Accept";
+        } else if (resData.chatstatus == 3) {
+          resData.chatstatus = "Reject";
+        }
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.createdAt = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        findData.push(resData);
+      });
+
+      return res.send({
+        status: true,
+        message: `${getQry.length} Data found into system.`,
+        data: findData,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `${getQry.length} Data not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createChatReq,
   changeStatus,
   getAllChatRequest,
+  getAllCusChatRequest,
 };

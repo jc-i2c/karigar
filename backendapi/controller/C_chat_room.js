@@ -5,23 +5,40 @@ const createChatRoom = async (req, res, next) => {
   try {
     const { userid, otheruserid } = req.body;
 
-    var chatRoom = new ChatRoom({
+    const getQry = await ChatRoom.find().where({
       userid: userid,
       otheruserid: otheruserid,
     });
 
-    const insertQry = await chatRoom.save();
+    const getSecQry = await ChatRoom.find().where({
+      userid: otheruserid,
+      otheruserid: userid,
+    });
 
-    if (insertQry) {
+    if (getQry.length > 0 || getSecQry.length > 0) {
       return res.send({
         status: true,
-        message: `Chat room created.`,
+        message: `Chat room is already created.`,
       });
     } else {
-      return res.send({
-        status: false,
-        message: `Chat room not created.`,
+      var chatRoom = new ChatRoom({
+        userid: userid,
+        otheruserid: otheruserid,
       });
+
+      const insertQry = await chatRoom.save();
+
+      if (insertQry) {
+        return res.send({
+          status: true,
+          message: `Chat room created.`,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `Chat room not created.`,
+        });
+      }
     }
   } catch (error) {
     // console.log(error, "ERROR");

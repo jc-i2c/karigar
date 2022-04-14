@@ -119,7 +119,9 @@ const getCusOwnedRate = async (req, res, next) => {
     } else {
       const findQry = await ServiceRating.find({
         customerid: data.customerid,
-      });
+      })
+        .select("rate description")
+        .populate({ path: "serviceproviderid", select: "name" });
 
       if (findQry.length > 0) {
         return res.send({
@@ -146,9 +148,12 @@ const getServiceRate = async (req, res, next) => {
     const serviceProviderId = req.body.serviceproviderid;
     // console.log(serviceProviderId, "serviceProviderId");
 
-    const findQry = await ServiceRating.find().where({
-      serviceproviderid: serviceProviderId,
-    });
+    const findQry = await ServiceRating.find()
+      .where({
+        serviceproviderid: serviceProviderId,
+      })
+      .select("rate description")
+      .populate({ path: "customerid", select: "name" });
 
     if (findQry.length > 0) {
       return res.send({
@@ -168,9 +173,51 @@ const getServiceRate = async (req, res, next) => {
   }
 };
 
+// Count service provider rate count and average find API.
+const countRate = async (req, res, next) => {
+  try {
+    const serviceProviderId = req.body.serviceproviderid;
+
+    const countRate = await ServiceRating.find()
+      .where({
+        serviceproviderid: serviceProviderId,
+      })
+      .select("rate");
+
+    let averageRate = 0;
+    let totalCnt = countRate.length;
+
+    countRate.forEach((rate) => {
+      averageRate = averageRate + rate.rate;
+    });
+
+    averageRate = averageRate / totalCnt;
+
+    if (countRate > 0 && countRate > -1) {
+      return res.send({
+        status: true,
+        message: `Service provider rate found into system.`,
+        countrate: countRate.length,
+        averagerate: averageRate,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `Service provider rate not found into system.`,
+        countrate: countRate.length,
+        averagerate: averageRate,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createServiceRate,
   deleteServiceRate,
   getCusOwnedRate,
   getServiceRate,
+  countRate,
 };

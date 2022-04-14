@@ -13,6 +13,9 @@ const {
   getServiceSerProvider,
   changeServiceStatus,
   customerBookService,
+  getServiceStatus,
+  getPaymentStatus,
+  countJob,
 } = require("../controller/C_service_history");
 
 router.post("/create", auth, multipartMiddleware, createServicehistory);
@@ -58,5 +61,11 @@ router.post(
   multipartMiddleware,
   customerBookService
 );
+
+router.post("/getservicestatus", auth, multipartMiddleware, getServiceStatus);
+
+router.post("/getpaymentstatus", auth, multipartMiddleware, getPaymentStatus);
+
+router.post("/countjob", auth, multipartMiddleware, countJob);
 
 module.exports = router;

@@ -4,22 +4,27 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 
+// Socket io code
 const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+io.on("connection", (socket) => {
+  socket.on("onkarigar", async () => {
+    console.log("Hello server...");
+  });
+});
 
 // Database file include.
 require("./server/database")
   .connect()
   .then(async (data) => {
-    // Socket connection
-    io.on("connection", (socket) => {
-      socket.on("on karigar", (msg) => {
-        io.emit("emit karigar", msg);
-      });
-    });
-
     app.use(express.json());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
