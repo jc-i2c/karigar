@@ -34,11 +34,11 @@ const UserSchema = new mongoose.Schema(
       maxlength: [10, "Maximun mobile number number 10 digit is required."],
     },
     gender: {
-      type: String,
-      enum: ["1", "2"], // 1-male, 2-female
+      type: Number,
+      enum: [1, 2], // 1-male, 2-female
     },
     otp: {
-      type: String,
+      type: Number,
       length: [6, "OTP must be 6 digit."],
     },
     status: {
@@ -47,9 +47,9 @@ const UserSchema = new mongoose.Schema(
       default: false, // true-User_verified, false-User_not_verified
     },
     userroll: {
-      type: String,
-      enum: ["1", "2", "3"],
-      default: "3", // 1-Admin, 2-service_provider, 3-customer
+      type: Number,
+      enum: [1, 2, 3],
+      default: 3, // 1-Admin, 2-service_provider, 3-customer
     },
     isactive: {
       type: Boolean,

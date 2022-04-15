@@ -10,11 +10,6 @@ const insertDataVal = (data) => {
       .required()
       .messages({ "any.only": "Confirm password does not match" })
       .label("Confirm password"),
-    userroll: Joi.string()
-      .length(1)
-      .valid("1", "2", "3")
-      .required()
-      .label("User roll"),
   });
   return insertDataVal.validate(data, {
     abortEarly: false,
@@ -72,6 +67,7 @@ const updateProfileDataVal = (data) => {
       // .pattern(/[6-9]{1}[0-9]{9}/)
       .required()
       .label("Mobile number"),
+    // location: Joi.string().required().label("Location"),
   });
   return updateProfileDataVal.validate(data, {
     abortEarly: false,
@@ -407,6 +403,27 @@ const chatReqStatusVal = (data) => {
   });
 };
 
+// Change user password validation.
+const createNewPasswordVal = (data) => {
+  const createNewPasswordVal = Joi.object().keys({
+    emailaddress: Joi.string().email().required().label("Email address"),
+    newpassword: Joi.string().min(6).required().label("New password"),
+    confirmpassword: Joi.any()
+      .valid(Joi.ref("newpassword"))
+      .required()
+      .messages({ "any.only": "Confirm password does not match" })
+      .label("Confirm password"),
+  });
+  return createNewPasswordVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
 module.exports = {
   insertDataVal,
   verifyOtpVal,
@@ -428,4 +445,5 @@ module.exports = {
   changeServiceStatusVal,
   getCusOwnedRateVal,
   chatReqStatusVal,
+  createNewPasswordVal
 };

@@ -10,6 +10,7 @@ const {
   updateProfileDataVal,
   changePasswordVal,
   resetPasswordVal,
+  createNewPasswordVal,
 } = require("../helper/joivalidation");
 
 const { sendOtp } = require("../helper/mailsending");
@@ -42,32 +43,34 @@ const userSignUp = async (req, res, next) => {
       };
 
       if (Object.keys(data).length >= 0) {
-        const mailResponse = await sendOtp(data);
-        // const mailResponse = true;
+        var user = new User({
+          emailaddress: emailaddress,
+          password: password,
+          otp: genOtp,
+          userroll: userroll,
+        });
 
-        if (mailResponse) {
-          var user = new User({
-            emailaddress: emailaddress,
-            password: password,
-            otp: genOtp,
-            userroll: userroll,
-          });
+        user.save(async (error, doc) => {
+          if (!error) {
+            // send mail.
+            await sendOtp(data);
 
-          user.save((err, doc) => {
-            if (!err) {
-              return res.send({
-                status: true,
-                message: `OTP sending on your email address ${emailaddress}.Please verify otp.`,
-              });
-            } else {
-              // console.log("Error during record insertion : " + err);
-              return res.send({
-                status: false,
-                message: `Error during record insertion : + ${err}`,
-              });
-            }
-          });
-        }
+            return res.send({
+              status: true,
+              message: `OTP sending on your email address ${emailaddress}.Please verify otp.`,
+            });
+          } else {
+            let errorMsg = {};
+
+            errorMsg.keys = Object.keys(error.keyPattern)[0];
+            errorMsg = `${error.keyValue.emailaddress} is already exists into system.`;
+
+            return res.send({
+              status: false,
+              message: errorMsg,
+            });
+          }
+        });
       } else {
         return res.send({
           status: false,
@@ -224,7 +227,12 @@ const verifyOtp = async (req, res, next) => {
 const updateProfile = async (req, res, next) => {
   try {
     const userId = res.user._id;
-    const { name, gender, mobilenumber } = req.body;
+    const {
+      name,
+      gender,
+      mobilenumber,
+      // , location
+    } = req.body;
 
     // Joi validation.
     const { error } = updateProfileDataVal(req.body);
@@ -244,6 +252,7 @@ const updateProfile = async (req, res, next) => {
         name: name,
         gender: gender,
         mobilenumber: mobilenumber,
+        // location: location,
       };
 
       const result = await User.findByIdAndUpdate(userId, {
@@ -399,6 +408,55 @@ const resetPassword = async (req, res, next) => {
   } catch (error) {
     // console.log(error, "ERROR");
     next(error);
+  }
+};
+
+// Create new password API (RESET).
+const createNewPassword = async (req, res, next) => {
+  const { emailaddress, newpassword, confirmpassword } = req.body;
+
+  // Joi validation.
+  const { error } = createNewPasswordVal(req.body);
+
+  if (error) {
+    let errorMsg = {};
+    error.details.map(async (error) => {
+      errorMsg = { ...errorMsg, [`${error.path}`]: error.message };
+    });
+
+    return res.send({
+      status: false,
+      message: errorMsg,
+    });
+  } else {
+    // Bcrypt password.
+    bcryptPassword = await bcrypt.hash(newpassword, 12);
+
+    const findUser = await User.findOne().where({ emailaddress: emailaddress });
+
+    if (findUser) {
+      // Update new password.
+      const result = await User.findByIdAndUpdate(findUser._id, {
+        $set: { password: bcryptPassword },
+      });
+
+      if (result) {
+        return res.send({
+          status: true,
+          message: `Password change successfully.`,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `Password not change.`,
+        });
+      }
+    } else {
+      return res.send({
+        status: false,
+        message: `User not found into system.`,
+      });
+    }
   }
 };
 
@@ -627,7 +685,6 @@ const saveLocation = async (req, res, next) => {
         message: `User location is required.`,
       });
     } else {
-      console.log(userdetails._id, "userdetails");
       const updateQry = {
         location: location,
       };
@@ -677,6 +734,66 @@ const getUserLocation = async (req, res, next) => {
   }
 };
 
+// Delete user details API.
+const deleteUser = async (req, res, next) => {
+  try {
+    let { userid } = req.body;
+
+    if (!userid) {
+      return res.send({
+        status: false,
+        message: `User Id is not allowed to be empty.`,
+      });
+    } else {
+      const findQry = await User.find({
+        _id: {
+          $in: userid,
+        },
+      });
+
+      // console.log(findQry, "findQry");
+
+      var totalUser = findQry.length;
+      var cntUsers = 0;
+
+      if (totalUser <= 0) {
+        return res.send({
+          status: true,
+          message: `${cntUsers} services found into system.!`,
+        });
+      } else {
+        // Array of all services.
+        await Promise.all(
+          findQry.map(async (usersList) => {
+            cntUsers = cntUsers + 1;
+            await User.findByIdAndDelete(usersList._id);
+          })
+        );
+
+        if (totalUser == cntUsers) {
+          return res.send({
+            status: true,
+            message: `${cntUsers} User deleted.!`,
+          });
+        } else if (cntUsers > 0) {
+          return res.send({
+            status: true,
+            message: `User deleted ${cntUsers} out of ${totalUser} User.!`,
+          });
+        } else {
+          return res.send({
+            status: true,
+            message: `We found database in ${totalUser} User but not deleted.!`,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   userSignUp,
   userLogin,
@@ -685,8 +802,10 @@ module.exports = {
   changePassword,
   resetPassword,
   isActive,
+  createNewPassword,
   profileDetails,
   getAllUsers,
   saveLocation,
   getUserLocation,
+  deleteUser,
 };
