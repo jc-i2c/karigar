@@ -39,22 +39,25 @@ const UserSchema = new mongoose.Schema(
     },
     otp: {
       type: String,
-      length: [6, "OTP must be 6 digit."]
+      length: [6, "OTP must be 6 digit."],
     },
     status: {
       type: Boolean,
       enum: [true, false],
-      default: false, // true-User verified, false-User not verified
+      default: false, // true-User_verified, false-User_not_verified
     },
     userroll: {
       type: String,
       enum: ["1", "2", "3"],
-      default: "3", // 1-Admin, 2-service-provider, 3-customer
+      default: "3", // 1-Admin, 2-service_provider, 3-customer
     },
     isactive: {
       type: Boolean,
       enum: [true, false],
-      default: true, // true-User Active, false-User Deactive
+      default: true, // true-User_Active, false-User_Deactive
+    },
+    location: {
+      type: String,
     },
   },
   {

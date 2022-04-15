@@ -13,6 +13,10 @@ const {
   changePassword,
   resetPassword,
   isActive,
+  profileDetails,
+  getAllUsers,
+  saveLocation,
+  getUserLocation,
 } = require("../controller/C_user");
 
 // UserLoginSignUp user api
@@ -28,6 +32,20 @@ router.post("/changepassword", auth, multipartMiddleware, changePassword);
 
 router.post("/resetpassword", multipartMiddleware, resetPassword);
 
-router.post("/activedeactive", userrollauth, multipartMiddleware, isActive);
+router.post(
+  "/activedeactive",
+  auth,
+  userrollauth,
+  multipartMiddleware,
+  isActive
+);
+
+router.post("/profiledetails", auth, multipartMiddleware, profileDetails);
+
+router.post("/alluser", auth, userrollauth, multipartMiddleware, getAllUsers);
+
+router.post("/savelocation", auth, multipartMiddleware, saveLocation);
+
+router.post("/getuserlocation", auth, multipartMiddleware, getUserLocation);
 
 module.exports = router;

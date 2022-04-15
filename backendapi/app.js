@@ -5,21 +5,44 @@ const cors = require("cors");
 const path = require("path");
 
 // Socket io code
-const http = require("http");
-const server = http.createServer(app);
-const { Server } = require("socket.io");
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
 
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
-});
+const { createChatReq, changeStatus } = require("./socket/chat_request.js");
+const { on } = require("stream");
 
 io.on("connection", (socket) => {
-  socket.on("onkarigar", async () => {
-    console.log("Hello server...");
+  // console.log("SOCKET connected", socket.id);
+
+  socket.on("sendrequest", async (msgData) => {
+    try {
+      console.log(msgData, "msgData");
+      const { customerid, serviceprovid } = msgData;
+      await createChatReq({ ...msgData });
+    } catch (error) {
+      socket.emit("error", error.message);
+    }
+  });
+
+  socket.on("changestatus", async (msgData) => {
+    try {
+      console.log(msgData, "msgData");
+      const { chatrequestid, chatstatus } = msgData;
+      await changeStatus({ ...msgData });
+    } catch (error) {
+      socket.emit("error", error.message);
+    }
   });
 });
+
+app.use("/demo", express.static(path.join("./uploads/demo.html")));
+
+// ENV file include.
+require("dotenv").config();
+const port = process.env.API_PORT || 3031;
+
+// Create server and port number defined.
+http.listen(port, () => console.log(`Server app listening on port: ${port}`));
 
 // Database file include.
 require("./server/database")
@@ -34,21 +57,12 @@ require("./server/database")
 
     app.use(cors());
 
-    // ENV file include.
-    require("dotenv").config();
-    const port = process.env.API_PORT || 3031;
-
     // Route file include.
     app.use(require("./routes/"));
 
     // Error controller in app
     const errorController = require("./helper/errorController");
     app.use(errorController);
-
-    // Create server and port number defined.
-    app.listen(port, () =>
-      console.log(`Server app listening on port: ${port}`)
-    );
   })
   .catch((err) => {
     console.log(err, "Error");

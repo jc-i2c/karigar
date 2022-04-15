@@ -19,7 +19,7 @@ const createUpdatePrivacy = async (req, res, next) => {
         });
       } else {
         return res.send({
-          status: true,
+          status: false,
           message: `Privacy policy not updated.`,
         });
       }
@@ -85,13 +85,13 @@ const deletePrivacyPolicy = async (req, res, next) => {
         });
       } else {
         return res.send({
-          status: true,
+          status: false,
           message: `Privacy policy not deleted.!`,
         });
       }
     } else {
       return res.send({
-        status: true,
+        status: false,
         message: `Privacy policy Id is required.!`,
       });
     }

@@ -257,7 +257,7 @@ const updateProfile = async (req, res, next) => {
         });
       } else {
         return res.send({
-          status: true,
+          status: false,
           message: `User profile details not updated.`,
         });
       }
@@ -462,6 +462,221 @@ const isActive = async (req, res, next) => {
   }
 };
 
+// Get customer profile details API.
+const profileDetails = async (req, res, next) => {
+  try {
+    let userprofiledetails = res.user;
+
+    if (userprofiledetails) {
+      let data = userprofiledetails.toObject();
+
+      // Set user status verify or not.
+      if (data.status) {
+        data.status = "user_verified";
+      } else {
+        data.status = "user_not_verified";
+      }
+
+      // Set userroll.
+      if (data.userroll == 1) {
+        data.userroll = "admin";
+      } else if (data.userroll == 2) {
+        data.userroll = "service_provider";
+      } else if (data.userroll == 3) {
+        data.userroll = "customer";
+      }
+
+      // Set user is active or not.
+      if (data.isactive) {
+        data.isactive = "yes";
+      } else {
+        data.isactive = "no";
+      }
+
+      // Set user gender.
+      if (data.gender == 1) {
+        data.gender = "male";
+      } else if (data.gender == 2) {
+        data.gender = "female";
+      }
+
+      // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+      data.createdAt = data.createdAt
+        .toISOString()
+        .replace(/T/, " ")
+        .replace(/\..+/, "");
+
+      // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+      data.updatedAt = data.updatedAt
+        .toISOString()
+        .replace(/T/, " ")
+        .replace(/\..+/, "");
+
+      delete data.password; // delete data["password"]
+      delete data.otp; // delete data["otp"]
+      delete data.__v; // delete data["__v"]
+      delete data.status; // delete data["status"]
+      delete data.userroll; // delete data["userroll"]
+      delete data.isactive; // delete data["isactive"]
+      delete data.createdAt; // delete data["createdAt"]
+      delete data.updatedAt; // delete data["updatedAt"]
+
+      return res.send({
+        status: true,
+        message: `User profile details found into system.`,
+        data: data,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `User profile details not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
+// Get all users API.
+const getAllUsers = async (req, res, next) => {
+  try {
+    let getQry = await User.find();
+
+    if (getQry.length > 0 && getQry.length > -1) {
+      let findData = [];
+      let resData = {};
+      getQry.forEach((data) => {
+        resData = data.toObject();
+
+        // Set user status verify or not.
+        if (resData.status) {
+          resData.status = "user_verified";
+        } else {
+          resData.status = "user_not_verified";
+        }
+
+        // Set userroll.
+        if (resData.userroll == 1) {
+          resData.userroll = "admin";
+        } else if (resData.userroll == 2) {
+          resData.userroll = "service_provider";
+        } else if (resData.userroll == 3) {
+          resData.userroll = "customer";
+        }
+
+        // Set user is active or not.
+        if (resData.isactive) {
+          resData.isactive = "yes";
+        } else {
+          resData.isactive = "no";
+        }
+
+        // Set user gender.
+        if (resData.gender == 1) {
+          resData.gender = "male";
+        } else if (resData.gender == 2) {
+          resData.gender = "female";
+        }
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.createdAt = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.updatedAt = resData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        delete resData.password; // delete resData["password"]
+        delete resData.otp; // delete resData["otp"]
+        delete resData.__v; // delete resData["__v"]
+
+        findData.push(resData);
+      });
+
+      return res.send({
+        status: true,
+        message: `${findData.length} User found into system.`,
+        data: findData,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `No user found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
+// Save user location API.
+const saveLocation = async (req, res, next) => {
+  try {
+    let userdetails = res.user;
+    let { location } = req.body;
+
+    if (!location) {
+      return res.send({
+        status: false,
+        message: `User location is required.`,
+      });
+    } else {
+      console.log(userdetails._id, "userdetails");
+      const updateQry = {
+        location: location,
+      };
+
+      const result = await User.findByIdAndUpdate(userdetails._id, {
+        $set: updateQry,
+      });
+
+      if (result) {
+        return res.send({
+          status: true,
+          message: `User location updated.`,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `User location not updated.`,
+        });
+      }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
+// Get user location API.
+const getUserLocation = async (req, res, next) => {
+  try {
+    let userdetails = res.user;
+
+    if (userdetails) {
+      return res.send({
+        status: true,
+        message: `User location fount into system.`,
+        userlocation: userdetails.location,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `User location not fount into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   userSignUp,
   userLogin,
@@ -470,4 +685,8 @@ module.exports = {
   changePassword,
   resetPassword,
   isActive,
+  profileDetails,
+  getAllUsers,
+  saveLocation,
+  getUserLocation,
 };
