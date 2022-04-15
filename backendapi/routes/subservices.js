@@ -24,8 +24,20 @@ router.post("/all", auth, userrollauth, multipartMiddleware, getAllSubServices);
 
 router.post("/single", auth, multipartMiddleware, getSingleSubServices);
 
-router.post("/delete", auth, userrollauth, multipartMiddleware, deleteSubServices);
+router.post(
+  "/delete",
+  auth,
+  userrollauth,
+  multipartMiddleware,
+  deleteSubServices
+);
 
-router.post("/edit", auth, userrollauth, upload.single("subserviceimage"), editSubServices);
+router.post(
+  "/edit",
+  auth,
+  userrollauth,
+  upload.single("subserviceimage"),
+  editSubServices
+);
 
 module.exports = router;

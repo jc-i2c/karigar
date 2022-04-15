@@ -79,11 +79,10 @@ const createSubServices = async (req, res, next) => {
 // Gel all sub services API.
 const getAllSubServices = async (req, res, next) => {
   try {
-    const getQry = await Subservices.find()
-      .where({
-        servicesid: req.body.servicesid,
-      })
-      .populate({ path: "servicesid", select: "servicename serviceimage" });
+    const getQry = await Subservices.find().populate({
+      path: "servicesid",
+      select: "servicename serviceimage",
+    });
 
     if (getQry.length > 0) {
       return res.send({

@@ -13,26 +13,42 @@ const createServiceRate = async (req, res, next) => {
       description,
     } = req.body;
 
-    var serviceRating = new ServiceRating({
-      customerid: customerid,
-      serviceproviderid: serviceproviderid,
+    const findRating = await ServiceRating.findById().where({
       servicehistoryid: servicehistoryid,
-      rate: rate,
-      description: description,
     });
 
-    const insertQry = await serviceRating.save();
-
-    if (insertQry) {
+    if (
+      !findRating ||
+      findRating == null ||
+      findRating == undefined ||
+      findRating == ""
+    ) {
       return res.send({
         status: true,
-        message: `Service rating created.`,
+        message: `Have you already done service rating.`,
       });
     } else {
-      return res.send({
-        status: false,
-        message: `Service rating not created.`,
+      var serviceRating = new ServiceRating({
+        customerid: customerid,
+        serviceproviderid: serviceproviderid,
+        servicehistoryid: servicehistoryid,
+        rate: rate,
+        description: description,
       });
+
+      const insertQry = await serviceRating.save();
+
+      if (insertQry) {
+        return res.send({
+          status: true,
+          message: `Service rating created.`,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `Service rating not created.`,
+        });
+      }
     }
   } catch (error) {
     // console.log(error, "ERROR");

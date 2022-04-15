@@ -465,7 +465,13 @@ const isActive = async (req, res, next) => {
   try {
     const userId = req.body.userid;
 
-    if (userId == null) {
+    if (
+      !userId ||
+      userId == null ||
+      userId == undefined ||
+      userId == "null" ||
+      userId == "undefined"
+    ) {
       return res.send({
         status: false,
         message: `User Id is required.`,

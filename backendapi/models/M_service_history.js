@@ -70,6 +70,8 @@ const ServiceHistorySchema = new mongoose.Schema(
   }
 );
 
+ServiceHistorySchema.servicedate;
+
 ServiceHistorySchema.methods.toJSON = function () {
   const serviceHistory = this;
   const serviceHistoryObj = serviceHistory.toObject();
