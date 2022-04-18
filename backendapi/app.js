@@ -8,17 +8,29 @@ const path = require("path");
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 
-const { createChatReq, changeStatus } = require("./socket/chat_request.js");
+// const { createChatReq } = require("./socket/chat_request.js");
+
+const {
+  createChatReq,
+  changeStatus,
+  getAllMessage,
+  sendMessage,
+} = require("./socket/chat_request.js");
+
 const { on } = require("stream");
+const res = require("express/lib/response");
 
 io.on("connection", (socket) => {
-  // console.log("SOCKET connected", socket.id);
+  console.log("SOCKET connected", socket.id);
 
   socket.on("sendrequest", async (msgData) => {
     try {
-      console.log(msgData, "msgData");
-      const { customerid, serviceprovid } = msgData;
-      await createChatReq({ ...msgData });
+      let data = {};
+      data.message = msgData;
+      data.customerid = "62591ed0791660342d5f1469";
+      data.serviceprovid = "625940c8b3e716196a5d4c70";
+
+      await createChatReq(data);
     } catch (error) {
       socket.emit("error", error.message);
     }
@@ -26,9 +38,32 @@ io.on("connection", (socket) => {
 
   socket.on("changestatus", async (msgData) => {
     try {
-      console.log(msgData, "msgData");
-      const { chatrequestid, chatstatus } = msgData;
-      await changeStatus({ ...msgData });
+      let data = {};
+      data.chatroomid = "625d263b4cd74390666fcece";
+      data.chatstatus = 2;
+      await changeStatus(data);
+    } catch (error) {
+      socket.emit("error", error.message);
+    }
+  });
+
+  socket.on("getmessage", async (msgData) => {
+    try {
+      let data = {};
+      data.chatroomid = "625d263b4cd74390666fcece";
+      await getAllMessage(data);
+    } catch (error) {
+      socket.emit("error", error.message);
+    }
+  });
+
+  socket.on("sendmessage", async (msgData) => {
+    try {
+      let data = {};
+      data.senderid = "62591ed0791660342d5f1469";
+      data.receiverid = "625940c8b3e716196a5d4c70";
+      data.message = msgData;
+      await sendMessage(data);
     } catch (error) {
       socket.emit("error", error.message);
     }

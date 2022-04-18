@@ -389,9 +389,9 @@ const getCusOwnedRateVal = (data) => {
 const chatReqStatusVal = (data) => {
   const chatReqStatusVal = Joi.object().keys({
     chatrequestid: Joi.string().required().label("Chat request Id"),
-    chatstatus: Joi.string()
+    chatstatus: Joi.number()
       .required()
-      .valid("2", "3")
+      .valid(2, 3)
       .label("Chat request status"),
   });
   return chatReqStatusVal.validate(data, {
@@ -446,5 +446,5 @@ module.exports = {
   changeServiceStatusVal,
   getCusOwnedRateVal,
   chatReqStatusVal,
-  createNewPasswordVal
+  createNewPasswordVal,
 };

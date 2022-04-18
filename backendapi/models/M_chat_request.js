@@ -13,9 +13,9 @@ const chatRequestSchema = new mongoose.Schema(
       required: [true, "Service provider Id is required."],
     },
     chatstatus: {
-      type: String,
-      enum: ["1", "2", "3"],
-      default: "1", // 1-Pending, 2-Accept, 3-Reject
+      type: Number,
+      enum: [1, 2, 3],
+      default: 1, // 1-Pending, 2-Accept, 3-Reject
       required: [true, "Chat status is required."],
     },
   },

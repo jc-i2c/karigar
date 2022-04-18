@@ -47,12 +47,12 @@ const changeStatus = async (req, res, next) => {
         if (result) {
           return res.send({
             status: true,
-            message: `Message seen.`,
+            message: `Message unseen.`,
           });
         } else {
           return res.send({
             status: false,
-            message: `Message not seen error in database.`,
+            message: `Message not unseen error in database.`,
           });
         }
       } else {
@@ -63,12 +63,12 @@ const changeStatus = async (req, res, next) => {
         if (result) {
           return res.send({
             status: true,
-            message: `Message unseen.`,
+            message: `Message seen.`,
           });
         } else {
           return res.send({
             status: false,
-            message: `Message not unseen error in database.`,
+            message: `Message not seen error in database.`,
           });
         }
       }
