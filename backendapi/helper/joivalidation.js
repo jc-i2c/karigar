@@ -425,6 +425,24 @@ const createNewPasswordVal = (data) => {
   });
 };
 
+const updateOfferVal = (data) => {
+  const updateOfferVal = Joi.object().keys({
+    offerid: Joi.string().required().label("Offer Id"),
+    subserviceid: Joi.string().required().label("Sub service Id"),
+    serviceproviderid: Joi.string().required().label("Service provider Id"),
+    currentprice: Joi.number().required().label("Current price"),
+    actualprice: Joi.string().required().label("Actual price"),
+  });
+  return updateOfferVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
 module.exports = {
   insertDataVal,
   verifyOtpVal,
@@ -447,4 +465,5 @@ module.exports = {
   getCusOwnedRateVal,
   chatReqStatusVal,
   createNewPasswordVal,
+  updateOfferVal,
 };

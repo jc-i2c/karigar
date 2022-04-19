@@ -15,6 +15,7 @@ const favoriteservice = require("../routes/favorite_service");
 const chat_request = require("../routes/chat_request");
 const chat_room = require("../routes/chat_room");
 const chat = require("../routes/chat");
+const offer = require("../routes/offer");
 
 router.use("/karigar/user", user);
 
@@ -45,5 +46,7 @@ router.use("/karigar/chatrequest", chat_request);
 router.use("/karigar/chatroom", chat_room);
 
 router.use("/karigar/chat", chat);
+
+router.use("/karigar/offer", offer);
 
 module.exports = router;
