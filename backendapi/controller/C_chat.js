@@ -93,16 +93,21 @@ const getAllMessage = async (req, res, next) => {
       chatroomid: chatroomid,
     });
 
+    let totalCount = getQry.length;
+    totalCount = parseInt(totalCount);
+
     if (getQry.length > 0) {
       return res.send({
         status: true,
-        message: `${getQry.length} Sub service found into system.`,
+        totalcount: totalCount,
+        message: `Messages fount into system.`,
         data: getQry,
       });
     } else {
       return res.send({
         status: false,
-        message: `${getQry.length} Sub service not found into system.`,
+        totalcount: totalCount,
+        message: `Messages not fount into system.`,
       });
     }
   } catch (error) {

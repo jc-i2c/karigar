@@ -8,62 +8,18 @@ const path = require("path");
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 
-// const { createChatReq } = require("./socket/chat_request.js");
-
-const {
-  createChatReq,
-  changeStatus,
-  getAllMessage,
-  sendMessage,
-} = require("./socket/chat_request.js");
-
-const { on } = require("stream");
-const res = require("express/lib/response");
+const { sendMessage } = require("./socket/chat.js");
 
 io.on("connection", (socket) => {
-  console.log("SOCKET connected", socket.id);
-
-  socket.on("sendrequest", async (msgData) => {
+  socket.on("ontest", async (msg) => {
     try {
       let data = {};
-      data.message = msgData;
-      data.customerid = "62591ed0791660342d5f1469";
-      data.serviceprovid = "625940c8b3e716196a5d4c70";
-
-      await createChatReq(data);
-    } catch (error) {
-      socket.emit("error", error.message);
-    }
-  });
-
-  socket.on("changestatus", async (msgData) => {
-    try {
-      let data = {};
-      data.chatroomid = "625d263b4cd74390666fcece";
-      data.chatstatus = 2;
-      await changeStatus(data);
-    } catch (error) {
-      socket.emit("error", error.message);
-    }
-  });
-
-  socket.on("getmessage", async (msgData) => {
-    try {
-      let data = {};
-      data.chatroomid = "625d263b4cd74390666fcece";
-      await getAllMessage(data);
-    } catch (error) {
-      socket.emit("error", error.message);
-    }
-  });
-
-  socket.on("sendmessage", async (msgData) => {
-    try {
-      let data = {};
-      data.senderid = "62591ed0791660342d5f1469";
-      data.receiverid = "625940c8b3e716196a5d4c70";
-      data.message = msgData;
+      data.senderid = "62594136b3e716196a5d4c78";
+      data.receiverid = "62595ef9c2362694626aae6e";
+      data.message = msg;
       await sendMessage(data);
+
+      io.emit("emittest", msg);
     } catch (error) {
       socket.emit("error", error.message);
     }
@@ -90,7 +46,13 @@ require("./server/database")
     // Image showing into browser.
     app.use("/uploads", express.static(path.join("./uploads")));
 
-    app.use(cors());
+    app.use("/static", express.static("./assets/"));
+
+    var corsOptions = {
+      origin: "*",
+    };
+
+    app.use(cors(corsOptions));
 
     // Route file include.
     app.use(require("./routes/"));

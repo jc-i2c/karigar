@@ -244,58 +244,99 @@ const sendMessage = async (data, req, res, next) => {
     });
 
     if (firstChatReq || secondChatReq) {
-      let chatId = firstChatReq._id ? firstChatReq._id : secondChatReq._id;
       // Room code.
+      let chatReqData = firstChatReq ? firstChatReq : secondChatReq;
 
-      const getQryRoom = await ChatRoom.findOne().where({
-        chatrequestid: chatId,
-      });
-
-      if (getQryRoom) {
-        // Chat code.
-        var chatCreate = new Chat({
-          chatroomid: getQryRoom._id,
-          senderid: senderid,
-          receiverid: receiverid,
-          message: message,
+      if (chatReqData.chatstatus === 2 || chatReqData.chatstatus == 2) {
+        const getQryRoom = await ChatRoom.findOne().where({
+          chatrequestid: chatReqData._id,
         });
 
-        const chatCraeteQry = await chatCreate.save();
-
-        if (chatCraeteQry) {
-          console.log(`New chat created.`);
-        } else {
-          console.log(`Chat not created.`);
-        }
-      } else {
-        // Room code.
-
-        var chatRoom = new ChatRoom({
-          chatrequestid: firstChatReq._id
-            ? firstChatReq._id
-            : secondChatReq._id,
-          userid: senderid,
-          otheruserid: receiverid,
-        });
-
-        const roomCraeteQry = await chatRoom.save();
-
-        if (roomCraeteQry) {
+        if (getQryRoom) {
           // Chat code.
-          var chatCreate = new Chat({
-            chatroomid: roomCraeteQry._id,
-            senderid: senderid,
-            receiverid: receiverid,
-            message: message,
+          if (getQryRoom.chatactive) {
+            var chatCreate = new Chat({
+              chatroomid: getQryRoom._id,
+              senderid: senderid,
+              receiverid: receiverid,
+              message: message,
+            });
+
+            const chatCraeteQry = await chatCreate.save();
+
+            if (chatCraeteQry) {
+              console.log(`New chat created.`);
+              // return res.send({
+              //   status: true,
+              //   message: `New chat created.`,
+              // });
+            } else {
+              console.log(`Chat not created.`);
+              // return res.send({
+              //   status: false,
+              //   message: `New chat not created.`,
+              // });
+            }
+          } else {
+            console.log(`Chat room is block.`);
+            // return res.send({
+            //   status: false,
+            //   message: `Chat room is block.`,
+            // });
+          }
+        } else {
+          // Room code.
+          var chatRoom = new ChatRoom({
+            chatrequestid: chatReqData._id,
+            userid: senderid,
+            otheruserid: receiverid,
           });
 
-          const chatCraeteQry = await chatCreate.save();
+          const roomCraeteQry = await chatRoom.save();
 
-          if (chatCraeteQry) {
-            console.log(`New chat created.`);
-          } else {
-            console.log(`Chat not created.`);
+          if (roomCraeteQry) {
+            // Chat code.
+            var chatCreate = new Chat({
+              chatroomid: roomCraeteQry._id,
+              senderid: senderid,
+              receiverid: receiverid,
+              message: message,
+            });
+
+            const chatCraeteQry = await chatCreate.save();
+
+            if (chatCraeteQry) {
+              console.log(`New chat created.`);
+              // return res.send({
+              //   status: true,
+              //   message: `New chat created.`,
+              // });
+            } else {
+              console.log(`Chat not created.`);
+              // return res.send({
+              //   status: false,
+              //   message: `New chat not created.`,
+              // });
+            }
           }
+        }
+      } else {
+        // Pending or reject status only show.
+        if (chatReqData.chatstatus === 1 || chatReqData.chatstatus == 1) {
+          console.log(`Your request is pending.`);
+          // return res.send({
+          //   status: true,
+          //   message: `Your request is pending.`,
+          // });
+        } else if (
+          chatReqData.chatstatus === 3 ||
+          chatReqData.chatstatus == 3
+        ) {
+          console.log(`Your request is reject.`);
+          // return res.send({
+          //   status: true,
+          //   message: `Your request is reject.`,
+          // });
         }
       }
     } else {
@@ -329,8 +370,16 @@ const sendMessage = async (data, req, res, next) => {
 
           if (chatCraeteQry) {
             console.log(`New chat created.`);
+            // return res.send({
+            //   status: true,
+            //   message: `New chat created.`,
+            // });
           } else {
             console.log(`Chat not created.`);
+            // return res.send({
+            //   status: false,
+            //   message: `New chat not created.`,
+            // });
           }
         }
       }
@@ -350,38 +399,3 @@ module.exports = {
   getAllMessage,
   sendMessage,
 };
-
-// var chatRequest = new ChatRequest({
-//   customerid: senderid,
-//   serviceprovid: receiverid,
-// });
-
-// const chatCraeteQry = await chatRequest.save();
-
-// if (chatCraeteQry) {
-//   var chatRoom = new ChatRoom({
-//     chatrequestid: chatCraeteQry._id,
-//     userid: senderid,
-//     otheruserid: receiverid,
-//   });
-
-//   const roomCraeteQry = await chatRoom.save();
-
-//   if (roomCraeteQry) {
-//     // Chat code.
-//     var chatCreate = new Chat({
-//       chatroomid: roomCraeteQry._id,
-//       senderid: senderid,
-//       receiverid: receiverid,
-//       message: message,
-//     });
-
-//     const chatCraeteQry = await chatCreate.save();
-
-//     if (chatCraeteQry) {
-//       console.log(`New chat created.`);
-//     } else {
-//       console.log(`Chat not created.`);
-//     }
-//   }
-// }
