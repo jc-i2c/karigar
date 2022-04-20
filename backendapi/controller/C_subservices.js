@@ -102,33 +102,74 @@ const getAllSubServices = async (req, res, next) => {
   }
 };
 
+// Gel all sub services based on service Id API.
+const getSubServices = async (req, res, next) => {
+  try {
+    let servicesId = req.body.servicesid;
+
+    if (mongoose.isValidObjectId(servicesId)) {
+      const getQry = await Subservices.find().where({
+        servicesid: servicesId,
+      });
+
+      if (getQry.length > 0) {
+        return res.send({
+          status: true,
+          message: `${getQry.length} Sub service found into system.`,
+          data: getQry,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `${getQry.length} Sub service not found into system.`,
+        });
+      }
+    } else {
+      return res.send({
+        status: false,
+        message: `${servicesId} service Id is not invalid.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 // Gel single sub services API.
 const getSingleSubServices = async (req, res, next) => {
   try {
     const subServicesId = req.body.subservicesid;
 
     if (mongoose.isValidObjectId(subServicesId)) {
-      const getQry = await Subservices.findById(subServicesId).populate({
-        path: "servicesid",
-        select: "servicename serviceimage",
-      });
-
-      if (getQry) {
-        return res.send({
-          status: true,
-          message: `Sub service found into system.`,
-          data: getQry,
+      if (mongoose.isValidObjectId(subServicesId)) {
+        const getQry = await Subservices.findById(subServicesId).populate({
+          path: "servicesid",
+          select: "servicename serviceimage",
         });
+
+        if (getQry) {
+          return res.send({
+            status: true,
+            message: `Sub service found into system.`,
+            data: getQry,
+          });
+        } else {
+          return res.send({
+            status: false,
+            message: `Sub service not found into system.`,
+          });
+        }
       } else {
         return res.send({
           status: false,
-          message: `Sub service not found into system.`,
+          message: `Sub service ID is not valid.`,
         });
       }
     } else {
       return res.send({
         status: false,
-        message: `Sub service ID is not valid.`,
+        message: `${subServicesId} sub service Id is not invalid.`,
       });
     }
   } catch (error) {
@@ -289,6 +330,7 @@ const editSubServices = async (req, res, next) => {
 module.exports = {
   createSubServices,
   getAllSubServices,
+  getSubServices,
   getSingleSubServices,
   deleteSubServices,
   editSubServices,

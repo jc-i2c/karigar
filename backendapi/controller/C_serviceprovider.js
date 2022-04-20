@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Serviceprovider = require("../models/M_serviceprovider");
+const Offer = require("../models/M_offer");
 
 const { createSerProVal, editSerProVal } = require("../helper/joivalidation");
 const { removeFile } = require("../helper/removefile");
@@ -94,23 +95,56 @@ const createProvider = async (req, res, next) => {
 // Gel all services provider API.
 const getAllProvider = async (req, res, next) => {
   try {
-    const getQry = await Serviceprovider.find({
-      subserviceid: req.body.subserviceid,
-      isactive: true,
-    })
-      .populate({ path: "userid", select: "name" })
-      .populate({
-        path: "subserviceid",
-        select: "subservicename subserviceimage",
-        populate: { path: "servicesid", select: "servicename serviceimage" },
-      });
+    const subServiceId = req.body.subserviceid;
 
-    if (getQry.length > 0) {
-      return res.send({
-        status: true,
-        message: `${getQry.length} Service provider found into system.`,
-        data: getQry,
-      });
+    if (mongoose.Types.ObjectId.isValid(subServiceId)) {
+      const getQry = await Serviceprovider.find({
+        subserviceid: subServiceId,
+        isactive: true,
+      })
+        .populate({ path: "userid", select: "name" })
+        .populate({
+          path: "subserviceid",
+          select: "subservicename subserviceimage",
+          populate: { path: "servicesid", select: "servicename serviceimage" },
+        });
+
+      if (getQry.length > 0) {
+        let serviceProvider = await Promise.all(
+          getQry.map(async (dataList) => {
+            let objectData = {};
+            objectData = dataList.toJSON();
+
+            let findOffer = await Offer.findOne()
+              .where({
+                subserviceid: objectData.subserviceid._id,
+                serviceproviderid: objectData._id,
+                isactive: true,
+              })
+              .select("currentprice actualprice");
+
+            if (findOffer) {
+              delete objectData.price;
+              objectData.currentprice = findOffer.currentprice;
+              objectData.actualprice = findOffer.actualprice;
+              return objectData;
+            } else {
+              return objectData;
+            }
+          })
+        );
+
+        return res.send({
+          status: true,
+          message: `${getQry.length} Service provider found into system.`,
+          data: serviceProvider,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `${getQry.length} Service provider not found into system.`,
+        });
+      }
     } else {
       return res.send({
         status: false,

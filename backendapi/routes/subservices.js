@@ -8,6 +8,7 @@ const { upload } = require("../middleware/uploadimage");
 const {
   createSubServices,
   getAllSubServices,
+  getSubServices,
   getSingleSubServices,
   deleteSubServices,
   editSubServices,
@@ -21,6 +22,8 @@ router.post(
 );
 
 router.post("/all", auth, userrollauth, multipartMiddleware, getAllSubServices);
+
+router.post("/allsubservices", auth, multipartMiddleware, getSubServices);
 
 router.post("/single", auth, multipartMiddleware, getSingleSubServices);
 
