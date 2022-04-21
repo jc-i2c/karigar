@@ -47,9 +47,9 @@ const UserSchema = new mongoose.Schema(
       default: false, // true-User_verified, false-User_not_verified
     },
     userroll: {
-      type: Number,
-      enum: [1, 2, 3],
-      default: 3, // 1-Admin, 2-service_provider, 3-customer
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "userrole",
+      required: [true, "Userrole Id is required."],
     },
     isactive: {
       type: Boolean,

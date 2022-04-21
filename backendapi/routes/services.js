@@ -13,26 +13,14 @@ const {
   editServices,
 } = require("../controller/C_services");
 
-router.post(
-  "/create",
-  auth,
-  userrollauth,
-  upload.single("serviceimage"),
-  createServices
-);
+router.post("/create", auth, upload.single("serviceimage"), createServices);
 
 router.post("/all", auth, multipartMiddleware, getAllServices);
 
 router.post("/single", auth, multipartMiddleware, getSingleServices);
 
-router.post("/delete", auth, userrollauth, multipartMiddleware, deleteServices);
+router.post("/delete", auth, multipartMiddleware, deleteServices);
 
-router.post(
-  "/edit",
-  auth,
-  userrollauth,
-  upload.single("serviceimage"),
-  editServices
-);
+router.post("/edit", auth, upload.single("serviceimage"), editServices);
 
 module.exports = router;

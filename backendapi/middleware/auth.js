@@ -17,6 +17,7 @@ const verifyToken = async (req, res, next) => {
       req.userid = decoded.id;
 
       const findUser = await User.findById(req.userid);
+
       if (findUser) {
         if (findUser.status) res.user = findUser;
         else {
@@ -25,14 +26,12 @@ const verifyToken = async (req, res, next) => {
             message: `User not verified. First, you need to verify your account.`,
           });
         }
-      }
-      else {
+      } else {
         return res.send({
           status: false,
           message: "Invalid Token.",
         });
       }
-
 
       next();
     } else {

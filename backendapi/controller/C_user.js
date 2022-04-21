@@ -43,12 +43,21 @@ const userSignUp = async (req, res, next) => {
       };
 
       if (Object.keys(data).length >= 0) {
-        var user = new User({
-          emailaddress: emailaddress,
-          password: password,
-          otp: genOtp,
-          userroll: userroll,
-        });
+        if (userroll) {
+          var user = new User({
+            emailaddress: emailaddress,
+            password: password,
+            otp: genOtp,
+            userroll: userroll,
+          });
+        } else {
+          var user = new User({
+            emailaddress: emailaddress,
+            password: password,
+            otp: genOtp,
+            userroll: "626113fadf6c093c730a54fa", // default customer
+          });
+        }
 
         user.save(async (error, doc) => {
           if (!error) {
@@ -114,7 +123,7 @@ const userLogin = async (req, res, next) => {
             if (findUser.isactive === true) {
               // Create token
               const token = jwt.sign(
-                { id: findUser._id },
+                { id: findUser._id, userroll: findUser.userroll },
                 process.env.TOKEN_KEY
               );
               return res.send({

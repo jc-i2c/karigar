@@ -16,6 +16,8 @@ const chat_request = require("../routes/chat_request");
 const chat_room = require("../routes/chat_room");
 const chat = require("../routes/chat");
 const offer = require("../routes/offer");
+const userrole = require("../routes/userrole");
+const systemmodules = require("../routes/system_modules");
 
 router.use("/karigar/user", user);
 
@@ -48,5 +50,9 @@ router.use("/karigar/chatroom", chat_room);
 router.use("/karigar/chat", chat);
 
 router.use("/karigar/offer", offer);
+
+router.use("/karigar/userrole", userrole);
+
+router.use("/karigar/systemmodules", systemmodules);
 
 module.exports = router;

@@ -10,7 +10,6 @@ const insertDataVal = (data) => {
       .required()
       .messages({ "any.only": "Confirm password does not match" })
       .label("Confirm password"),
-    userroll: Joi.number().required().valid(1, 2, 3).label("Userroll"),
   });
   return insertDataVal.validate(data, {
     abortEarly: false,
