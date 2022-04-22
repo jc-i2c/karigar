@@ -1,8 +1,9 @@
 const Joi = require("joi");
 
 // Insert new user record validation.
-const insertDataVal = (data) => {
-  const insertDataVal = Joi.object().keys({
+const signUpVal = (data) => {
+  const signUpVal = Joi.object().keys({
+    name: Joi.string().required().label("Name"),
     emailaddress: Joi.string().email().required().label("Email address"),
     password: Joi.string().min(6).required().label("Password"),
     confirmpassword: Joi.any()
@@ -11,7 +12,7 @@ const insertDataVal = (data) => {
       .messages({ "any.only": "Confirm password does not match" })
       .label("Confirm password"),
   });
-  return insertDataVal.validate(data, {
+  return signUpVal.validate(data, {
     abortEarly: false,
     errors: {
       wrap: {
@@ -443,7 +444,7 @@ const updateOfferVal = (data) => {
 };
 
 module.exports = {
-  insertDataVal,
+  signUpVal,
   verifyOtpVal,
   loginDataVal,
   updateProfileDataVal,

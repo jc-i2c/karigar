@@ -1,0 +1,30 @@
+# dependencies list
+
+# backend API ignore files here
+backendapi/node_modules
+backendapi/.env
+backendapi/uploads
+backendapi/package-lock.json
+backendapi/A Karigar.postman_collection.json
+
+
+# adminpanel admin panel ignore files here
+adminpanel/node_modules
+adminpanel/.env
+adminpanel/uploads
+adminpanel/package-lock.json
+adminpanel/build
+
+adminpanel/coverage
+
+# misc
+adminpanel/.eslintcache
+adminpanel/.DS_Store
+adminpanel/.idea
+adminpanel/.env.local
+adminpanel/.env.development.local
+adminpanel/.env.test.local
+adminpanel/.env.production.local
+adminpanel/npm-debug.log*
+adminpanel/yarn-debug.log*
+adminpanel/yarn-error.log*

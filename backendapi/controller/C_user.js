@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/M_user");
 
 const {
-  insertDataVal,
+  signUpVal,
   loginDataVal,
   verifyOtpVal,
   updateProfileDataVal,
@@ -18,10 +18,10 @@ const { sendOtp } = require("../helper/mailsending");
 // User signup API.
 const userSignUp = async (req, res, next) => {
   try {
-    const { emailaddress, password, userroll } = req.body;
+    const { emailaddress, password, userroll, name } = req.body;
 
     // Joi validation.
-    const { error } = insertDataVal(req.body);
+    const { error } = signUpVal(req.body);
 
     if (error) {
       let errorMsg = {};
@@ -52,6 +52,7 @@ const userSignUp = async (req, res, next) => {
           });
         } else {
           var user = new User({
+            name: name,
             emailaddress: emailaddress,
             password: password,
             otp: genOtp,
@@ -66,7 +67,7 @@ const userSignUp = async (req, res, next) => {
 
             return res.send({
               status: true,
-              message: `OTP sending on your email address ${emailaddress}.Please verify otp.`,
+              message: `OTP sending on your email address ${emailaddress}.`,
             });
           } else {
             let errorMsg = {};

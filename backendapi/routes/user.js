@@ -26,7 +26,7 @@ router.post("/signup", multipartMiddleware, userSignUp);
 
 router.post("/verifyopt", multipartMiddleware, verifyOtp);
 
-router.post("/login", multipartMiddleware, userLogin);
+router.post("/signin", multipartMiddleware, userLogin);
 
 router.post("/updateprofile", auth, multipartMiddleware, updateProfile);
 
