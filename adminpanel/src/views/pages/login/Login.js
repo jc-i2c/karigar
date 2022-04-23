@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import {
   CButton,
@@ -21,13 +24,60 @@ import CIcon from "@coreui/icons-react";
 import { cilLockLocked, cilUser } from "@coreui/icons";
 
 function Login() {
+  const navigate = useNavigate();
+
   // local
-  var [isLoading, setIsLoading] = useState(false);
-  var [error, setError] = useState(null);
-  var [errorMessage, setErrorMessage] = useState("");
-  var [activeTabId, setActiveTabId] = useState(0);
-  var [loginValue, setLoginValue] = useState("");
-  var [passwordValue, setPasswordValue] = useState("");
+  const [validated, setValidated] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    setEmailError("");
+    setValidated(false);
+  }, [email, password]);
+
+  const loginAPi = (e) => {
+    e.preventDefault();
+
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
+      setValidated(true);
+      setEmailError("Please enter valid email");
+    } else if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/i.test(
+        password,
+      )
+    ) {
+      setValidated(true);
+      setPasswordError("Password must be strong");
+    } else {
+      let logiData = new FormData();
+
+      logiData.append("emailaddress", email);
+      logiData.append("password", password);
+
+      axios
+        .post(`${process.env.REACT_APP_APIURL}/karigar/user/signin`, logiData)
+        .then((data) => {
+          if (data.data.token) {
+            localStorage.setItem("karigar_token", data.data.token);
+            // localStorage.removeItem("karigar_token");
+            toast.success(data.data.message, {
+              onClose: () => {
+                navigate("/dashboard");
+              },
+            });
+          } else {
+            toast.error(data.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          // toast.error(error);
+        });
+    }
+  };
 
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -37,17 +87,34 @@ function Login() {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
-                    <h1>SIGN IN</h1>
-                    <p className="text-medium-emphasis">
+                  <CForm
+                    className="row g-3 needs-validation"
+                    noValidate
+                    validated={validated}
+                    onSubmit={loginAPi}
+                  >
+                    <h1 className="text-center">SIGN IN</h1>
+                    <hr />
+                    <p className="text-medium text-center">
                       Sign In to your account
                     </p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="email" autoComplete="email" />
+                      <CFormInput
+                        type="email"
+                        id="validationServer01"
+                        label="Email"
+                        valid
+                        required
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                        }}
+                      />
                     </CInputGroup>
+                    {emailError && <p className="text-danger">{emailError}</p>}
+
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
@@ -55,12 +122,21 @@ function Login() {
                       <CFormInput
                         type="password"
                         placeholder="Password"
-                        autoComplete="current-  "
+                        label="password"
+                        valid
+                        required
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                        }}
                       />
                     </CInputGroup>
+
+                    {passwordError && (
+                      <p className="text-danger">{passwordError}</p>
+                    )}
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton color="primary" className="px-4" type="submit">
                           Login
                         </CButton>
                       </CCol>
@@ -71,6 +147,7 @@ function Login() {
                       </CCol>
                     </CRow>
                   </CForm>
+                  <ToastContainer />
                 </CCardBody>
               </CCard>
             </CCardGroup>

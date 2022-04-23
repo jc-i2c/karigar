@@ -1,6 +1,8 @@
 import React, { Component, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 import "./scss/style.scss";
+import PrivateRoute from "./components/PrivateRoute";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -28,11 +30,23 @@ class App extends Component {
               exact
               path="/register"
               name="Register Page"
-              element={<Register />}
+              element={
+                <PrivateRoute>
+                  <Register />
+                </PrivateRoute>
+              }
             />
             <Route exact path="/404" name="Page 404" element={<Page404 />} />
             <Route exact path="/500" name="Page 500" element={<Page500 />} />
-            <Route path="*" name="Home" element={<DefaultLayout />} />
+            <Route
+              path="*"
+              name="Home"
+              element={
+                <PrivateRoute>
+                  <DefaultLayout />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </Suspense>
       </BrowserRouter>
