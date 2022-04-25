@@ -11,6 +11,7 @@ const {
   getSingleServices,
   deleteServices,
   editServices,
+  topFiveServices,
 } = require("../controller/C_services");
 
 router.post("/create", auth, upload.single("serviceimage"), createServices);
@@ -22,5 +23,7 @@ router.post("/single", auth, multipartMiddleware, getSingleServices);
 router.post("/delete", auth, multipartMiddleware, deleteServices);
 
 router.post("/edit", auth, upload.single("serviceimage"), editServices);
+
+router.post("/topfiveservices", auth, multipartMiddleware, topFiveServices);
 
 module.exports = router;

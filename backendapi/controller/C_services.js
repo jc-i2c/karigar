@@ -256,10 +256,57 @@ const editServices = async (req, res, next) => {
   }
 };
 
+// Top five services API.
+const topFiveServices = async (req, res, next) => {
+  try {
+    console.log("Hello");
+    let getQry = await Services.find({}).sort({ _id: -1 }).limit(5);
+    console.log(getQry.length);
+
+    if (getQry.length > 0) {
+      let findData = [];
+      let resData = {};
+      getQry.forEach((data) => {
+        resData = data.toObject();
+
+        delete resData.__v; // delete person["__v"]
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.createdAt = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.updatedAt = resData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        findData.push(resData);
+      });
+      return res.send({
+        status: true,
+        message: `Service found into system.`,
+        data: findData,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `Service not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createServices,
   getAllServices,
   getSingleServices,
   deleteServices,
   editServices,
+  topFiveServices,
 };

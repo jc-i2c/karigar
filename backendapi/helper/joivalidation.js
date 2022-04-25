@@ -443,6 +443,38 @@ const updateOfferVal = (data) => {
   });
 };
 
+// Create Banner validation.
+const createBannerVal = (data) => {
+  const createBannerVal = Joi.object().keys({
+    bannername: Joi.string().required().min(3).label("Banner name"),
+    bannerimage: Joi.string().required().label("Banner image"),
+  });
+  return createBannerVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
+// Create Banner validation.
+const updateBannerVal = (data) => {
+  const updateBannerVal = Joi.object().keys({
+    bannerid: Joi.string().required().label("Banner Id"),
+    bannername: Joi.string().required().min(3).label("Banner name"),
+  });
+  return updateBannerVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
 module.exports = {
   signUpVal,
   verifyOtpVal,
@@ -466,4 +498,6 @@ module.exports = {
   chatReqStatusVal,
   createNewPasswordVal,
   updateOfferVal,
+  createBannerVal,
+  updateBannerVal
 };
