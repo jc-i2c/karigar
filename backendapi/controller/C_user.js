@@ -810,6 +810,87 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+// Get all customer API.
+const getAllCustomer = async (req, res, next) => {
+  try {
+    let getQry = await User.find().where({
+      userroll: "626113fadf6c093c730a54fa",
+      isactive: true,
+    });
+
+    if (getQry.length > 0 && getQry.length > -1) {
+      let findData = [];
+      let resData = {};
+      getQry.forEach((data) => {
+        resData = data.toObject();
+
+        // // Set user status verify or not.
+        // if (resData.status) {
+        //   resData.status = "user_verified";
+        // } else {
+        //   resData.status = "user_not_verified";
+        // }
+
+        // // Set userroll.
+        // if (resData.userroll == 1) {
+        //   resData.userroll = "admin";
+        // } else if (resData.userroll == 2) {
+        //   resData.userroll = "service_provider";
+        // } else if (resData.userroll == 3) {
+        //   resData.userroll = "customer";
+        // }
+
+        // // Set user is active or not.
+        // if (resData.isactive) {
+        //   resData.isactive = "yes";
+        // } else {
+        //   resData.isactive = "no";
+        // }
+
+        // Set user gender.
+        if (resData.gender == 1) {
+          resData.gender = "male";
+        } else if (resData.gender == 2) {
+          resData.gender = "female";
+        }
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.createdAt = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.updatedAt = resData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        delete resData.userroll; // delete resData["password"]
+        delete resData.password; // delete resData["password"]
+        delete resData.otp; // delete resData["otp"]
+        delete resData.__v; // delete resData["__v"]
+
+        findData.push(resData);
+      });
+
+      return res.send({
+        status: true,
+        message: `${findData.length} customer found into system.`,
+        data: findData,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `No customer found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   userSignUp,
   userLogin,
@@ -824,4 +905,5 @@ module.exports = {
   saveLocation,
   getUserLocation,
   deleteUser,
+  getAllCustomer,
 };

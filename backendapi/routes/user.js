@@ -19,6 +19,7 @@ const {
   getUserLocation,
   deleteUser,
   createNewPassword,
+  getAllCustomer,
 } = require("../controller/C_user");
 
 // UserLoginSignUp user api
@@ -53,5 +54,13 @@ router.post("/savelocation", auth, multipartMiddleware, saveLocation);
 router.post("/getuserlocation", auth, multipartMiddleware, getUserLocation);
 
 router.post("/deleteuser", auth, userrollauth, multipartMiddleware, deleteUser);
+
+router.post(
+  "/allcustomer",
+  auth,
+  userrollauth,
+  multipartMiddleware,
+  getAllCustomer
+);
 
 module.exports = router;

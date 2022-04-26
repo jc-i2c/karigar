@@ -18,7 +18,7 @@ const verifyUserRoll = async (req, res, next) => {
 
       const findUser = await User.findById(req.userid).select("userroll");
       if (findUser) {
-        if (findUser.userroll == 1) next();
+        if (findUser.userroll == "62611417df6c093c730a54ff") next();
         else {
           return res.send({
             status: false,

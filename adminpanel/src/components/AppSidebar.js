@@ -30,7 +30,7 @@ const AppSidebar = () => {
         dispatch({ type: "set", sidebarShow: visible });
       }}
     >
-      <CSidebarBrand className="d-none d-md-flex" to="/">
+      <CSidebarBrand className="d-none d-md-flex" to="/dashboard">
         <img className="sidebar-brand-full" src="/images/logo.svg" alt="logo" />
       </CSidebarBrand>
       <CSidebarNav>

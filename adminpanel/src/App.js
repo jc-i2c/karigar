@@ -1,5 +1,5 @@
 import React, { Component, Suspense } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
 import "./scss/style.scss";
 import PrivateRoute from "./components/PrivateRoute";
@@ -21,32 +21,22 @@ const Page500 = React.lazy(() => import("./views/pages/page500/Page500"));
 
 class App extends Component {
   render() {
+    const karigarToken = localStorage.getItem("karigar_token");
     return (
       <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Suspense fallback={loading}>
           <Routes>
             <Route exact path="/login" name="Login Page" element={<Login />} />
+
             <Route
               exact
               path="/register"
               name="Register Page"
-              element={
-                <PrivateRoute>
-                  <Register />
-                </PrivateRoute>
-              }
+              element={<Register />}
             />
             <Route exact path="/404" name="Page 404" element={<Page404 />} />
             <Route exact path="/500" name="Page 500" element={<Page500 />} />
-            <Route
-              path="*"
-              name="Home"
-              element={
-                <PrivateRoute>
-                  <DefaultLayout />
-                </PrivateRoute>
-              }
-            />
+            <Route path="/*" name="Home" element={<DefaultLayout />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

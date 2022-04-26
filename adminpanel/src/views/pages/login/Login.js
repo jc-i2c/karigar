@@ -28,6 +28,7 @@ function Login() {
 
   // local
   const [validated, setValidated] = useState(false);
+  const [spinner, setSpinner] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [email, setEmail] = useState("");
@@ -35,11 +36,13 @@ function Login() {
 
   useEffect(() => {
     setEmailError("");
+    setPasswordError("");
     setValidated(false);
   }, [email, password]);
 
   const loginAPi = (e) => {
     e.preventDefault();
+    setSpinner(true);
 
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
       setValidated(true);
@@ -62,7 +65,6 @@ function Login() {
         .then((data) => {
           if (data.data.token) {
             localStorage.setItem("karigar_token", data.data.token);
-            // localStorage.removeItem("karigar_token");
             toast.success(data.data.message, {
               onClose: () => {
                 navigate("/dashboard");
@@ -71,10 +73,12 @@ function Login() {
           } else {
             toast.error(data.data.message);
           }
+          setSpinner(false);
         })
         .catch((error) => {
           console.log(error);
           // toast.error(error);
+          setSpinner(false);
         });
     }
   };
@@ -134,12 +138,23 @@ function Login() {
                     {passwordError && (
                       <p className="text-danger">{passwordError}</p>
                     )}
+
                     <CRow>
-                      <CCol xs={6}>
-                        <CButton color="primary" className="px-4" type="submit">
-                          Login
-                        </CButton>
-                      </CCol>
+                      {spinner ? (
+                        <div className="spinner-border" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                      ) : (
+                        <CCol xs={6}>
+                          <CButton
+                            color="primary"
+                            className="px-4"
+                            type="submit"
+                          >
+                            Login
+                          </CButton>
+                        </CCol>
+                      )}
                       <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-0">
                           Forgot password?

@@ -19,6 +19,7 @@ const offer = require("../routes/offer");
 const userrole = require("../routes/userrole");
 const systemmodules = require("../routes/system_modules");
 const dashboard = require("../routes/dashboard");
+const admindashboard = require("../routes/admin_dashboard");
 
 router.use("/karigar/user", user);
 
@@ -57,5 +58,7 @@ router.use("/karigar/userrole", userrole);
 router.use("/karigar/systemmodules", systemmodules);
 
 router.use("/karigar/dashboard", dashboard);
+
+router.use("/karigar/admindashboard", admindashboard);
 
 module.exports = router;
