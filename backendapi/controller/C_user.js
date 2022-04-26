@@ -815,7 +815,6 @@ const getAllCustomer = async (req, res, next) => {
   try {
     let getQry = await User.find().where({
       userroll: "626113fadf6c093c730a54fa",
-      isactive: true,
     });
 
     if (getQry.length > 0 && getQry.length > -1) {
@@ -824,28 +823,7 @@ const getAllCustomer = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        // // Set user status verify or not.
-        // if (resData.status) {
-        //   resData.status = "user_verified";
-        // } else {
-        //   resData.status = "user_not_verified";
-        // }
 
-        // // Set userroll.
-        // if (resData.userroll == 1) {
-        //   resData.userroll = "admin";
-        // } else if (resData.userroll == 2) {
-        //   resData.userroll = "service_provider";
-        // } else if (resData.userroll == 3) {
-        //   resData.userroll = "customer";
-        // }
-
-        // // Set user is active or not.
-        // if (resData.isactive) {
-        //   resData.isactive = "yes";
-        // } else {
-        //   resData.isactive = "no";
-        // }
 
         // Set user gender.
         if (resData.gender == 1) {
