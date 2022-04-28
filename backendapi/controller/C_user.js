@@ -782,7 +782,7 @@ const deleteUser = async (req, res, next) => {
         await Promise.all(
           findQry.map(async (usersList) => {
             cntUsers = cntUsers + 1;
-            await User.findByIdAndDelete(usersList._id);
+            // await User.findByIdAndDelete(usersList._id);
           })
         );
 

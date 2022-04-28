@@ -6,13 +6,14 @@ const { removeFile } = require("../helper/removefile");
 // Create dashboard banner API.
 const createHomeBanner = async (req, res, next) => {
   try {
-    const { bannername } = req.body;
+    const { bannertitle, bannersubtitle } = req.body;
 
     if (req.file) {
       var bannerImage = req.file.filename;
 
       let data = {};
-      data.bannername = bannername;
+      data.bannertitle = bannertitle;
+      data.bannersubtitle = bannersubtitle;
       data.bannerimage = bannerImage;
 
       // Joi validation.
@@ -31,7 +32,8 @@ const createHomeBanner = async (req, res, next) => {
         });
       } else {
         var createNewBanner = new Banner({
-          bannername: bannername,
+          bannertitle: bannertitle,
+          bannersubtitle: bannersubtitle,
           bannerimage: bannerImage,
         });
 
@@ -67,7 +69,7 @@ const createHomeBanner = async (req, res, next) => {
 // Update dashboard banner API.
 const updateBanner = async (req, res, next) => {
   try {
-    let { bannerid, bannername } = req.body;
+    let { bannerid, bannertitle, bannersubtitle } = req.body;
 
     let findQry = await Banner.findById(bannerid);
 
@@ -81,7 +83,8 @@ const updateBanner = async (req, res, next) => {
 
       let data = {};
       data.bannerid = bannerid;
-      data.bannername = bannername;
+      data.bannertitle = bannertitle;
+      data.bannersubtitle = bannersubtitle;
 
       // Joi validation.
       const { error } = updateBannerVal(data);

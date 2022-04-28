@@ -2,10 +2,15 @@ const mongoose = require("mongoose");
 
 const BannerSchema = new mongoose.Schema(
   {
-    bannername: {
+    bannertitle: {
       type: String,
       required: [true, "Banner name is required."],
       unique: [true, "Banner name is must be unique."],
+    },
+    bannersubtitle: {
+      type: String,
+      required: [true, "Banner subtitle is required."],
+      unique: [true, "Banner subtitle is must be unique."],
     },
     bannerimage: {
       type: String,
