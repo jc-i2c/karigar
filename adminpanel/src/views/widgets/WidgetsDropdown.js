@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CRow, CCol, CWidgetStatsB } from "@coreui/react";
+import { useNavigate } from "react-router-dom";
 
 const WidgetsDropdown = () => {
+  const navigate = useNavigate();
+
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
   const [customers, setCustomers] = useState("");
   const [servicesprovider, setServicesProvider] = useState("");
@@ -37,6 +40,9 @@ const WidgetsDropdown = () => {
           inverse
           title="CUSTOMERS"
           value={customers ? customers : 0}
+          onClick={() => {
+            navigate("/dashboard");
+          }}
         />
       </CCol>
       <CCol sm={6} lg={3}>
@@ -55,6 +61,9 @@ const WidgetsDropdown = () => {
           inverse
           title="SERVICES"
           value={services ? services : 0}
+          onClick={() => {
+            navigate("/services");
+          }}
         />
       </CCol>
       <CCol sm={6} lg={3}>

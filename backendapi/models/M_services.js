@@ -20,8 +20,6 @@ ServicesSchema.methods.toJSON = function () {
   const services = this;
   const servicesObj = services.toObject();
   delete servicesObj.__v;
-  delete servicesObj.createdAt;
-  delete servicesObj.updatedAt;
   return servicesObj;
 };
 

@@ -24,8 +24,6 @@ SubServicesSchema.methods.toJSON = function () {
   const subServices = this;
   const subServicesObj = subServices.toObject();
   delete subServicesObj.__v;
-  delete subServicesObj.createdAt;
-  delete subServicesObj.updatedAt;
   return subServicesObj;
 };
 

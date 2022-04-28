@@ -135,7 +135,7 @@ const getAllOffer = async (req, res, next) => {
     let findQry = await Offer.find()
       .populate({
         path: "subserviceid",
-        select: "subservicename",
+        select: "subservicename subserviceimage",
       })
       .populate({
         path: "serviceproviderid",

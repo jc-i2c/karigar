@@ -1,5 +1,5 @@
-import React from 'react'
-import CIcon from '@coreui/icons-react'
+import React from "react";
+import CIcon from "@coreui/icons-react";
 import {
   cilBell,
   cilCalculator,
@@ -11,24 +11,33 @@ import {
   cilPuzzle,
   cilSpeedometer,
   cilStar,
-} from '@coreui/icons'
-import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+  cilAppsSettings,
+  cilUser
+} from "@coreui/icons";
+import { CNavGroup, CNavItem, CNavTitle } from "@coreui/react";
 
 const _nav = [
   {
     component: CNavItem,
-    name: 'Dashboard',
-    to: '/dashboard',
+    name: "Dashboard",
+    to: "/dashboard",
     icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
     // badge: {
     //   color: 'info',
     //   text: 'NEW',
     // },
-  }, {
+  },
+  {
     component: CNavItem,
-    name: 'Services',
-    to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
+    name: "Services",
+    to: "/services",
+    icon: <CIcon icon={cilAppsSettings} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: "Users",
+    to: "/users",
+    icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
   },
   // {
   //   component: CNavTitle,
@@ -206,27 +215,27 @@ const _nav = [
   // },
   {
     component: CNavGroup,
-    name: 'Icons',
+    name: "Icons",
     icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'CoreUI Free',
-        to: '/icons/coreui-icons',
+        name: "CoreUI Free",
+        to: "/icons/coreui-icons",
         badge: {
-          color: 'success',
-          text: 'NEW',
+          color: "success",
+          text: "NEW",
         },
       },
       {
         component: CNavItem,
-        name: 'CoreUI Flags',
-        to: '/icons/flags',
+        name: "CoreUI Flags",
+        to: "/icons/flags",
       },
       {
         component: CNavItem,
-        name: 'CoreUI Brands',
-        to: '/icons/brands',
+        name: "CoreUI Brands",
+        to: "/icons/brands",
       },
     ],
   },
@@ -273,31 +282,31 @@ const _nav = [
   // },
   {
     component: CNavGroup,
-    name: 'Pages',
+    name: "Pages",
     icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'Login',
-        to: '/login',
+        name: "Login",
+        to: "/login",
       },
       {
         component: CNavItem,
-        name: 'Register',
-        to: '/register',
+        name: "Register",
+        to: "/register",
       },
       {
         component: CNavItem,
-        name: 'Error 404',
-        to: '/404',
+        name: "Error 404",
+        to: "/404",
       },
       {
         component: CNavItem,
-        name: 'Error 500',
-        to: '/500',
+        name: "Error 500",
+        to: "/500",
       },
     ],
   },
-]
+];
 
-export default _nav
+export default _nav;

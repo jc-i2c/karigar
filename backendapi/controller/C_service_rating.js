@@ -13,16 +13,11 @@ const createServiceRate = async (req, res, next) => {
       description,
     } = req.body;
 
-    const findRating = await ServiceRating.findById().where({
+    const findRating = await ServiceRating.find().where({
       servicehistoryid: servicehistoryid,
     });
 
-    if (
-      !findRating ||
-      findRating == null ||
-      findRating == undefined ||
-      findRating == ""
-    ) {
+    if (findRating.length > 0) {
       return res.send({
         status: true,
         message: `Have you already done service rating.`,
@@ -138,6 +133,8 @@ const getCusOwnedRate = async (req, res, next) => {
       })
         .select("rate description")
         .populate({ path: "serviceproviderid", select: "name" });
+
+      // console.log(findQry, "findQry");
 
       if (findQry.length > 0) {
         return res.send({

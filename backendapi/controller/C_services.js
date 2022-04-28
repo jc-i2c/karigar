@@ -64,18 +64,39 @@ const createServices = async (req, res, next) => {
 // Gel all services API.
 const getAllServices = async (req, res, next) => {
   try {
-    const getQry = await Services.find();
+    let getQry = await Services.find();
 
     if (getQry.length > 0) {
+      let findData = [];
+      let resData = {};
+      getQry.forEach((data) => {
+        resData = data.toObject();
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.createdAt = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.updatedAt = resData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        delete resData.__v;
+
+        findData.push(resData);
+      });
       return res.send({
         status: true,
-        message: `${getQry.length} Service found into system.`,
-        data: getQry,
+        message: `${findData.length} Service found into system.`,
+        data: findData,
       });
     } else {
       return res.send({
         status: false,
-        message: `${getQry.length} Service not found into system.`,
+        message: `${findData.length} Service not found into system.`,
       });
     }
   } catch (error) {
@@ -146,8 +167,8 @@ const deleteServices = async (req, res, next) => {
         await Promise.all(
           findQry.map(async (allServices) => {
             cntServices = cntServices + 1;
-            await Services.findByIdAndDelete(allServices._id);
-            removeFile(allServices.serviceimage);
+            // await Services.findByIdAndDelete(allServices._id);
+            // removeFile(allServices.serviceimage);
           })
         );
 

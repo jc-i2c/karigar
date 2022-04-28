@@ -14,7 +14,7 @@ const ServiceRatingSchema = new mongoose.Schema(
     },
     serviceproviderid: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "serviceprovider",
+      ref: "user",
       required: [true, "Service provider Id is required."],
     },
     rate: {
@@ -36,8 +36,6 @@ ServiceRatingSchema.methods.toJSON = function () {
   const serviceRating = this;
   const serviceRatingObj = serviceRating.toObject();
   delete serviceRatingObj.__v;
-  delete serviceRatingObj.createdAt;
-  delete serviceRatingObj.updatedAt;
   return serviceRatingObj;
 };
 

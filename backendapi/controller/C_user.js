@@ -127,9 +127,41 @@ const userLogin = async (req, res, next) => {
                 { id: findUser._id, userroll: findUser.userroll },
                 process.env.TOKEN_KEY
               );
+
+              let userData = findUser.toObject();
+
+              // Set user gender.
+              if (userData.gender == 1) {
+                userData.gender = "male";
+              } else if (userData.gender == 2) {
+                userData.gender = "female";
+              }
+
+              // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+              userData.createdAt = userData.createdAt
+                .toISOString()
+                .replace(/T/, " ")
+                .replace(/\..+/, "");
+
+              // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+              userData.updatedAt = userData.updatedAt
+                .toISOString()
+                .replace(/T/, " ")
+                .replace(/\..+/, "");
+
+              delete userData.status;
+              delete userData.isactive;
+              delete userData.password;
+              delete userData.otp;
+              delete userData.userroll;
+              delete userData.__v;
+              delete userData.createdAt;
+              delete userData.updatedAt;
+
               return res.send({
                 status: true,
                 message: `User login successfully.`,
+                userdata: userData,
                 token: token,
               });
             } else {
@@ -623,12 +655,12 @@ const getAllUsers = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        // Set user status verify or not.
-        if (resData.status) {
-          resData.status = "user_verified";
-        } else {
-          resData.status = "user_not_verified";
-        }
+        // // Set user status verify or not.
+        // if (resData.status) {
+        //   resData.status = "user_verified";
+        // } else {
+        //   resData.status = "user_not_verified";
+        // }
 
         // Set userroll.
         if (resData.userroll == 1) {
@@ -822,8 +854,6 @@ const getAllCustomer = async (req, res, next) => {
       let resData = {};
       getQry.forEach((data) => {
         resData = data.toObject();
-
-
 
         // Set user gender.
         if (resData.gender == 1) {

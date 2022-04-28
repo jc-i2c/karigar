@@ -4,8 +4,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import CIcon from "@coreui/icons-react";
-import { cilDelete } from "@coreui/icons";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import {
   CCard,
@@ -23,20 +22,20 @@ import {
   CFormCheck,
 } from "@coreui/react";
 
-const ViewCustomer = () => {
+const AllUsers = () => {
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
-  const [customers, setCustomers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
     axios
       .post(
-        `${process.env.REACT_APP_APIURL}/karigar/user/allcustomer`,
+        `${process.env.REACT_APP_APIURL}/karigar/user/alluser`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then((data) => {
         const records = [];
-        // console.log(data.data.data, "data");
+        console.log(data.data.data, "data");
         data.data.data.map((record) => {
           // console.log(record._id, "record._id");
           records.push({
@@ -46,9 +45,12 @@ const ViewCustomer = () => {
             gender: record.gender,
             status: record.status,
             isactive: record.isactive,
+            mobilenumber: record.mobilenumber,
+            createdAt: record.createdAt,
+            updatedAt: record.updatedAt,
           });
         });
-        setCustomers(records);
+        setAllUsers(records);
       })
       .catch((error) => {
         console.log(error, "error");
@@ -67,7 +69,7 @@ const ViewCustomer = () => {
       .then((data) => {
         if (data.data.status) {
           toast.success(data.data.message);
-          let newCustomerData = customers.map((listOfCustomer) => {
+          let newCustomerData = allUsers.map((listOfCustomer) => {
             if (listOfCustomer.customerid == customerId) {
               if (listOfCustomer.isactive) {
                 return { ...listOfCustomer, isactive: false };
@@ -77,7 +79,7 @@ const ViewCustomer = () => {
             }
             return listOfCustomer;
           });
-          setCustomers(newCustomerData);
+          setAllUsers(newCustomerData);
         } else {
           toast.error(data.data.message);
         }
@@ -99,11 +101,11 @@ const ViewCustomer = () => {
         if (data.data.status) {
           toast.success(data.data.message);
 
-          let newCustomerData = customers.filter(
+          let newCustomerData = allUsers.filter(
             (item) => item.customerid !== customerId,
           );
 
-          setCustomers(newCustomerData);
+          setAllUsers(newCustomerData);
         } else {
           toast.error(data.data.message);
         }
@@ -117,11 +119,11 @@ const ViewCustomer = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">Customer List</CCardHeader>
+          <CCardHeader className="mb-0 border">Users List</CCardHeader>
           <CCardHeader className="mb-0 border">
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <button type="button" className="btn btn-success">
-                Add Customer
+                Add Users
               </button>
             </div>
           </CCardHeader>
@@ -143,22 +145,34 @@ const ViewCustomer = () => {
                   <CTableHeaderCell>Email Address</CTableHeaderCell>
                   <CTableHeaderCell>Name</CTableHeaderCell>
                   <CTableHeaderCell>Gender</CTableHeaderCell>
-                  <CTableHeaderCell>User verified</CTableHeaderCell>
-                  <CTableHeaderCell>Active {"&"} Inactive</CTableHeaderCell>
+                  <CTableHeaderCell>Mobile Number</CTableHeaderCell>
+                  <CTableHeaderCell>CreateAT</CTableHeaderCell>
+                  <CTableHeaderCell>UpdateAT</CTableHeaderCell>
+                  <CTableHeaderCell>Verified</CTableHeaderCell>
+                  <CTableHeaderCell>Status</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {customers.map((item, index) => (
+                {allUsers.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
                     <CTableDataCell>
                       <div>{item.emailaddress}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <div>{item.name ? item.name : "No Data"}</div>
+                      <div>{item.name ? item.name : "-"}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <div>{item.gender ? item.gender : "No Data"}</div>
+                      <div>{item.gender ? item.gender : "-"}</div>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <div>{item.mobilenumber ? item.mobilenumber : "-"}</div>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <div>{item.createdAt}</div>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <div>{item.updatedAt}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <CFormCheck
@@ -185,9 +199,9 @@ const ViewCustomer = () => {
                       />
                     </CTableDataCell>
                     <CTableDataCell>
-                      <CIcon
-                        icon={cilDelete}
-                        className="cis-delete"
+                      <DeleteIcon
+                        variant="contained"
+                        color="inherit"
                         onClick={() => {
                           deleteCustomer(item.customerid);
                         }}
@@ -206,4 +220,4 @@ const ViewCustomer = () => {
   );
 };
 
-export default ViewCustomer;
+export default AllUsers;

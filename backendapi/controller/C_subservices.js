@@ -85,15 +85,36 @@ const getAllSubServices = async (req, res, next) => {
     });
 
     if (getQry.length > 0) {
+      let findData = [];
+      let resData = {};
+      getQry.forEach((data) => {
+        resData = data.toObject();
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.createdAt = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.updatedAt = resData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        delete resData.__v; // delete resData["__v"]
+
+        findData.push(resData);
+      });
       return res.send({
         status: true,
-        message: `${getQry.length} Sub service found into system.`,
-        data: getQry,
+        message: `${findData.length} Sub service found into system.`,
+        data: findData,
       });
     } else {
       return res.send({
         status: false,
-        message: `${getQry.length} Sub service not found into system.`,
+        message: `${findData.length} Sub service not found into system.`,
       });
     }
   } catch (error) {
@@ -108,20 +129,46 @@ const getSubServices = async (req, res, next) => {
     let servicesId = req.body.servicesid;
 
     if (mongoose.isValidObjectId(servicesId)) {
-      const getQry = await Subservices.find().where({
-        servicesid: servicesId,
-      });
+      const getQry = await Subservices.find()
+        .where({
+          servicesid: servicesId,
+        })
+        .populate({
+          path: "servicesid",
+          select: "servicename",
+        });
 
       if (getQry.length > 0) {
+        let findData = [];
+        let resData = {};
+        getQry.forEach((data) => {
+          resData = data.toObject();
+
+          // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+          resData.createdAt = resData.createdAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+          resData.updatedAt = resData.updatedAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          delete resData.__v; // delete resData["__v"]
+
+          findData.push(resData);
+        });
         return res.send({
           status: true,
-          message: `${getQry.length} Sub service found into system.`,
-          data: getQry,
+          message: `${findData.length} Sub service found into system.`,
+          data: findData,
         });
       } else {
         return res.send({
           status: false,
-          message: `${getQry.length} Sub service not found into system.`,
+          message: `${findData.length} Sub service not found into system.`,
         });
       }
     } else {

@@ -6,6 +6,16 @@ const Typography = React.lazy(() =>
   import("./views/theme/typography/Typography"),
 );
 
+
+// Services
+const Services = React.lazy(() => import("./views/services/Services"));
+
+// Sub Services
+const Subservices = React.lazy(() => import("./views/subservices/Subservices"));
+
+// All user
+const AllUser = React.lazy(() => import("./views/users/all_users"));
+
 // Base
 const Accordion = React.lazy(() => import("./views/base/accordion/Accordion"));
 const Breadcrumbs = React.lazy(() =>
@@ -79,6 +89,11 @@ const Widgets = React.lazy(() => import("./views/widgets/Widgets"));
 const routes = [
   { path: "/", exact: true, name: "Home" },
   { path: "/dashboard", name: "Dashboard", element: Dashboard },
+  { path: "/services", name: "Services", element: Services },
+  { path: "/subservices", name: "Subservices", element: Subservices },
+  { path: "/users", name: "AllUser", element: AllUser },
+
+
   { path: "/theme", name: "Theme", element: Colors, exact: true },
   { path: "/theme/colors", name: "Colors", element: Colors },
   { path: "/theme/typography", name: "Typography", element: Typography },
