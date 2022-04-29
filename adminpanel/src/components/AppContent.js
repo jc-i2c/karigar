@@ -13,20 +13,20 @@ const AppContent = () => {
       <Suspense fallback={<CSpinner color="primary" />}>
         <Routes>
           {routes.map((route, idx) => {
-            return (
-              route.element && (
-                <Route
-                  key={idx}
-                  path={route.path}
-                  exact={route.exact}
-                  name={route.name}
-                  element={
-                    <PrivateRoute>
-                      <route.element />
-                    </PrivateRoute>
-                  }
-                />
-              )
+            return route.element ? (
+              <Route
+                key={idx}
+                path={route.path}
+                exact={route.exact}
+                name={route.name}
+                element={
+                  <PrivateRoute>
+                    <route.element />
+                  </PrivateRoute>
+                }
+              />
+            ) : (
+              <Navigate to="/dashboard" />
             );
           })}
         </Routes>

@@ -9,10 +9,11 @@ import {
   cilNotes,
   cilPencil,
   cilPuzzle,
+  cilAppsSettings,
   cilSpeedometer,
   cilStar,
-  cilAppsSettings,
-  cilUser
+  cilUser,
+  cilTask
 } from "@coreui/icons";
 import { CNavGroup, CNavItem, CNavTitle } from "@coreui/react";
 
@@ -31,7 +32,7 @@ const _nav = [
     component: CNavItem,
     name: "Services",
     to: "/services",
-    icon: <CIcon icon={cilAppsSettings} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilTask} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

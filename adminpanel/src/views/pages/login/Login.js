@@ -35,6 +35,13 @@ function Login() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
+    const token = localStorage.getItem("karigar_token");
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, []);
+
+  useEffect(() => {
     setEmailError("");
     setPasswordError("");
     setValidated(false);
@@ -42,12 +49,12 @@ function Login() {
 
   const loginAPi = (e) => {
     e.preventDefault();
-    setSpinner(true);
 
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
       setValidated(true);
       setEmailError("Please enter valid email");
-    } else if (
+    }
+    if (
       !/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/i.test(
         password,
       )
@@ -55,6 +62,7 @@ function Login() {
       setValidated(true);
       setPasswordError("Password must be strong");
     } else {
+      setSpinner(true);
       let logiData = new FormData();
 
       logiData.append("emailaddress", email);

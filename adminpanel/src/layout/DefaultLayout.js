@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   AppContent,
   AppSidebar,
@@ -7,6 +8,16 @@ import {
 } from "../components/index";
 
 const DefaultLayout = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const url = location.pathname;
+
+  useEffect(() => {
+    if (url === "/") {
+      navigate("/dashboard");
+    }
+  }, []);
+
   return (
     <div>
       <AppSidebar />

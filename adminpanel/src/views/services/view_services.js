@@ -21,6 +21,7 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CButton,
 } from "@coreui/react";
 
 const ViewServices = () => {
@@ -88,9 +89,16 @@ const ViewServices = () => {
           <CCardHeader className="mb-0 border">Services List</CCardHeader>
           <CCardHeader className="mb-0 border">
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button type="button" className="btn btn-success">
+              <CButton
+                color="primary"
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  navigate("/addservices");
+                }}
+              >
                 Add Services
-              </button>
+              </CButton>
             </div>
           </CCardHeader>
 
@@ -177,7 +185,13 @@ const ViewServices = () => {
                         variant="contained"
                         color="inherit"
                         onClick={() => {
-                          deleteServices(item.serviceid);
+                          navigate("/addservices", {
+                            state: {
+                              serviceid: item.serviceid,
+                              servicename: item.servicename,
+                              serviceimage: item.serviceimage,
+                            },
+                          });
                         }}
                       />
                       <DeleteIcon

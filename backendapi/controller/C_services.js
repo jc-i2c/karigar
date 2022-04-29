@@ -167,8 +167,8 @@ const deleteServices = async (req, res, next) => {
         await Promise.all(
           findQry.map(async (allServices) => {
             cntServices = cntServices + 1;
-            // await Services.findByIdAndDelete(allServices._id);
-            // removeFile(allServices.serviceimage);
+            await Services.findByIdAndDelete(allServices._id);
+            removeFile(allServices.serviceimage);
           })
         );
 

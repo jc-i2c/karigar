@@ -118,13 +118,13 @@ const ViewCustomer = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border">Customer List</CCardHeader>
-          <CCardHeader className="mb-0 border">
+          {/* <CCardHeader className="mb-0 border">
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <button type="button" className="btn btn-success">
                 Add Customer
               </button>
             </div>
-          </CCardHeader>
+          </CCardHeader> */}
 
           <CCardBody>
             <CTable
@@ -162,9 +162,7 @@ const ViewCustomer = () => {
                       <div>{item.gender ? item.gender : "-"}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <div>
-                        {item.mobilenumber ? item.mobilenumber : "-"}
-                      </div>
+                      <div>{item.mobilenumber ? item.mobilenumber : "-"}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <CFormCheck
