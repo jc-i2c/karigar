@@ -84,8 +84,8 @@ const getAllSubServices = async (req, res, next) => {
       select: "servicename serviceimage",
     });
 
+    let findData = [];
     if (getQry.length > 0) {
-      let findData = [];
       let resData = {};
       getQry.forEach((data) => {
         resData = data.toObject();

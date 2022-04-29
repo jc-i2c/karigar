@@ -12,10 +12,9 @@ import {
   CContainer,
   CForm,
   CFormInput,
-  CInputGroup,
-  CInputGroupText,
   CRow,
   CButton,
+  CFormLabel,
 } from "@coreui/react";
 
 const AddServices = () => {
@@ -64,70 +63,75 @@ const AddServices = () => {
     setImagePath(fileValue);
   };
 
-  function AddServices() {
-    if (!/^[a-zA-Z]+$/i.test(servicesName)) {
+  function addServices() {
+    if (!/^[a-zA-Z]/i.test(servicesName)) {
       setValidated(true);
       setServiceNameError("Please enter valid services name");
     }
     if (!serviceImage) {
       setValidated(true);
       setServiceImageError("Please provide service image");
-    }
-    setSpinner(true);
-    if (isEdit) {
-      // Edit data
-
-      var data = new FormData();
-      data.append("servicesid", servicesId);
-      data.append("servicename", servicesName);
-      data.append("serviceimage", serviceImage);
-
-      axios
-        .post(`${process.env.REACT_APP_APIURL}/karigar/services/edit`, data, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((data) => {
-          if (data.data.status) {
-            toast.success(data.data.message, {
-              onClose: () => {
-                navigate("/services");
-              },
-            });
-          } else {
-            toast.error(data.data.message);
-          }
-          setSpinner(false);
-        })
-        .catch((error) => {
-          console.log(error, "error");
-          setSpinner(false);
-        });
     } else {
-      // Add new data
-      var data = new FormData();
-      data.append("servicename", servicesName);
-      data.append("serviceimage", serviceImage);
+      if (isEdit) {
+        // Edit data
 
-      axios
-        .post(`${process.env.REACT_APP_APIURL}/karigar/services/create`, data, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((data) => {
-          if (data.data.status) {
-            toast.success(data.data.message, {
-              onClose: () => {
-                navigate("/services");
-              },
-            });
-          } else {
-            toast.error(data.data.message);
-          }
-          setSpinner(false);
-        })
-        .catch((error) => {
-          console.log(error, "error");
-          setSpinner(false);
-        });
+        setSpinner(true);
+        var data = new FormData();
+        data.append("servicesid", servicesId);
+        data.append("servicename", servicesName);
+        data.append("serviceimage", serviceImage);
+
+        axios
+          .post(`${process.env.REACT_APP_APIURL}/karigar/services/edit`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate("/services");
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      } else {
+        // Add new data
+        var data = new FormData();
+        data.append("servicename", servicesName);
+        data.append("serviceimage", serviceImage);
+
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/services/create`,
+            data,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate("/services");
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      }
     }
   }
 
@@ -139,16 +143,21 @@ const AddServices = () => {
             <CCard>
               <CCardBody className="p-4">
                 <CForm
-                  className="row g-3 needs-validation"
+                  className="row g-3"
                   noValidate
                   validated={validated}
-                  onSubmit={AddServices}
+                  onSubmit={addServices}
                 >
                   <h2>Services</h2>
                   <hr />
 
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>Services name</CInputGroupText>
+                  <CCol md={6}>
+                    <CFormLabel
+                      htmlFor="email"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Service Name
+                    </CFormLabel>
                     <CFormInput
                       type="text"
                       id="servicesname"
@@ -160,12 +169,36 @@ const AddServices = () => {
                         setServicesName(e.target.value);
                       }}
                     />
-                  </CInputGroup>
-                  {serviceNameError && (
-                    <p className="text-danger">{serviceNameError}</p>
-                  )}
+                    {serviceNameError && (
+                      <p className="text-danger">{serviceNameError}</p>
+                    )}
+                  </CCol>
 
-                  <CInputGroup className="mb-3">
+                  <CCol md={6}>
+                    <CFormLabel
+                      htmlFor="email"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Services Image
+                    </CFormLabel>
+
+                    <CFormInput
+                      type="file"
+                      placeholder="Service Name"
+                      autoComplete="servicesimage"
+                      id="servicesimage"
+                      required
+                      onChange={(e) => {
+                        fileHandle(e);
+                      }}
+                    />
+
+                    {serviceImageError && (
+                      <p className="text-danger">{serviceImageError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol className="mb-3">
                     {imagePath ? (
                       <img
                         src={imagePath}
@@ -189,25 +222,7 @@ const AddServices = () => {
                     ) : (
                       ""
                     )}
-                  </CInputGroup>
-
-                  <CInputGroup className="mb-3">
-                    <CInputGroupText>Services Image</CInputGroupText>
-                    <CFormInput
-                      type="file"
-                      placeholder="Service Name"
-                      autoComplete="servicesimage"
-                      id="servicesimage"
-                      required
-                      onChange={(e) => {
-                        fileHandle(e);
-                      }}
-                    />
-                  </CInputGroup>
-
-                  {serviceImageError && (
-                    <p className="text-danger">{serviceImageError}</p>
-                  )}
+                  </CCol>
 
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                     {spinner ? (
@@ -218,7 +233,7 @@ const AddServices = () => {
                       <CButton
                         color="primary"
                         onClick={() => {
-                          AddServices();
+                          addServices();
                         }}
                       >
                         Submit

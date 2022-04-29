@@ -1,0 +1,311 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import {
+  CCard,
+  CCardBody,
+  CCol,
+  CContainer,
+  CForm,
+  CFormInput,
+  CInputGroup,
+  CInputGroupText,
+  CRow,
+  CButton,
+  CFormLabel,
+  CFormSelect,
+} from "@coreui/react";
+
+const AddSubServices = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const [services, setServices] = useState([]);
+
+  const [validated, setValidated] = useState(false);
+  const [subServicesName, setSubServicesName] = useState("");
+  const [serviceId, setServiceId] = useState("");
+  const [subServiceImage, setSubServiceImage] = useState("");
+
+  const [serviceError, setServiceError] = useState("");
+  const [serviceNameError, setServiceNameError] = useState("");
+  const [serviceImageError, setServiceImageError] = useState("");
+  const [spinner, setSpinner] = useState(false);
+
+  // Edit services code
+  // const [servicesId, setServicesId] = useState("");
+  // const [isEdit, setIsEdit] = useState(false);
+  const [imagePath, setImagePath] = useState("");
+  const initialState = { alt: "", src: "" };
+
+  // Gel all services
+  useEffect(() => {
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/services/all`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        const records = [];
+        // console.log(data.data.data, "data");
+        if (data.data.data) {
+          data.data.data.map((record) => {
+            records.push({
+              serviceid: record._id,
+              servicename: record.servicename,
+            });
+          });
+          setServices(records);
+        }
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }, []);
+
+  // Null error message.
+  useEffect(() => {
+    setServiceError("");
+    setServiceNameError("");
+    setServiceImageError("");
+    setValidated(false);
+  }, [serviceId, subServicesName, subServiceImage]);
+
+  // // Edit Sub services.
+  // useEffect(() => {
+  //   if (location.state) {
+  //     setIsEdit(true);
+  //     setServicesId(location.state.serviceid);
+  //     setSubServicesName(location.state.servicename);
+  //     setSubServiceImage(location.state.serviceimage);
+  //   }
+  // }, [servicesId]);
+
+  // Handle image.
+  const fileHandle = (e) => {
+    e.preventDefault();
+    var subServiceImage = e.target.files[0];
+    setSubServiceImage(subServiceImage);
+
+    const { files } = e.target;
+    const fileValue = files.length
+      ? URL.createObjectURL(subServiceImage)
+      : initialState;
+    setImagePath(fileValue);
+  };
+
+  function addSubServices() {
+    if (!serviceId) {
+      setValidated(true);
+      setServiceError("Please select services");
+    }
+    if (!/^[a-zA-Z]/i.test(subServicesName)) {
+      setValidated(true);
+      setServiceNameError("Please enter sub service title");
+    }
+    if (!subServiceImage) {
+      setValidated(true);
+      setServiceImageError("Please provide sub service image.");
+    } else {
+      // Add new sub services.
+      var data = new FormData();
+      data.append("servicesid", serviceId);
+      data.append("subservicename", subServicesName);
+      data.append("subserviceimage", subServiceImage);
+
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/subservices/create`,
+          data,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+        .then((data) => {
+          if (data.data.status) {
+            toast.success(data.data.message, {
+              onClose: () => {
+                navigate("/services");
+              },
+            });
+          } else {
+            toast.error(data.data.message);
+          }
+          setSpinner(false);
+        })
+        .catch((error) => {
+          console.log(error, "error");
+          setSpinner(false);
+        });
+    }
+  }
+
+  return (
+    <div>
+      <CContainer>
+        <CRow>
+          <CCol sm="12">
+            <CCard>
+              <CCardBody className="p-4">
+                <CForm
+                  className="row g-3"
+                  noValidate
+                  validated={validated}
+                  onSubmit={addSubServices}
+                >
+                  <h2>Sub Services</h2>
+                  <hr />
+
+                  <CCol md={6}>
+                    <CFormLabel
+                      htmlFor="servicename"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Select Service
+                    </CFormLabel>
+
+                    <CFormSelect
+                      required
+                      id="servicesname"
+                      name="servicesname"
+                      onChange={(e) => {
+                        setServiceId(e.target.value);
+                      }}
+                    >
+                      <option selected disabled>
+                        Select Services
+                      </option>
+                      {services.map((servicesList) => (
+                        <option
+                          key={servicesList.serviceid}
+                          value={servicesList.serviceid}
+                        >
+                          {servicesList.servicename}
+                        </option>
+                      ))}
+                    </CFormSelect>
+
+                    {serviceError && (
+                      <p className="text-danger">{serviceError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={6}>
+                    <CFormLabel
+                      htmlFor="Subservicename"
+                      className="col-sm-6 col-form-label"
+                    >
+                      Sub Service Name
+                    </CFormLabel>
+
+                    <CFormInput
+                      type="text"
+                      placeholder="Sub Service Name"
+                      autoComplete="subservicename"
+                      id="subservicename"
+                      required
+                      value={subServicesName ? subServicesName : ""}
+                      onChange={(e) => {
+                        setSubServicesName(e.target.value);
+                      }}
+                    />
+
+                    {serviceNameError && (
+                      <p className="text-danger">{serviceNameError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={6}>
+                    <CFormLabel
+                      htmlFor="email"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Sub Services Image
+                    </CFormLabel>
+
+                    <CFormInput
+                      type="file"
+                      autoComplete="subservicesimage"
+                      id="subservicesimage"
+                      required
+                      onChange={(e) => {
+                        fileHandle(e);
+                      }}
+                    />
+                    {serviceImageError && (
+                      <p className="text-danger">{serviceImageError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={6}>
+                    {imagePath ? (
+                      <img
+                        src={imagePath}
+                        alt={imagePath}
+                        style={{
+                          height: "80px",
+                          width: "80px",
+                        }}
+                      />
+                    ) : subServiceImage ? (
+                      <img
+                        src={
+                          `${process.env.REACT_APP_PROFILEPIC}` +
+                          subServiceImage
+                        }
+                        alt={subServiceImage}
+                        style={{
+                          height: "80px",
+                          width: "80px",
+                        }}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </CCol>
+
+                  <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    {spinner ? (
+                      <div className="spinner-border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                    ) : (
+                      <CButton
+                        color="primary"
+                        onClick={() => {
+                          addSubServices();
+                        }}
+                      >
+                        Submit
+                      </CButton>
+                    )}
+
+                    <CButton
+                      color="primary"
+                      onClick={() => {
+                        navigate("/subservices");
+                      }}
+                    >
+                      Back
+                    </CButton>
+                  </div>
+                </CForm>
+                <ToastContainer />
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+      </CContainer>
+    </div>
+  );
+};
+
+export default AddSubServices;

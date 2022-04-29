@@ -5,7 +5,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import VisibilityIcon from "@material-ui/icons/Visibility";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -21,6 +20,7 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CButton,
 } from "@coreui/react";
 
 const ViewSubServices = () => {
@@ -48,17 +48,19 @@ const ViewSubServices = () => {
         .then((data) => {
           const records = [];
           // console.log(data.data.data, "data");
-          data.data.data.map((record) => {
-            records.push({
-              subserviceid: record._id,
-              servicename: record.servicesid.servicename,
-              subservicename: record.subservicename,
-              subserviceimage: record.subserviceimage,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
+          if (data.data.data) {
+            data.data.data.map((record) => {
+              records.push({
+                subserviceid: record._id,
+                servicename: record.servicesid.servicename,
+                subservicename: record.subservicename,
+                subserviceimage: record.subserviceimage,
+                createdAt: record.createdAt,
+                updatedAt: record.updatedAt,
+              });
             });
-          });
-          setSubServices(records);
+            setSubServices(records);
+          }
         })
         .catch((error) => {
           console.log(error, "error");
@@ -69,34 +71,30 @@ const ViewSubServices = () => {
   }, []);
 
   function deleteSubServices(subServiceId) {
-    console.log(subServiceId, "subServiceId");
-    // let data = new FormData();
-    // data.append("servicesid", subServiceId);
-
-    // axios
-    //   .post(
-    //     `${process.env.REACT_APP_APIURL}/karigar/subServices/delete`,
-    //     data,
-    //     {
-    //       headers: { Authorization: `Bearer ${token}` },
-    //     },
-    //   )
-    //   .then((data) => {
-    //     if (data.data.status) {
-    //       toast.success(data.data.message);
-
-    //       let newServciesData = subServices.filter(
-    //         (item) => item.serviceid !== subServiceId,
-    //       );
-
-    //       setSubServices(newServciesData);
-    //     } else {
-    //       toast.error(data.data.message);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error, "error");
-    //   });
+    let data = new FormData();
+    data.append("subservicesid", subServiceId);
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/subServices/delete`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        if (data.data.status) {
+          toast.success(data.data.message);
+          let newServciesData = subServices.filter(
+            (item) => item.subserviceid !== subServiceId,
+          );
+          setSubServices(newServciesData);
+        } else {
+          toast.error(data.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
   }
 
   return (
@@ -106,9 +104,16 @@ const ViewSubServices = () => {
           <CCardHeader className="mb-0 border">Sub Services List</CCardHeader>
           <CCardHeader className="mb-0 border">
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button type="button" className="btn btn-success">
+              <CButton
+                color="primary"
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  navigate("/addsubservices");
+                }}
+              >
                 Add Sub Services
-              </button>
+              </CButton>
             </div>
           </CCardHeader>
 
@@ -148,7 +153,7 @@ const ViewSubServices = () => {
                         {item.subserviceimage ? (
                           <img
                             style={{
-                              alignItems: 'center',
+                              alignItems: "center",
                               height: "50px",
                               width: "50px",
                               borderRadius: "50%",
@@ -187,7 +192,13 @@ const ViewSubServices = () => {
                         variant="contained"
                         color="inherit"
                         onClick={() => {
-                          deleteSubServices(item.subserviceid);
+                          navigate("/addsubservices", {
+                            state: {
+                              subserviceid: item.subserviceid,
+                              servicename: item.servicename,
+                              serviceimage: item.serviceimage,
+                            },
+                          });
                         }}
                       />
                       <DeleteIcon
