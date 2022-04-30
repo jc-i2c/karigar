@@ -1,0 +1,371 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import {
+  CCard,
+  CCardBody,
+  CCol,
+  CContainer,
+  CForm,
+  CFormInput,
+  CRow,
+  CButton,
+  CFormLabel,
+  CFormSelect,
+} from "@coreui/react";
+
+const AddServices = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const [validated, setValidated] = useState(false);
+
+  const [spinner, setSpinner] = useState(false);
+
+  // Edit services code
+  const [name, setName] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [userrole, setUserrole] = useState("");
+  const [allUserRole, setAllUserRole] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+
+  // Error state
+  const [nameError, setNameError] = useState("");
+  const [emailAdressError, setEmailAdressError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [passwordMatchError, setPasswordMatchError] = useState("");
+  const [userroleError, setUSerroleError] = useState("");
+
+  // Gel all userroel.
+  useEffect(() => {
+    let unmounted = false;
+
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/userrole/getall`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        const records = [];
+        // console.log(data.data.data, "data");
+        if (data.data.data) {
+          data.data.data.map((record) => {
+            records.push({
+              userroleid: record._id,
+              userrolename: record.rolename,
+            });
+          });
+          setAllUserRole(records);
+        }
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+    return () => {
+      unmounted = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    setNameError("");
+    setEmailAdressError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
+    setPasswordMatchError("");
+    setUSerroleError("");
+    setValidated(false);
+  }, [name, emailAddress, password, confirmPassword, userrole]);
+
+  useEffect(() => {
+    if (location.state) {
+      setIsEdit(true);
+      setName(location.state.servicename);
+    }
+  }, []);
+
+  function addNewUsers() {
+    if (!/^[a-zA-Z]/i.test(name)) {
+      setValidated(true);
+      setNameError("Please enter valid name");
+    }
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
+      setValidated(true);
+      setEmailAdressError("Please enter valid email address");
+    }
+    if (
+      !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
+        password,
+      )
+    ) {
+      setValidated(true);
+      setPasswordError("Please enter strong password");
+    }
+    if (
+      !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
+        confirmPassword,
+      )
+    ) {
+      setValidated(true);
+      setConfirmPasswordError("Please enter strong password");
+    }
+    if (!password === confirmPassword) {
+      setValidated(true);
+      setPasswordMatchError("Password and confirm password does not match");
+    }
+    if (!userrole) {
+      setValidated(true);
+      setUSerroleError("Please select userrole");
+    } else {
+      if (isEdit) {
+        // Edit data
+
+        setSpinner(true);
+        var data = new FormData();
+        data.append("servicename", name);
+
+        // axios
+        //   .post(`${process.env.REACT_APP_APIURL}/karigar/services/edit`, data, {
+        //     headers: { Authorization: `Bearer ${token}` },
+        //   })
+        //   .then((data) => {
+        //     if (data.data.status) {
+        //       toast.success(data.data.message, {
+        //         onClose: () => {
+        //           navigate("/services");
+        //         },
+        //       });
+        //     } else {
+        //       toast.error(data.data.message);
+        //     }
+        //     setSpinner(false);
+        //   })
+        //   .catch((error) => {
+        //     console.log(error, "error");
+        //     setSpinner(false);
+        //   });
+      } else {
+        // Add new users.
+        var data = new FormData();
+        data.append("name", name);
+        data.append("emailaddress", emailAddress);
+        data.append("password", password);
+        data.append("confirmpassword", confirmPassword);
+        data.append("userroll", userrole);
+        data.append("isadmin", true);
+
+        axios
+          .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate("/users");
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      }
+    }
+  }
+
+  return (
+    <div>
+      <CContainer>
+        <CRow>
+          <CCol sm="12">
+            <CCard>
+              <CCardBody className="p-4">
+                <CForm
+                  className="row g-3"
+                  noValidate
+                  validated={validated}
+                  onSubmit={addNewUsers}
+                >
+                  <h2>Users</h2>
+                  <hr />
+
+                  <CCol md={6}>
+                    <CFormLabel
+                      htmlFor="name"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Name
+                    </CFormLabel>
+                    <CFormInput
+                      type="text"
+                      id="name"
+                      placeholder="Name"
+                      autoComplete="name"
+                      required
+                      value={name ? name : ""}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                      }}
+                    />
+                    {nameError && <p className="text-danger">{nameError}</p>}
+                  </CCol>
+
+                  <CCol md={6}>
+                    <CFormLabel
+                      htmlFor="emailaddress"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Email Address
+                    </CFormLabel>
+                    <CFormInput
+                      type="emailaddress"
+                      id="emailaddress"
+                      placeholder="Email address"
+                      autoComplete="emailaddress"
+                      required
+                      value={emailAddress ? emailAddress : ""}
+                      onChange={(e) => {
+                        setEmailAddress(e.target.value);
+                      }}
+                    />
+                    {emailAdressError && (
+                      <p className="text-danger">{emailAdressError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={6}>
+                    <CFormLabel
+                      htmlFor="password"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Password
+                    </CFormLabel>
+                    <CFormInput
+                      type="password"
+                      id="password"
+                      placeholder="password"
+                      autoComplete="password"
+                      required
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
+                    />
+                    {passwordError && (
+                      <p className="text-danger">{passwordError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={6}>
+                    <CFormLabel
+                      htmlFor="password"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Confirm Password
+                    </CFormLabel>
+                    <CFormInput
+                      type="password"
+                      id="confirmpassword"
+                      placeholder="Confirm password"
+                      autoComplete="Confirm password"
+                      required
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                      }}
+                    />
+                    {confirmPasswordError && (
+                      <p className="text-danger">{confirmPasswordError}</p>
+                    )}
+                  </CCol>
+
+                  {passwordMatchError && (
+                    <p className="text-danger">{passwordMatchError}</p>
+                  )}
+
+                  <CCol md={6}>
+                    <CFormLabel
+                      htmlFor="userrole"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Select Userrole
+                    </CFormLabel>
+
+                    <CFormSelect
+                      required
+                      id="userrole"
+                      name="userrole"
+                      value={userrole}
+                      onChange={(e) => {
+                        setUserrole(e.target.value);
+                      }}
+                    >
+                      <option defaultValue="select userrole" selected>
+                        Select Userrole
+                      </option>
+
+                      {allUserRole.map((roleList) => (
+                        <option
+                          key={roleList.userroleid}
+                          value={roleList.userroleid}
+                        >
+                          {roleList.userrolename}
+                        </option>
+                      ))}
+                    </CFormSelect>
+
+                    {userroleError && (
+                      <p className="text-danger">{userroleError}</p>
+                    )}
+                  </CCol>
+
+                  <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    {spinner ? (
+                      <div className="spinner-border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                    ) : (
+                      <CButton
+                        color="primary"
+                        onClick={() => {
+                          addNewUsers();
+                        }}
+                      >
+                        Submit
+                      </CButton>
+                    )}
+
+                    <CButton
+                      color="primary"
+                      onClick={() => {
+                        navigate("/users");
+                      }}
+                    >
+                      Back
+                    </CButton>
+                  </div>
+                </CForm>
+                <ToastContainer />
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+      </CContainer>
+    </div>
+  );
+};
+
+export default AddServices;

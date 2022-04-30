@@ -129,6 +129,8 @@ const getAllProvider = async (req, res, next) => {
               objectData.actualprice = findOffer.actualprice;
               return objectData;
             } else {
+              objectData.currentprice = objectData.price;
+              delete objectData.price;
               return objectData;
             }
           })
@@ -163,7 +165,7 @@ const getSingleProvider = async (req, res, next) => {
     const servicesProviderId = req.body.servicesproviderid;
 
     if (mongoose.isValidObjectId(servicesProviderId)) {
-      const getQry = await Serviceprovider.findById(servicesProviderId)
+      let getQry = await Serviceprovider.findById(servicesProviderId)
         .where({ isactive: true })
         .populate({ path: "userid", select: "name" })
         .populate({
@@ -173,6 +175,24 @@ const getSingleProvider = async (req, res, next) => {
         });
 
       if (getQry) {
+        getQry = getQry.toJSON();
+
+        let findOffer = await Offer.findOne()
+          .where({
+            serviceproviderid: getQry._id,
+            isactive: true,
+          })
+          .select("currentprice actualprice");
+
+        if (findOffer) {
+          delete getQry.price;
+          getQry.currentprice = findOffer.currentprice;
+          getQry.actualprice = findOffer.actualprice;
+        } else {
+          getQry.currentprice = getQry.price;
+          delete getQry.price;
+        }
+
         return res.send({
           status: true,
           message: `Service provider found into system.`,
@@ -365,10 +385,76 @@ const editProvider = async (req, res, next) => {
   }
 };
 
+const getAllProviderList = async (req, res, next) => {
+  try {
+    const subServiceId = req.body.subserviceid;
+
+    if (mongoose.Types.ObjectId.isValid(subServiceId)) {
+      const getQry = await Serviceprovider.find({
+        subserviceid: subServiceId,
+        isactive: true,
+      })
+        .select("description price image name")
+        .populate({
+          path: "subserviceid",
+          select: "subservicename",
+        });
+
+      if (getQry.length > 0) {
+        let serviceProvider = await Promise.all(
+          getQry.map(async (dataList) => {
+            let objectData = {};
+            objectData = dataList.toJSON();
+
+            let findOffer = await Offer.findOne()
+              .where({
+                subserviceid: objectData.subserviceid._id,
+                serviceproviderid: objectData._id,
+                isactive: true,
+              })
+              .select("currentprice actualprice");
+
+            if (findOffer) {
+              delete objectData.price;
+              objectData.currentprice = findOffer.currentprice;
+              objectData.actualprice = findOffer.actualprice;
+              return objectData;
+            } else {
+              objectData.currentprice = objectData.price;
+              delete objectData.price;
+              return objectData;
+            }
+          })
+        );
+
+        return res.send({
+          status: true,
+          message: `${getQry.length} Service provider found into system.`,
+          data: serviceProvider,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `${getQry.length} Service provider not found into system.`,
+        });
+      }
+    } else {
+      return res.send({
+        status: false,
+        message: `${getQry.length} Service provider not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createProvider,
   getAllProvider,
   getSingleProvider,
   deleteProvider,
   editProvider,
+  getAllProviderList,
 };

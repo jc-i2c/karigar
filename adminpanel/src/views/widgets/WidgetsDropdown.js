@@ -8,6 +8,7 @@ const WidgetsDropdown = () => {
 
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
   const [customers, setCustomers] = useState("");
+  const [users, setUsers] = useState("");
   const [servicesprovider, setServicesProvider] = useState("");
   const [services, setServices] = useState("");
   const [offers, setOffers] = useState("");
@@ -21,7 +22,8 @@ const WidgetsDropdown = () => {
       )
       .then((data) => {
         // console.log(data.data.widgetsdata, "data");
-        setCustomers(data.data.widgetsdata[0]["customers"]);
+        setUsers(data.data.widgetsdata[0]["users"]);
+        // setCustomers(data.data.widgetsdata[0]["customers"]);
         setServicesProvider(data.data.widgetsdata[0]["servicesprovider"]);
         setServices(data.data.widgetsdata[0]["services"]);
         setOffers(data.data.widgetsdata[0]["offers"]);
@@ -38,10 +40,10 @@ const WidgetsDropdown = () => {
           className="mb-3"
           color="primary"
           inverse
-          title="CUSTOMERS"
-          value={customers ? customers : 0}
+          title="Users"
+          value={users ? users : 0}
           onClick={() => {
-            navigate("/dashboard");
+            navigate("/users");
           }}
         />
       </CCol>
@@ -52,6 +54,9 @@ const WidgetsDropdown = () => {
           inverse
           title="SERVICES PROVIDER"
           value={servicesprovider ? servicesprovider : 0}
+          onClick={() => {
+            navigate("/serviceprovider");
+          }}
         />
       </CCol>
       <CCol sm={6} lg={3}>

@@ -7,13 +7,17 @@ const getWidgetData = async (req, res, next) => {
   try {
     let widgetsdata = [];
 
-    // Get total customer.
-    let getCustomerTotal = await Users.find()
-      .where({
-        userroll: "626113fadf6c093c730a54fa",
-        isactive: true,
-      })
-      .count();
+    // Get total users.
+    let getTotalUsers = await Users.find().count();
+    // console.log(getTotalUsers, "getTotalUsers");
+
+    // // Get total customer.
+    // let getCustomerTotal = await Users.find()
+    //   .where({
+    //     userroll: "626113fadf6c093c730a54fa",
+    //     isactive: true,
+    //   })
+    //   .count();
 
     // Get total services provider.
     let getServicesProviderTotal = await Users.find()
@@ -34,7 +38,8 @@ const getWidgetData = async (req, res, next) => {
       .count();
 
     widgetsdata.push({
-      customers: getCustomerTotal,
+      users: getTotalUsers,
+      // customers: getCustomerTotal,
       servicesprovider: getServicesProviderTotal,
       services: getServicesTotal,
       offers: getOffersTotal,

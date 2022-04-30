@@ -197,28 +197,37 @@ const countRate = async (req, res, next) => {
       })
       .select("rate");
 
-    let averageRate = 0;
-    let totalCnt = countRate.length;
+    if (countRate.length > 0) {
+      let averageRate = 0;
+      let totalCnt = countRate.length;
 
-    countRate.forEach((rate) => {
-      averageRate = averageRate + rate.rate;
-    });
-
-    averageRate = averageRate / totalCnt;
-
-    if (countRate > 0 && countRate > -1) {
-      return res.send({
-        status: true,
-        message: `Service provider rate found into system.`,
-        countrate: countRate.length,
-        averagerate: averageRate,
+      countRate.forEach((rate) => {
+        averageRate = averageRate + rate.rate;
       });
+
+      averageRate = averageRate / totalCnt;
+
+      console.log(averageRate, "averageRate");
+
+      if (countRate > 0 && countRate > -1) {
+        return res.send({
+          status: true,
+          message: `Service provider rate found into system.`,
+          countrate: countRate.length,
+          averagerate: averageRate,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `Service provider rate not found into system.`,
+          countrate: countRate.length,
+          averagerate: averageRate,
+        });
+      }
     } else {
       return res.send({
         status: false,
         message: `Service provider rate not found into system.`,
-        countrate: countRate.length,
-        averagerate: averageRate,
       });
     }
   } catch (error) {

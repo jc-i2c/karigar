@@ -29,10 +29,13 @@ const ViewSubServices = () => {
 
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
   const [subServices, setSubServices] = useState([]);
+  const [servicesId, setServiceId] = useState("");
 
   useEffect(() => {
-    if (location.state.serviceid) {
-      let servicesId = location.state.serviceid;
+    let unmounted = false;
+
+    if (location.state) {
+      setServiceId(location.state.serviceid);
 
       let data = new FormData();
       data.append("servicesid", servicesId);
@@ -47,12 +50,12 @@ const ViewSubServices = () => {
         )
         .then((data) => {
           const records = [];
-          // console.log(data.data.data, "data");
           if (data.data.data) {
             data.data.data.map((record) => {
               records.push({
                 subserviceid: record._id,
                 servicename: record.servicesid.servicename,
+                servicesid: record.servicesid._id,
                 subservicename: record.subservicename,
                 subserviceimage: record.subserviceimage,
                 createdAt: record.createdAt,
@@ -68,7 +71,10 @@ const ViewSubServices = () => {
     } else {
       navigate("/services");
     }
-  }, []);
+    return () => {
+      unmounted = true;
+    };
+  }, [servicesId]);
 
   function deleteSubServices(subServiceId) {
     let data = new FormData();
@@ -194,9 +200,10 @@ const ViewSubServices = () => {
                         onClick={() => {
                           navigate("/addsubservices", {
                             state: {
+                              servicesid: item.servicesid,
                               subserviceid: item.subserviceid,
-                              servicename: item.servicename,
-                              serviceimage: item.serviceimage,
+                              subservicename: item.subservicename,
+                              subserviceimage: item.subserviceimage,
                             },
                           });
                         }}

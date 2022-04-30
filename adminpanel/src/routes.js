@@ -12,6 +12,8 @@ const Addsubservices = React.lazy(() => import("./views/subservices/add_subservi
 
 // All user
 const AllUser = React.lazy(() => import("./views/users/all_users"));
+const Addusers = React.lazy(() => import("./views/users/add_users"));
+const Serviceprovider = React.lazy(() => import("./views/users/view_service_provider"));
 
 const routes = [
   // { path: "/", exact: true, name: "Home" },
@@ -30,6 +32,8 @@ const routes = [
 
   // Users url
   { path: "/users", name: "AllUser", element: AllUser },
+  { path: "/addusers", name: "Addusers", element: Addusers },
+  { path: "/serviceprovider", name: "Serviceprovider", element: Serviceprovider },
 
 ];
 

@@ -18,10 +18,15 @@ const { sendOtp } = require("../helper/mailsending");
 // User signup API.
 const userSignUp = async (req, res, next) => {
   try {
-    const { emailaddress, password, userroll, name } = req.body;
+    let signUpValData = {
+      name: req.body.name,
+      emailaddress: req.body.emailaddress,
+      password: req.body.password,
+      confirmpassword: req.body.confirmpassword,
+    };
 
     // Joi validation.
-    const { error } = signUpVal(req.body);
+    const { error } = signUpVal(signUpValData);
 
     if (error) {
       let errorMsg = {};
@@ -34,40 +39,23 @@ const userSignUp = async (req, res, next) => {
         message: errorMsg,
       });
     } else {
-      var genOtp = Math.floor(100000 + Math.random() * 900000);
-
-      let data = {
-        emailaddress: emailaddress,
-        otp: genOtp,
-        verification: true,
-      };
-
-      if (Object.keys(data).length >= 0) {
-        if (userroll) {
-          var user = new User({
-            emailaddress: emailaddress,
-            password: password,
-            otp: genOtp,
-            userroll: userroll,
-          });
-        } else {
-          var user = new User({
-            name: name,
-            emailaddress: emailaddress,
-            password: password,
-            otp: genOtp,
-            userroll: "626113fadf6c093c730a54fa", // default customer
-          });
-        }
+      const { emailaddress, password, userroll, name, isadmin } = req.body;
+      if (isadmin) {
+        // Admin side signup user.
+        var user = new User({
+          name: name,
+          emailaddress: emailaddress,
+          password: password,
+          otp: null,
+          userroll: userroll,
+          status: true,
+        });
 
         user.save(async (error, doc) => {
           if (!error) {
-            // send mail.
-            await sendOtp(data);
-
             return res.send({
               status: true,
-              message: `OTP sending on your email address ${emailaddress}.`,
+              message: `User created.`,
             });
           } else {
             let errorMsg = {};
@@ -82,10 +70,51 @@ const userSignUp = async (req, res, next) => {
           }
         });
       } else {
-        return res.send({
-          status: false,
-          message: `Data is required for send mail.!`,
-        });
+        // Customer side signup user.
+        var genOtp = Math.floor(100000 + Math.random() * 900000);
+
+        let data = {
+          emailaddress: emailaddress,
+          otp: genOtp,
+          verification: true,
+        };
+
+        if (Object.keys(data).length >= 0) {
+          var user = new User({
+            name: name,
+            emailaddress: emailaddress,
+            password: password,
+            otp: genOtp,
+            userroll: "626113fadf6c093c730a54fa", // default customer
+          });
+
+          user.save(async (error, doc) => {
+            if (!error) {
+              // send mail.
+              await sendOtp(data);
+
+              return res.send({
+                status: true,
+                message: `OTP sending on your email address ${emailaddress}.`,
+              });
+            } else {
+              let errorMsg = {};
+
+              errorMsg.keys = Object.keys(error.keyPattern)[0];
+              errorMsg = `${error.keyValue.emailaddress} is already exists into system.`;
+
+              return res.send({
+                status: false,
+                message: errorMsg,
+              });
+            }
+          });
+        } else {
+          return res.send({
+            status: false,
+            message: `Data is required for send mail.!`,
+          });
+        }
       }
     }
   } catch (error) {
@@ -647,36 +676,16 @@ const profileDetails = async (req, res, next) => {
 // Get all users API.
 const getAllUsers = async (req, res, next) => {
   try {
-    let getQry = await User.find();
+    let getQry = await User.find().populate({
+      path: "userroll",
+      select: "rolename",
+    });
 
     if (getQry.length > 0 && getQry.length > -1) {
       let findData = [];
       let resData = {};
       getQry.forEach((data) => {
         resData = data.toObject();
-
-        // // Set user status verify or not.
-        // if (resData.status) {
-        //   resData.status = "user_verified";
-        // } else {
-        //   resData.status = "user_not_verified";
-        // }
-
-        // Set userroll.
-        if (resData.userroll == 1) {
-          resData.userroll = "admin";
-        } else if (resData.userroll == 2) {
-          resData.userroll = "service_provider";
-        } else if (resData.userroll == 3) {
-          resData.userroll = "customer";
-        }
-
-        // Set user is active or not.
-        if (resData.isactive) {
-          resData.isactive = "yes";
-        } else {
-          resData.isactive = "no";
-        }
 
         // Set user gender.
         if (resData.gender == 1) {
@@ -899,6 +908,63 @@ const getAllCustomer = async (req, res, next) => {
   }
 };
 
+// Get all service provider API.
+const getAllServiceProvider = async (req, res, next) => {
+  try {
+    let getQry = await User.find().where({
+      userroll: "62611430df6c093c730a5504",
+    });
+
+    if (getQry.length > 0 && getQry.length > -1) {
+      let findData = [];
+      let resData = {};
+      getQry.forEach((data) => {
+        resData = data.toObject();
+
+        // Set user gender.
+        if (resData.gender == 1) {
+          resData.gender = "male";
+        } else if (resData.gender == 2) {
+          resData.gender = "female";
+        }
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.createdAt = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.updatedAt = resData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        delete resData.userroll; // delete resData["password"]
+        delete resData.password; // delete resData["password"]
+        delete resData.otp; // delete resData["otp"]
+        delete resData.__v; // delete resData["__v"]
+
+        findData.push(resData);
+      });
+
+      return res.send({
+        status: true,
+        message: `${findData.length} service provider found into system.`,
+        data: findData,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `No service provider found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   userSignUp,
   userLogin,
@@ -914,4 +980,5 @@ module.exports = {
   getUserLocation,
   deleteUser,
   getAllCustomer,
+  getAllServiceProvider,
 };

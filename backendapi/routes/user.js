@@ -20,6 +20,7 @@ const {
   deleteUser,
   createNewPassword,
   getAllCustomer,
+  getAllServiceProvider,
 } = require("../controller/C_user");
 
 // UserLoginSignUp user api
@@ -61,6 +62,14 @@ router.post(
   userrollauth,
   multipartMiddleware,
   getAllCustomer
+);
+
+router.post(
+  "/allserviceprovider",
+  auth,
+  userrollauth,
+  multipartMiddleware,
+  getAllServiceProvider
 );
 
 module.exports = router;

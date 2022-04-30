@@ -11,6 +11,7 @@ const {
   getSingleProvider,
   deleteProvider,
   editProvider,
+  getAllProviderList,
 } = require("../controller/C_serviceprovider");
 
 router.post(
@@ -28,5 +29,12 @@ router.post("/single", auth, multipartMiddleware, getSingleProvider);
 router.post("/delete", auth, userrollauth, multipartMiddleware, deleteProvider);
 
 router.post("/edit", auth, userrollauth, upload.single("image"), editProvider);
+
+router.post(
+  "/getallproviderlist",
+  auth,
+  multipartMiddleware,
+  getAllProviderList
+);
 
 module.exports = router;

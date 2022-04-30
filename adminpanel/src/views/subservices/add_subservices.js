@@ -12,8 +12,6 @@ import {
   CContainer,
   CForm,
   CFormInput,
-  CInputGroup,
-  CInputGroupText,
   CRow,
   CButton,
   CFormLabel,
@@ -28,23 +26,24 @@ const AddSubServices = () => {
   const [services, setServices] = useState([]);
 
   const [validated, setValidated] = useState(false);
-  const [subServicesName, setSubServicesName] = useState("");
   const [serviceId, setServiceId] = useState("");
+  const [subServiceId, setSubServiceId] = useState("");
+  const [subServicesName, setSubServicesName] = useState("");
   const [subServiceImage, setSubServiceImage] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
 
   const [serviceError, setServiceError] = useState("");
   const [serviceNameError, setServiceNameError] = useState("");
   const [serviceImageError, setServiceImageError] = useState("");
   const [spinner, setSpinner] = useState(false);
 
-  // Edit services code
-  // const [servicesId, setServicesId] = useState("");
-  // const [isEdit, setIsEdit] = useState(false);
   const [imagePath, setImagePath] = useState("");
   const initialState = { alt: "", src: "" };
 
   // Gel all services
   useEffect(() => {
+    let unmounted = false;
+
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/services/all`,
@@ -69,25 +68,38 @@ const AddSubServices = () => {
       .catch((error) => {
         console.log(error, "error");
       });
+    return () => {
+      unmounted = true;
+    };
   }, []);
 
   // Null error message.
   useEffect(() => {
+    let unmounted = false;
     setServiceError("");
     setServiceNameError("");
     setServiceImageError("");
     setValidated(false);
+    return () => {
+      unmounted = true;
+    };
   }, [serviceId, subServicesName, subServiceImage]);
 
-  // // Edit Sub services.
-  // useEffect(() => {
-  //   if (location.state) {
-  //     setIsEdit(true);
-  //     setServicesId(location.state.serviceid);
-  //     setSubServicesName(location.state.servicename);
-  //     setSubServiceImage(location.state.serviceimage);
-  //   }
-  // }, [servicesId]);
+  // Edit Sub services.
+  useEffect(() => {
+    let unmounted = false;
+
+    if (location.state) {
+      setIsEdit(true);
+      setServiceId(location.state.servicesid);
+      setSubServiceId(location.state.subserviceid);
+      setSubServicesName(location.state.subservicename);
+      setSubServiceImage(location.state.subserviceimage);
+    }
+    return () => {
+      unmounted = true;
+    };
+  }, []);
 
   // Handle image.
   const fileHandle = (e) => {
@@ -115,36 +127,72 @@ const AddSubServices = () => {
       setValidated(true);
       setServiceImageError("Please provide sub service image.");
     } else {
-      // Add new sub services.
-      var data = new FormData();
-      data.append("servicesid", serviceId);
-      data.append("subservicename", subServicesName);
-      data.append("subserviceimage", subServiceImage);
+      if (isEdit) {
+        // Edit sub services.
+        var data = new FormData();
+        data.append("servicesid", serviceId);
+        data.append("subservicesid", subServiceId);
+        data.append("subservicename", subServicesName);
+        data.append("subserviceimage", subServiceImage);
 
-      axios
-        .post(
-          `${process.env.REACT_APP_APIURL}/karigar/subservices/create`,
-          data,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        )
-        .then((data) => {
-          if (data.data.status) {
-            toast.success(data.data.message, {
-              onClose: () => {
-                navigate("/services");
-              },
-            });
-          } else {
-            toast.error(data.data.message);
-          }
-          setSpinner(false);
-        })
-        .catch((error) => {
-          console.log(error, "error");
-          setSpinner(false);
-        });
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/subservices/edit`,
+            data,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate("/subservices", {
+                    state: { serviceid: serviceId },
+                  });
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      } else {
+        // Add new sub services.
+        var data = new FormData();
+        data.append("servicesid", serviceId);
+        data.append("subservicename", subServicesName);
+        data.append("subserviceimage", subServiceImage);
+
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/subservices/create`,
+            data,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate("/services");
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      }
     }
   }
 
@@ -176,13 +224,15 @@ const AddSubServices = () => {
                       required
                       id="servicesname"
                       name="servicesname"
+                      value={serviceId}
                       onChange={(e) => {
                         setServiceId(e.target.value);
                       }}
                     >
-                      <option selected disabled>
+                      <option defaultValue="select services" selected>
                         Select Services
                       </option>
+
                       {services.map((servicesList) => (
                         <option
                           key={servicesList.serviceid}
@@ -212,7 +262,7 @@ const AddSubServices = () => {
                       autoComplete="subservicename"
                       id="subservicename"
                       required
-                      value={subServicesName ? subServicesName : ""}
+                      value={subServicesName}
                       onChange={(e) => {
                         setSubServicesName(e.target.value);
                       }}

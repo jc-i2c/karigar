@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,12 +21,17 @@ import {
   CTableRow,
   CFormSwitch,
   CFormCheck,
+  CButton,
 } from "@coreui/react";
 
 const AllUsers = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
   const [allUsers, setAllUsers] = useState([]);
 
+  // Get all users.
   useEffect(() => {
     axios
       .post(
@@ -35,9 +41,7 @@ const AllUsers = () => {
       )
       .then((data) => {
         const records = [];
-        console.log(data.data.data, "data");
         data.data.data.map((record) => {
-          // console.log(record._id, "record._id");
           records.push({
             customerid: record._id,
             emailaddress: record.emailaddress,
@@ -46,6 +50,7 @@ const AllUsers = () => {
             status: record.status,
             isactive: record.isactive,
             mobilenumber: record.mobilenumber,
+            userroll: record.userroll,
             createdAt: record.createdAt,
             updatedAt: record.updatedAt,
           });
@@ -122,9 +127,16 @@ const AllUsers = () => {
           <CCardHeader className="mb-0 border">Users List</CCardHeader>
           <CCardHeader className="mb-0 border">
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button type="button" className="btn btn-success">
+              <CButton
+                color="primary"
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  navigate("/addusers");
+                }}
+              >
                 Add Users
-              </button>
+              </CButton>
             </div>
           </CCardHeader>
 
@@ -146,6 +158,7 @@ const AllUsers = () => {
                   <CTableHeaderCell>Name</CTableHeaderCell>
                   <CTableHeaderCell>Gender</CTableHeaderCell>
                   <CTableHeaderCell>Mobile Number</CTableHeaderCell>
+                  <CTableHeaderCell>Userrole</CTableHeaderCell>
                   <CTableHeaderCell>CreateAT</CTableHeaderCell>
                   <CTableHeaderCell>UpdateAT</CTableHeaderCell>
                   <CTableHeaderCell>Verified</CTableHeaderCell>
@@ -169,43 +182,69 @@ const AllUsers = () => {
                       <div>{item.mobilenumber ? item.mobilenumber : "-"}</div>
                     </CTableDataCell>
                     <CTableDataCell>
+                      <div>{item.userroll.rolename}</div>
+                    </CTableDataCell>
+                    <CTableDataCell>
                       <div>{item.createdAt}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.updatedAt}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <CFormCheck
-                        key={index}
-                        type="checkbox"
-                        color="primary"
-                        checked={item.status}
-                        size="xl"
-                        onChange={(e) => {
-                          // changeUserStatus(item.customerid);
-                        }}
-                      />
+                      {item.userroll.rolename == "admin" ? (
+                        <CFormCheck
+                          key={index}
+                          type="checkbox"
+                          color="primary"
+                          checked={item.status}
+                          size="xl"
+                          disabled
+                        />
+                      ) : (
+                        <CFormCheck
+                          key={index}
+                          type="checkbox"
+                          color="primary"
+                          checked={item.status}
+                          size="xl"
+                        />
+                      )}
                     </CTableDataCell>
                     <CTableDataCell>
-                      <CFormSwitch
-                        key={index}
-                        type="checkbox"
-                        color="success"
-                        checked={item.isactive}
-                        size="xl"
-                        onChange={(e) => {
-                          changeUserStatus(item.customerid);
-                        }}
-                      />
+                      {item.userroll.rolename == "admin" ? (
+                        <CFormSwitch
+                          key={index}
+                          type="checkbox"
+                          color="success"
+                          checked={item.isactive}
+                          size="xl"
+                          disabled
+                        />
+                      ) : (
+                        <CFormSwitch
+                          key={index}
+                          type="checkbox"
+                          color="success"
+                          checked={item.isactive}
+                          size="xl"
+                          onClick={() => {
+                            changeUserStatus(item.customerid);
+                          }}
+                        />
+                      )}
                     </CTableDataCell>
                     <CTableDataCell>
-                      <DeleteIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          deleteCustomer(item.customerid);
-                        }}
-                      />
+                      {item.userroll.rolename == "admin" ? (
+                        <DeleteIcon variant="contained" color="inherit" />
+                      ) : (
+                        <DeleteIcon
+                          variant="contained"
+                          color="inherit"
+                          onClick={() => {
+                            deleteCustomer(item.customerid);
+                          }}
+                        />
+                      )}
                     </CTableDataCell>
                   </CTableRow>
                 ))}
