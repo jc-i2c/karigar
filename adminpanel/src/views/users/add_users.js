@@ -28,13 +28,16 @@ const AddServices = () => {
   const [spinner, setSpinner] = useState(false);
 
   // Edit services code
-  const [name, setName] = useState("");
   const [emailAddress, setEmailAddress] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userrole, setUserrole] = useState("");
+  const [gender, setGender] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
   const [allUserRole, setAllUserRole] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
+  const [userId, setUserId] = useState("");
 
   // Error state
   const [nameError, setNameError] = useState("");
@@ -42,6 +45,8 @@ const AddServices = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState("");
+  const [mobileNumberError, setMobileNumberError] = useState("");
+  const [genderError, setGenderError] = useState("");
   const [userroleError, setUSerroleError] = useState("");
 
   // Gel all userroel.
@@ -84,13 +89,28 @@ const AddServices = () => {
     setConfirmPasswordError("");
     setPasswordMatchError("");
     setUSerroleError("");
+    setMobileNumberError("");
+    setGenderError("");
     setValidated(false);
-  }, [name, emailAddress, password, confirmPassword, userrole]);
+  }, [
+    name,
+    emailAddress,
+    password,
+    confirmPassword,
+    userrole,
+    mobileNumber,
+    gender,
+  ]);
 
   useEffect(() => {
     if (location.state) {
       setIsEdit(true);
-      setName(location.state.servicename);
+      setUserId(location.state.userid);
+      setEmailAddress(location.state.emailaddress);
+      setName(location.state.name);
+      setUserrole(location.state.userroll);
+      setMobileNumber(location.state.mobilenumber);
+      setGender(location.state.gender);
     }
   }, []);
 
@@ -126,34 +146,50 @@ const AddServices = () => {
     if (!userrole) {
       setValidated(true);
       setUSerroleError("Please select userrole");
+    }
+    if (!/^[6-9]\d{9}$/i.test(mobileNumber)) {
+      setValidated(true);
+      setMobileNumberError("Please enter valid mobile number");
+    }
+    if (!gender) {
+      setValidated(true);
+      setGenderError("Please select gender");
     } else {
       if (isEdit) {
-        // Edit data
-
-        setSpinner(true);
+        // Admin edit userdata.
         var data = new FormData();
-        data.append("servicename", name);
+        data.append("emailaddress", emailAddress);
+        data.append("name", name);
+        data.append("userroll", userrole);
+        data.append("mobilenumber", mobileNumber);
+        data.append("gender", gender);
+        data.append("userid", userId);
 
-        // axios
-        //   .post(`${process.env.REACT_APP_APIURL}/karigar/services/edit`, data, {
-        //     headers: { Authorization: `Bearer ${token}` },
-        //   })
-        //   .then((data) => {
-        //     if (data.data.status) {
-        //       toast.success(data.data.message, {
-        //         onClose: () => {
-        //           navigate("/services");
-        //         },
-        //       });
-        //     } else {
-        //       toast.error(data.data.message);
-        //     }
-        //     setSpinner(false);
-        //   })
-        //   .catch((error) => {
-        //     console.log(error, "error");
-        //     setSpinner(false);
-        //   });
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
+            data,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((data) => {
+            console.log(data, "data.data");
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate("/users");
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
       } else {
         // Add new users.
         var data = new FormData();
@@ -163,6 +199,8 @@ const AddServices = () => {
         data.append("confirmpassword", confirmPassword);
         data.append("userroll", userrole);
         data.append("isadmin", true);
+        data.append("mobilenumber", mobileNumber);
+        data.append("gender", gender);
 
         axios
           .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
@@ -206,6 +244,30 @@ const AddServices = () => {
 
                   <CCol md={6}>
                     <CFormLabel
+                      htmlFor="emailaddress"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Email Address
+                    </CFormLabel>
+                    <CFormInput
+                      type="emailaddress"
+                      id="emailaddress"
+                      placeholder="Email address"
+                      autoComplete="emailaddress"
+                      required
+                      disabled
+                      value={emailAddress ? emailAddress : ""}
+                      onChange={(e) => {
+                        setEmailAddress(e.target.value);
+                      }}
+                    />
+                    {emailAdressError && (
+                      <p className="text-danger">{emailAdressError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={6}>
+                    <CFormLabel
                       htmlFor="name"
                       className="col-sm-4 col-form-label"
                     >
@@ -225,83 +287,63 @@ const AddServices = () => {
                     {nameError && <p className="text-danger">{nameError}</p>}
                   </CCol>
 
-                  <CCol md={6}>
-                    <CFormLabel
-                      htmlFor="emailaddress"
-                      className="col-sm-4 col-form-label"
-                    >
-                      Email Address
-                    </CFormLabel>
-                    <CFormInput
-                      type="emailaddress"
-                      id="emailaddress"
-                      placeholder="Email address"
-                      autoComplete="emailaddress"
-                      required
-                      value={emailAddress ? emailAddress : ""}
-                      onChange={(e) => {
-                        setEmailAddress(e.target.value);
-                      }}
-                    />
-                    {emailAdressError && (
-                      <p className="text-danger">{emailAdressError}</p>
-                    )}
-                  </CCol>
+                  {!isEdit && (
+                    <CCol md={6}>
+                      <CFormLabel
+                        htmlFor="password"
+                        className="col-sm-4 col-form-label"
+                      >
+                        Password
+                      </CFormLabel>
+                      <CFormInput
+                        type="password"
+                        id="password"
+                        placeholder="password"
+                        autoComplete="password"
+                        required
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                        }}
+                      />
+                      {passwordError && (
+                        <p className="text-danger">{passwordError}</p>
+                      )}
+                    </CCol>
+                  )}
 
-                  <CCol md={6}>
-                    <CFormLabel
-                      htmlFor="password"
-                      className="col-sm-4 col-form-label"
-                    >
-                      Password
-                    </CFormLabel>
-                    <CFormInput
-                      type="password"
-                      id="password"
-                      placeholder="password"
-                      autoComplete="password"
-                      required
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                    />
-                    {passwordError && (
-                      <p className="text-danger">{passwordError}</p>
-                    )}
-                  </CCol>
-
-                  <CCol md={6}>
-                    <CFormLabel
-                      htmlFor="password"
-                      className="col-sm-4 col-form-label"
-                    >
-                      Confirm Password
-                    </CFormLabel>
-                    <CFormInput
-                      type="password"
-                      id="confirmpassword"
-                      placeholder="Confirm password"
-                      autoComplete="Confirm password"
-                      required
-                      onChange={(e) => {
-                        setConfirmPassword(e.target.value);
-                      }}
-                    />
-                    {confirmPasswordError && (
-                      <p className="text-danger">{confirmPasswordError}</p>
-                    )}
-                  </CCol>
-
+                  {!isEdit && (
+                    <CCol md={6}>
+                      <CFormLabel
+                        htmlFor="password"
+                        className="col-sm-4 col-form-label"
+                      >
+                        Confirm Password
+                      </CFormLabel>
+                      <CFormInput
+                        type="password"
+                        id="confirmpassword"
+                        placeholder="Confirm password"
+                        autoComplete="Confirm password"
+                        required
+                        onChange={(e) => {
+                          setConfirmPassword(e.target.value);
+                        }}
+                      />
+                      {confirmPasswordError && (
+                        <p className="text-danger">{confirmPasswordError}</p>
+                      )}
+                    </CCol>
+                  )}
                   {passwordMatchError && (
                     <p className="text-danger">{passwordMatchError}</p>
                   )}
 
-                  <CCol md={6}>
+                  <CCol md={4}>
                     <CFormLabel
                       htmlFor="userrole"
                       className="col-sm-4 col-form-label"
                     >
-                      Select Userrole
+                      Userrole
                     </CFormLabel>
 
                     <CFormSelect
@@ -313,8 +355,8 @@ const AddServices = () => {
                         setUserrole(e.target.value);
                       }}
                     >
-                      <option defaultValue="select userrole" selected>
-                        Select Userrole
+                      <option value="" selected>
+                        Selecet Userrole
                       </option>
 
                       {allUserRole.map((roleList) => (
@@ -329,6 +371,58 @@ const AddServices = () => {
 
                     {userroleError && (
                       <p className="text-danger">{userroleError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="mobilenumber"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Mobile Number
+                    </CFormLabel>
+                    <CFormInput
+                      required
+                      type="number"
+                      id="mobilenumber"
+                      placeholder="Mobile Number"
+                      autoComplete="mobilenumber"
+                      value={mobileNumber ? mobileNumber : ""}
+                      onChange={(e) => {
+                        setMobileNumber(e.target.value);
+                      }}
+                    />
+                    {mobileNumberError && (
+                      <p className="text-danger">{mobileNumberError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="userrole"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Userrole
+                    </CFormLabel>
+
+                    <CFormSelect
+                      required
+                      id="gender"
+                      name="gender"
+                      value={gender}
+                      onChange={(e) => {
+                        setGender(e.target.value);
+                      }}
+                    >
+                      <option value="" selected>
+                        Gender
+                      </option>
+                      <option value="1">Male</option>
+                      <option value="2">Female</option>
+                    </CFormSelect>
+
+                    {genderError && (
+                      <p className="text-danger">{genderError}</p>
                     )}
                   </CCol>
 

@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 
 import {
   CCard,
@@ -43,7 +44,7 @@ const AllUsers = () => {
         const records = [];
         data.data.data.map((record) => {
           records.push({
-            customerid: record._id,
+            userid: record._id,
             emailaddress: record.emailaddress,
             name: record.name,
             gender: record.gender,
@@ -75,7 +76,7 @@ const AllUsers = () => {
         if (data.data.status) {
           toast.success(data.data.message);
           let newCustomerData = allUsers.map((listOfCustomer) => {
-            if (listOfCustomer.customerid == customerId) {
+            if (listOfCustomer.userid == customerId) {
               if (listOfCustomer.isactive) {
                 return { ...listOfCustomer, isactive: false };
               } else {
@@ -107,7 +108,7 @@ const AllUsers = () => {
           toast.success(data.data.message);
 
           let newCustomerData = allUsers.filter(
-            (item) => item.customerid !== customerId,
+            (item) => item.userid !== customerId,
           );
 
           setAllUsers(newCustomerData);
@@ -176,7 +177,13 @@ const AllUsers = () => {
                       <div>{item.name ? item.name : "-"}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <div>{item.gender ? item.gender : "-"}</div>
+                      <div>
+                        {item.gender == 1
+                          ? "Male"
+                          : item.gender == 2
+                          ? "Female"
+                          : "-"}
+                      </div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.mobilenumber ? item.mobilenumber : "-"}</div>
@@ -228,22 +235,41 @@ const AllUsers = () => {
                           checked={item.isactive}
                           size="xl"
                           onClick={() => {
-                            changeUserStatus(item.customerid);
+                            changeUserStatus(item.userid);
                           }}
                         />
                       )}
                     </CTableDataCell>
+
                     <CTableDataCell>
                       {item.userroll.rolename == "admin" ? (
-                        <DeleteIcon variant="contained" color="inherit" />
+                        "Admin User"
                       ) : (
-                        <DeleteIcon
-                          variant="contained"
-                          color="inherit"
-                          onClick={() => {
-                            deleteCustomer(item.customerid);
-                          }}
-                        />
+                        <>
+                          <EditIcon
+                            variant="contained"
+                            color="inherit"
+                            onClick={() => {
+                              navigate("/addusers", {
+                                state: {
+                                  userid: item.userid,
+                                  emailaddress: item.emailaddress,
+                                  name: item.name,
+                                  userroll: item.userroll._id,
+                                  mobilenumber: item.mobilenumber,
+                                  gender: item.gender,
+                                },
+                              });
+                            }}
+                          />
+                          <DeleteIcon
+                            variant="contained"
+                            color="inherit"
+                            onClick={() => {
+                              deleteCustomer(item.userid);
+                            }}
+                          />
+                        </>
                       )}
                     </CTableDataCell>
                   </CTableRow>

@@ -63,12 +63,7 @@ const updateProfileDataVal = (data) => {
   const updateProfileDataVal = Joi.object().keys({
     name: Joi.string().min(3).required().label("Name"),
     gender: Joi.string().length(1).required().label("Gender"),
-    mobilenumber: Joi.string()
-      .length(10)
-      // .pattern(/[6-9]{1}[0-9]{9}/)
-      .required()
-      .label("Mobile number"),
-    // location: Joi.string().required().label("Location"),
+    mobilenumber: Joi.string().length(10).required().label("Mobile number"),
   });
   return updateProfileDataVal.validate(data, {
     abortEarly: false,
@@ -477,6 +472,26 @@ const updateBannerVal = (data) => {
   });
 };
 
+// Admin update user data validation.
+const adminUpdateUserDataVal = (data) => {
+  const adminUpdateUserDataVal = Joi.object().keys({
+    userid: Joi.string().required().label("User Id"),
+    emailaddress: Joi.string().email().required().label("Email address"),
+    name: Joi.string().min(3).required().label("Name"),
+    userroll: Joi.string().required().label("Userrole"),
+    mobilenumber: Joi.string().length(10).required().label("Mobile number"),
+    gender: Joi.string().length(1).required().label("Gender"),
+  });
+  return adminUpdateUserDataVal.validate(data, {
+    abortEarly: false,
+    errors: {
+      wrap: {
+        label: "",
+      },
+    },
+  });
+};
+
 module.exports = {
   signUpVal,
   verifyOtpVal,
@@ -502,4 +517,5 @@ module.exports = {
   updateOfferVal,
   createBannerVal,
   updateBannerVal,
+  adminUpdateUserDataVal,
 };

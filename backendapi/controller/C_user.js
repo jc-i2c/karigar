@@ -11,6 +11,7 @@ const {
   changePasswordVal,
   resetPasswordVal,
   createNewPasswordVal,
+  adminUpdateUserDataVal,
 } = require("../helper/joivalidation");
 
 const { sendOtp } = require("../helper/mailsending");
@@ -39,13 +40,23 @@ const userSignUp = async (req, res, next) => {
         message: errorMsg,
       });
     } else {
-      const { emailaddress, password, userroll, name, isadmin } = req.body;
+      const {
+        emailaddress,
+        password,
+        name,
+        mobilenumber,
+        gender,
+        userroll,
+        isadmin,
+      } = req.body;
       if (isadmin) {
         // Admin side signup user.
         var user = new User({
-          name: name,
           emailaddress: emailaddress,
           password: password,
+          name: name,
+          mobilenumber: mobilenumber,
+          gender: gender,
           otp: null,
           userroll: userroll,
           status: true,
@@ -687,13 +698,6 @@ const getAllUsers = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        // Set user gender.
-        if (resData.gender == 1) {
-          resData.gender = "male";
-        } else if (resData.gender == 2) {
-          resData.gender = "female";
-        }
-
         // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
         resData.createdAt = resData.createdAt
           .toISOString()
@@ -965,6 +969,56 @@ const getAllServiceProvider = async (req, res, next) => {
   }
 };
 
+// Admin update user data API.
+const adminEditUserData = async (req, res, next) => {
+  try {
+    const userId = req.body.userid;
+    const { emailaddress, name, userroll, mobilenumber, gender } = req.body;
+
+    // Joi validation.
+    const { error } = adminUpdateUserDataVal(req.body);
+
+    if (error) {
+      let errorMsg = {};
+      error.details.map(async (error) => {
+        errorMsg = { ...errorMsg, [`${error.path}`]: error.message };
+      });
+
+      return res.send({
+        status: false,
+        message: errorMsg,
+      });
+    } else {
+      const updateQry = {
+        emailaddress: emailaddress,
+        name: name,
+        userroll: userroll,
+        mobilenumber: mobilenumber,
+        gender: gender,
+      };
+
+      const result = await User.findByIdAndUpdate(userId, {
+        $set: updateQry,
+      });
+
+      if (result) {
+        return res.send({
+          status: true,
+          message: `User profile details updated.`,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `User profile details not updated.`,
+        });
+      }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   userSignUp,
   userLogin,
@@ -981,4 +1035,5 @@ module.exports = {
   deleteUser,
   getAllCustomer,
   getAllServiceProvider,
+  adminEditUserData,
 };
