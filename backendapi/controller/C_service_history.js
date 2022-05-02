@@ -14,9 +14,7 @@ const createServicehistory = async (req, res, next) => {
       serviceproviderid: req.body.serviceproviderid,
       customerid: req.body.customerid,
       addresstype: req.body.addresstype,
-      street: req.body.street,
-      area: req.body.area,
-      pincode: req.body.pincode,
+      address: req.body.address,
       name: req.body.name,
       servicedate: req.body.servicedate,
       sessiontype: req.body.sessiontype,
@@ -38,12 +36,6 @@ const createServicehistory = async (req, res, next) => {
         message: errorMsg,
       });
     } else {
-      let address = {
-        street: data.street,
-        area: data.area,
-        pincode: data.pincode,
-      };
-
       let servicetime = {
         sessiontype: data.sessiontype,
         sessiontime: data.sessiontime,
@@ -53,7 +45,7 @@ const createServicehistory = async (req, res, next) => {
         serviceproviderid: data.serviceproviderid,
         customerid: data.customerid,
         addresstype: data.addresstype,
-        address: address,
+        address: data.address,
         name: data.name,
         servicedate: data.servicedate,
         servicetime: servicetime,
@@ -313,19 +305,11 @@ const editServicehistory = async (req, res, next) => {
       servicehistoryid: req.body.servicehistoryid,
       serviceproviderid: req.body.serviceproviderid,
       addresstype: req.body.addresstype,
-      street: req.body.street,
-      area: req.body.area,
-      pincode: req.body.pincode,
+      address: req.body.address,
       name: req.body.name,
       servicedate: req.body.servicedate,
       sessiontype: req.body.sessiontype,
       sessiontime: req.body.sessiontime,
-    };
-
-    let address = {
-      street: data.street,
-      area: data.area,
-      pincode: data.pincode,
     };
 
     let servicetime = {
@@ -359,7 +343,7 @@ const editServicehistory = async (req, res, next) => {
         var updateData = {
           serviceproviderid: data.serviceproviderid,
           addresstype: data.addresstype,
-          address: address,
+          address: data.address,
           name: data.name,
           servicedate: data.servicedate,
           servicetime: servicetime,

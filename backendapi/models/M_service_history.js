@@ -19,18 +19,8 @@ const ServiceHistorySchema = new mongoose.Schema(
       required: [true, "Address type is required."],
     },
     address: {
-      street: {
-        type: String,
-        required: [true, "Street address name is required."],
-      },
-      area: {
-        type: String,
-        required: [true, "Area name is required."],
-      },
-      pincode: {
-        type: String,
-        required: [true, "Pincode is required."],
-      },
+      type: String,
+      required: [true, "Address is required."],
     },
     name: {
       type: String,

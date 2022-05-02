@@ -249,18 +249,33 @@ const AddServices = () => {
                     >
                       Email Address
                     </CFormLabel>
-                    <CFormInput
-                      type="emailaddress"
-                      id="emailaddress"
-                      placeholder="Email address"
-                      autoComplete="emailaddress"
-                      required
-                      disabled
-                      value={emailAddress ? emailAddress : ""}
-                      onChange={(e) => {
-                        setEmailAddress(e.target.value);
-                      }}
-                    />
+                    {isEdit ? (
+                      <CFormInput
+                        type="emailaddress"
+                        id="emailaddress"
+                        placeholder="Email address"
+                        autoComplete="emailaddress"
+                        required
+                        disabled
+                        value={emailAddress ? emailAddress : ""}
+                        onChange={(e) => {
+                          setEmailAddress(e.target.value);
+                        }}
+                      />
+                    ) : (
+                      <CFormInput
+                        type="emailaddress"
+                        id="emailaddress"
+                        placeholder="Email address"
+                        autoComplete="emailaddress"
+                        required
+                        value={emailAddress ? emailAddress : ""}
+                        onChange={(e) => {
+                          setEmailAddress(e.target.value);
+                        }}
+                      />
+                    )}
+
                     {emailAdressError && (
                       <p className="text-danger">{emailAdressError}</p>
                     )}

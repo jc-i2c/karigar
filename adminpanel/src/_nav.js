@@ -33,6 +33,12 @@ const _nav = [
   },
   {
     component: CNavItem,
+    name: "Offers",
+    to: "/viewoffers",
+    icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: "All Users",
     to: "/users",
     icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
@@ -41,6 +47,12 @@ const _nav = [
     component: CNavItem,
     name: "Service Provider",
     to: "/serviceprovider",
+    icon: <CIcon icon={cilUserPlus} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: "Customer",
+    to: "/Viewcustomer",
     icon: <CIcon icon={cilUserPlus} customClassName="nav-icon" />,
   },
   // {
@@ -54,60 +66,60 @@ const _nav = [
   //   icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
   // },
 
-  {
-    component: CNavGroup,
-    name: "Icons",
-    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: "CoreUI Free",
-        to: "/icons/coreui-icons",
-        badge: {
-          color: "success",
-          text: "NEW",
-        },
-      },
-      {
-        component: CNavItem,
-        name: "CoreUI Flags",
-        to: "/icons/flags",
-      },
-      {
-        component: CNavItem,
-        name: "CoreUI Brands",
-        to: "/icons/brands",
-      },
-    ],
-  },
+  // {
+  //   component: CNavGroup,
+  //   name: "Icons",
+  //   icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
+  //   items: [
+  //     {
+  //       component: CNavItem,
+  //       name: "CoreUI Free",
+  //       to: "/icons/coreui-icons",
+  //       badge: {
+  //         color: "success",
+  //         text: "NEW",
+  //       },
+  //     },
+  //     {
+  //       component: CNavItem,
+  //       name: "CoreUI Flags",
+  //       to: "/icons/flags",
+  //     },
+  //     {
+  //       component: CNavItem,
+  //       name: "CoreUI Brands",
+  //       to: "/icons/brands",
+  //     },
+  //   ],
+  // },
 
-  {
-    component: CNavGroup,
-    name: "Pages",
-    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: "Login",
-        to: "/login",
-      },
-      {
-        component: CNavItem,
-        name: "Register",
-        to: "/register",
-      },
-      {
-        component: CNavItem,
-        name: "Error 404",
-        to: "/404",
-      },
-      {
-        component: CNavItem,
-        name: "Error 500",
-        to: "/500",
-      },
-    ],
-  },
+  // {
+  //   component: CNavGroup,
+  //   name: "Pages",
+  //   icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
+  //   items: [
+  //     {
+  //       component: CNavItem,
+  //       name: "Login",
+  //       to: "/login",
+  //     },
+  //     {
+  //       component: CNavItem,
+  //       name: "Register",
+  //       to: "/register",
+  //     },
+  //     {
+  //       component: CNavItem,
+  //       name: "Error 404",
+  //       to: "/404",
+  //     },
+  //     {
+  //       component: CNavItem,
+  //       name: "Error 500",
+  //       to: "/500",
+  //     },
+  //   ],
+  // },
 ];
 
 export default _nav;

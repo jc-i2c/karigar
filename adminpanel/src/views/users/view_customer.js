@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,9 +21,12 @@ import {
   CTableRow,
   CFormSwitch,
   CFormCheck,
+  CButton,
 } from "@coreui/react";
 
 const ViewCustomer = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
   const [customers, setCustomers] = useState([]);
 
@@ -118,13 +122,20 @@ const ViewCustomer = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border">Customer List</CCardHeader>
-          {/* <CCardHeader className="mb-0 border">
+          <CCardHeader className="mb-0 border">
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button type="button" className="btn btn-success">
-                Add Customer
-              </button>
+              <CButton
+                color="primary"
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  navigate("/addusers");
+                }}
+              >
+                Add Users
+              </CButton>
             </div>
-          </CCardHeader> */}
+          </CCardHeader>
 
           <CCardBody>
             <CTable

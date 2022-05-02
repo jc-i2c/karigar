@@ -14,6 +14,10 @@ const Addsubservices = React.lazy(() => import("./views/subservices/add_subservi
 const AllUser = React.lazy(() => import("./views/users/all_users"));
 const Addusers = React.lazy(() => import("./views/users/add_users"));
 const Serviceprovider = React.lazy(() => import("./views/users/view_service_provider"));
+const Viewcustomer = React.lazy(() => import("./views/users/view_customer"));
+
+// Service offers.
+const Viewoffers = React.lazy(() => import("./views/offers/get_all_offers"));
 
 const routes = [
   // { path: "/", exact: true, name: "Home" },
@@ -34,6 +38,10 @@ const routes = [
   { path: "/users", name: "AllUser", element: AllUser },
   { path: "/addusers", name: "Addusers", element: Addusers },
   { path: "/serviceprovider", name: "Serviceprovider", element: Serviceprovider },
+  { path: "/viewcustomer", name: "Viewcustomer", element: Viewcustomer },
+
+  // Service offers.
+  { path: "/viewoffers", name: "Viewoffers", element: Viewoffers },
 
 ];
 
