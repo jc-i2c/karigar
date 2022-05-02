@@ -32,7 +32,11 @@ const AppSidebar = () => {
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
         <a className="nav-link" href="/">
-          <img className="sidebar-brand-full" src="/images/logo.svg" alt="logo" />
+          <img
+            className="sidebar-brand-full"
+            src="/images/logo.svg"
+            alt="logo"
+          />
         </a>
       </CSidebarBrand>
       <CSidebarNav>

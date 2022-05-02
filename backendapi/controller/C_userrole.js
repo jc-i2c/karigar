@@ -1,6 +1,6 @@
 const Userrole = require("../models/M_userrole");
 
-// Create userrole API.
+// Create and Update user role API.
 const createUserRole = async (req, res, next) => {
   try {
     var data = req.body.data;
@@ -67,7 +67,7 @@ const createUserRole = async (req, res, next) => {
   }
 };
 
-// Get userrole API.
+// Get all userrole API.
 const getAllRole = async (req, res, next) => {
   try {
     const getAllUserRole = await Userrole.find().populate({
@@ -154,34 +154,6 @@ const delUserRole = async (req, res, next) => {
   }
 };
 
-// Update userrole API.
-const updateUserRole = async (req, res, next) => {
-  try {
-    const userroleid = req.body.userroleid;
-    const rolename = req.body.rolename;
-    const updateQry = { rolename: rolename };
-
-    const result = await Userrole.findByIdAndUpdate(userroleid, {
-      $set: updateQry,
-    });
-
-    if (result) {
-      return res.send({
-        status: true,
-        message: `User role updated.`,
-      });
-    } else {
-      return res.send({
-        status: false,
-        message: `User role not updated.`,
-      });
-    }
-  } catch (error) {
-    console.log(error, "ERROR");
-  }
-};
-
-// Get permission based on userrole Id API.
 const getPermission = async (req, res, next) => {
   try {
     const userroll = res.user.userroll;
@@ -195,16 +167,11 @@ const getPermission = async (req, res, next) => {
         select: "modulesname",
       });
 
-    let modulesData = [];
-    result.permissions.map((data) => {
-      modulesData.push({ id: data.systemmodulesid._id, access: data.access });
-    });
-
     if (result) {
       return res.send({
         status: true,
         message: `User permission found into system.`,
-        data: modulesData,
+        data: result,
       });
     } else {
       return res.send({
@@ -221,6 +188,5 @@ module.exports = {
   createUserRole,
   getAllRole,
   delUserRole,
-  updateUserRole,
   getPermission,
 };

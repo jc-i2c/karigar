@@ -22,13 +22,14 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
+  CFormSwitch,
 } from "@coreui/react";
 
 const ViewServices = () => {
   const navigate = useNavigate();
 
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
-  const [services, setServices] = useState([]);
+  const [offers, setOffers] = useState([]);
 
   useEffect(() => {
     axios
@@ -39,40 +40,72 @@ const ViewServices = () => {
       )
       .then((data) => {
         const records = [];
-        console.log(data.data.data, "data");
+        // console.log(data.data.data, "data");
         data.data.data.map((record) => {
           records.push({
-            serviceid: record._id,
-            servicename: record.servicename,
-            serviceimage: record.serviceimage,
-            createdAt: record.createdAt,
-            updatedAt: record.updatedAt,
+            offerid: record._id,
+            subservicename: record.subserviceid.subservicename,
+            subserviceimage: record.subserviceid.subserviceimage,
+            serviceprovidername: record.serviceproviderid.name,
+            actualprice: record.actualprice,
+            currentprice: record.currentprice,
+            isactive: record.isactive,
           });
         });
-        setServices(records);
+        setOffers(records);
       })
       .catch((error) => {
         console.log(error, "error");
       });
   }, []);
 
-  function deleteServices(serviceId) {
+  function changeOfferStatus(offerId) {
     let data = new FormData();
-    data.append("servicesid", serviceId);
+    data.append("offerid", offerId);
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/offer/changestatus`,
+        data,
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
+      .then((data) => {
+        if (data.data.status) {
+          toast.success(data.data.message);
+          let newOfferData = offers.map((offerList) => {
+            if (offerList.offerid == offerId) {
+              if (offerList.isactive) {
+                return { ...offerList, isactive: false };
+              } else {
+                return { ...offerList, isactive: true };
+              }
+            }
+            return offerList;
+          });
+          setOffers(newOfferData);
+        } else {
+          toast.error(data.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }
+
+  function deleteOffers(offerId) {
+    let data = new FormData();
+    data.append("offerid", offerId);
 
     axios
-      .post(`${process.env.REACT_APP_APIURL}/karigar/services/delete`, data, {
+      .post(`${process.env.REACT_APP_APIURL}/karigar/offer/delete`, data, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((data) => {
         if (data.data.status) {
           toast.success(data.data.message);
 
-          let newServciesData = services.filter(
-            (item) => item.serviceid !== serviceId,
-          );
+          let newOffersData = offers.filter((item) => item.offerid !== offerId);
 
-          setServices(newServciesData);
+          setOffers(newOffersData);
         } else {
           toast.error(data.data.message);
         }
@@ -87,20 +120,20 @@ const ViewServices = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border">Offers List</CCardHeader>
-          {/* <CCardHeader className="mb-0 border">
+          <CCardHeader className="mb-0 border">
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"
                 type="button"
                 className="btn btn-success"
                 onClick={() => {
-                  navigate("/addservices");
+                  navigate("/addoffers");
                 }}
               >
                 Add Offers
               </CButton>
             </div>
-          </CCardHeader> */}
+          </CCardHeader>
 
           <CCardBody>
             <CTable
@@ -116,89 +149,79 @@ const ViewServices = () => {
             >
               <CTableHead color="light">
                 <CTableRow>
-                  <CTableHeaderCell>Service Name</CTableHeaderCell>
-                  <CTableHeaderCell>Service Image</CTableHeaderCell>
-                  <CTableHeaderCell>View Subservices</CTableHeaderCell>
-                  <CTableHeaderCell>CreateAT</CTableHeaderCell>
-                  <CTableHeaderCell>UpdateAT</CTableHeaderCell>
+                  <CTableHeaderCell>Sub Service Name</CTableHeaderCell>
+                  <CTableHeaderCell>Sub Service Image</CTableHeaderCell>
+                  <CTableHeaderCell>Service Provider Name</CTableHeaderCell>
+                  <CTableHeaderCell>Current Price</CTableHeaderCell>
+                  <CTableHeaderCell>Actual Price</CTableHeaderCell>
+                  <CTableHeaderCell>is_Active</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {services.map((item, index) => (
+                {offers.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
                     <CTableDataCell>
-                      <div>{item.servicename}</div>
+                      <div>{item.subservicename}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <div>
-                        {item.serviceimage ? (
-                          <img
-                            src={
-                              `${process.env.REACT_APP_PROFILEPIC}` +
-                              item.serviceimage
-                            }
-                            alt={item.serviceimage}
-                            style={{
-                              height: "50px",
-                              width: "50px",
-                              borderRadius: "50%",
-                            }}
-                          />
-                        ) : (
-                          <img
-                            src={
-                              `${process.env.REACT_APP_PROFILEPIC}` + "fiximage"
-                            }
-                            alt={"fiximage"}
-                            style={{
-                              height: "50px",
-                              width: "50px",
-                              borderRadius: "50%",
-                            }}
-                          />
-                        )}
-                      </div>
-                    </CTableDataCell>
-
-                    <CTableDataCell>
-                      <VisibilityIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          navigate("/subservices", {
-                            state: { serviceid: item.serviceid },
-                          });
+                      <img
+                        src={
+                          `${process.env.REACT_APP_PROFILEPIC}` +
+                          item.subserviceimage
+                        }
+                        alt={item.subserviceimage}
+                        style={{
+                          height: "50px",
+                          width: "50px",
+                          borderRadius: "50%",
                         }}
                       />
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>{item.createdAt}</div>
+                      <div>{item.serviceprovidername}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <div>{item.updatedAt}</div>
+                      <div>{item.currentprice}</div>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <div>{item.actualprice}</div>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <CFormSwitch
+                        key={index}
+                        type="checkbox"
+                        color="success"
+                        checked={item.isactive}
+                        size="xl"
+                        onClick={() => {
+                          changeOfferStatus(item.offerid);
+                        }}
+                      />
                     </CTableDataCell>
 
                     <CTableDataCell>
                       <EditIcon
                         variant="contained"
                         color="inherit"
-                        onClick={() => {
-                          navigate("/addservices", {
-                            state: {
-                              serviceid: item.serviceid,
-                              servicename: item.servicename,
-                              serviceimage: item.serviceimage,
-                            },
-                          });
-                        }}
+                        // onClick={() => {
+                        //   navigate("/addservices", {
+                        //     state: {
+                        //       offerid: item.offerid,
+                        //       subserviceid: item.subserviceid,
+                        //       serviceproviderid: item.serviceproviderid,
+                        //       currentprice: item.currentprice,
+                        //       actualprice: item.actualprice,
+                        //     },
+                        //   });
+                        // }}
                       />
                       <DeleteIcon
                         variant="contained"
                         color="inherit"
                         onClick={() => {
-                          deleteServices(item.serviceid);
+                          deleteOffers(item.offerid);
                         }}
                       />
                     </CTableDataCell>

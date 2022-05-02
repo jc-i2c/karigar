@@ -7,7 +7,7 @@ const {
   createUserRole,
   getAllRole,
   delUserRole,
-  updateUserRole,
+  // updateUserRole,
   getPermission,
 } = require("../controller/C_userrole");
 
@@ -17,7 +17,7 @@ router.post("/getall", auth, multipartMiddleware, getAllRole);
 
 router.post("/delete", auth, multipartMiddleware, delUserRole);
 
-router.post("/update", auth, multipartMiddleware, updateUserRole);
+// router.post("/update", auth, multipartMiddleware, updateUserRole);
 
 router.post("/getpermission", auth, multipartMiddleware, getPermission);
 

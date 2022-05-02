@@ -18,6 +18,7 @@ const Viewcustomer = React.lazy(() => import("./views/users/view_customer"));
 
 // Service offers.
 const Viewoffers = React.lazy(() => import("./views/offers/get_all_offers"));
+const Addoffers = React.lazy(() => import("./views/offers/add_offers"));
 
 const routes = [
   // { path: "/", exact: true, name: "Home" },
@@ -42,6 +43,7 @@ const routes = [
 
   // Service offers.
   { path: "/viewoffers", name: "Viewoffers", element: Viewoffers },
+  { path: "/addoffers", name: "Addoffers", element: Addoffers },
 
 ];
 

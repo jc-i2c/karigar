@@ -78,6 +78,9 @@ const WidgetsDropdown = () => {
           inverse
           title="OFFERS"
           value={offers ? offers : 0}
+          onClick={() => {
+            navigate("/viewoffers");
+          }}
         />
       </CCol>
     </CRow>

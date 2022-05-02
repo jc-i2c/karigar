@@ -242,34 +242,30 @@ const AllUsers = () => {
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      {item.userroll.rolename == "admin" ? (
-                        "Admin User"
-                      ) : (
-                        <>
-                          <EditIcon
-                            variant="contained"
-                            color="inherit"
-                            onClick={() => {
-                              navigate("/addusers", {
-                                state: {
-                                  userid: item.userid,
-                                  emailaddress: item.emailaddress,
-                                  name: item.name,
-                                  userroll: item.userroll._id,
-                                  mobilenumber: item.mobilenumber,
-                                  gender: item.gender,
-                                },
-                              });
-                            }}
-                          />
-                          <DeleteIcon
-                            variant="contained"
-                            color="inherit"
-                            onClick={() => {
-                              deleteCustomer(item.userid);
-                            }}
-                          />
-                        </>
+                      <EditIcon
+                        variant="contained"
+                        color="inherit"
+                        onClick={() => {
+                          navigate("/addusers", {
+                            state: {
+                              userid: item.userid,
+                              emailaddress: item.emailaddress,
+                              name: item.name,
+                              userroll: item.userroll._id,
+                              mobilenumber: item.mobilenumber,
+                              gender: item.gender,
+                            },
+                          });
+                        }}
+                      />
+                      {item.userroll.rolename !== "admin" && (
+                        <DeleteIcon
+                          variant="contained"
+                          color="inherit"
+                          onClick={() => {
+                            deleteCustomer(item.userid);
+                          }}
+                        />
                       )}
                     </CTableDataCell>
                   </CTableRow>
