@@ -14,17 +14,7 @@ const createProvider = async (req, res, next) => {
       userid: req.body.userid,
       subserviceid: req.body.subserviceid,
       price: req.body.price,
-      duration: req.body.duration,
-      turnaroundtime: req.body.turnaroundtime,
-      pricing: req.body.pricing,
-      bathroomcleaning: req.body.bathroomcleaning,
-      kitchencleaning: req.body.kitchencleaning,
-      bedroomcleaning: req.body.bedroomcleaning,
-      sofacleaning: req.body.sofacleaning,
-      carpetcleaning: req.body.carpetcleaning,
-      balconycleaning: req.body.balconycleaning,
-      fridgecleaning: req.body.fridgecleaning,
-      overcleaning: req.body.overcleaning,
+      servicedetails: [],
     };
 
     if (req.file) {
@@ -50,19 +40,7 @@ const createProvider = async (req, res, next) => {
           subserviceid: data.subserviceid,
           image: serProviderImage,
           price: data.price,
-          details: {
-            duration: data.duration,
-            turnaroundtime: data.turnaroundtime,
-            pricing: data.pricing,
-            bathroomcleaning: data.bathroomcleaning,
-            kitchencleaning: data.kitchencleaning,
-            bedroomcleaning: data.bedroomcleaning,
-            sofacleaning: data.sofacleaning,
-            carpetcleaning: data.carpetcleaning,
-            balconycleaning: data.balconycleaning,
-            fridgecleaning: data.fridgecleaning,
-            overcleaning: data.overcleaning,
-          },
+          servicedetails: data.servicedetails,
         });
 
         const insertQry = await createProvider.save();
@@ -150,7 +128,7 @@ const getAllProvider = async (req, res, next) => {
     } else {
       return res.send({
         status: false,
-        message: `${getQry.length} Service provider not found into system.`,
+        message: `Service provider not found into system.`,
       });
     }
   } catch (error) {
@@ -450,6 +428,63 @@ const getAllProviderList = async (req, res, next) => {
   }
 };
 
+// Admin add services provider details dynamically API.
+const addServiceProviderDetails = async (req, res, next) => {
+  try {
+    let serviceProviderId = req.body.serviceproviderid;
+    let data = req.body;
+    if (!serviceProviderId) {
+      return res.send({
+        status: false,
+        message: `Service provider Id is required.`,
+      });
+    } else if (!data) {
+      return res.send({
+        status: false,
+        message: `Service provider details is required.`,
+      });
+    } else {
+      let findQry = await Serviceprovider.findOne({ _id: serviceProviderId });
+      if (findQry) {
+        let detailsData = [];
+
+        for (const key in data) {
+          let tempObj = {};
+          tempObj.name = `${key}`;
+          tempObj.value = `${data[key]}`;
+
+          detailsData.push(tempObj);
+        }
+
+        let updateQry = await Serviceprovider.findByIdAndUpdate(findQry._id, {
+          $set: { servicedetails: detailsData },
+        });
+
+        if (updateQry) {
+          return res.send({
+            status: true,
+            message: `Service provider details updated.!`,
+          });
+        } else {
+          removeFile(Image);
+          return res.send({
+            status: false,
+            message: `Service provider details not updated.!`,
+          });
+        }
+      } else {
+        return res.send({
+          status: false,
+          message: `Service provider details not found into system.`,
+        });
+      }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createProvider,
   getAllProvider,
@@ -457,4 +492,5 @@ module.exports = {
   deleteProvider,
   editProvider,
   getAllProviderList,
+  addServiceProviderDetails,
 };

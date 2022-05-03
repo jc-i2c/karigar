@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import VisibilityIcon from "@material-ui/icons/Visibility";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -31,10 +30,11 @@ const ViewServices = () => {
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
   const [offers, setOffers] = useState([]);
 
+  // Get all offers list.
   useEffect(() => {
     axios
       .post(
-        `${process.env.REACT_APP_APIURL}/karigar/offer/getall`,
+        `${process.env.REACT_APP_APIURL}/karigar/offer/getalloffer`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       )
@@ -44,8 +44,11 @@ const ViewServices = () => {
         data.data.data.map((record) => {
           records.push({
             offerid: record._id,
+            servicesid: record.servicesid,
+            servicename: record.servicename,
+            subserviceid: record.subserviceid._id,
             subservicename: record.subserviceid.subservicename,
-            subserviceimage: record.subserviceid.subserviceimage,
+            serviceproviderid: record.serviceproviderid._id,
             serviceprovidername: record.serviceproviderid.name,
             actualprice: record.actualprice,
             currentprice: record.currentprice,
@@ -149,8 +152,8 @@ const ViewServices = () => {
             >
               <CTableHead color="light">
                 <CTableRow>
+                  <CTableHeaderCell>Service Name</CTableHeaderCell>
                   <CTableHeaderCell>Sub Service Name</CTableHeaderCell>
-                  <CTableHeaderCell>Sub Service Image</CTableHeaderCell>
                   <CTableHeaderCell>Service Provider Name</CTableHeaderCell>
                   <CTableHeaderCell>Current Price</CTableHeaderCell>
                   <CTableHeaderCell>Actual Price</CTableHeaderCell>
@@ -162,21 +165,10 @@ const ViewServices = () => {
                 {offers.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
                     <CTableDataCell>
-                      <div>{item.subservicename}</div>
+                      <div>{item.servicename}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <img
-                        src={
-                          `${process.env.REACT_APP_PROFILEPIC}` +
-                          item.subserviceimage
-                        }
-                        alt={item.subserviceimage}
-                        style={{
-                          height: "50px",
-                          width: "50px",
-                          borderRadius: "50%",
-                        }}
-                      />
+                      <div>{item.subservicename}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
@@ -205,17 +197,18 @@ const ViewServices = () => {
                       <EditIcon
                         variant="contained"
                         color="inherit"
-                        // onClick={() => {
-                        //   navigate("/addservices", {
-                        //     state: {
-                        //       offerid: item.offerid,
-                        //       subserviceid: item.subserviceid,
-                        //       serviceproviderid: item.serviceproviderid,
-                        //       currentprice: item.currentprice,
-                        //       actualprice: item.actualprice,
-                        //     },
-                        //   });
-                        // }}
+                        onClick={() => {
+                          navigate("/addoffers", {
+                            state: {
+                              offerid: item.offerid,
+                              servicesid: item.servicesid,
+                              subserviceid: item.subserviceid,
+                              serviceproviderid: item.serviceproviderid,
+                              currentprice: item.currentprice,
+                              actualprice: item.actualprice,
+                            },
+                          });
+                        }}
                       />
                       <DeleteIcon
                         variant="contained"

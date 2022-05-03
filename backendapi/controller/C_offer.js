@@ -1,6 +1,7 @@
 const Offer = require("../models/M_offer");
 const SubServices = require("../models/M_subservices");
 const ServiceProvider = require("../models/M_serviceprovider");
+const Services = require("../models/M_services");
 
 const { updateOfferVal } = require("../helper/joivalidation");
 
@@ -279,10 +280,64 @@ const changeOfferStatus = async (req, res, next) => {
   }
 };
 
+// Get offer API for Admin API.
+const getAllOfferAdmin = async (req, res, next) => {
+  try {
+    let findQry = await Offer.find()
+      .populate({
+        path: "subserviceid",
+        select: "subservicename subserviceimage",
+      })
+      .populate({
+        path: "serviceproviderid",
+        select: "name",
+      });
+
+    let data = [];
+    if (findQry.length > 0) {
+      let temp = await Promise.all(
+        findQry.map(async (item) => {
+          let newObj = {};
+
+          newObj = item.toJSON();
+
+          let subServices = await SubServices.findOne()
+            .where({ _id: newObj.subserviceid._id })
+            .select("servicesid");
+
+          let servicesData = await Services.findOne()
+            .where({ _id: subServices.servicesid })
+            .select("servicename");
+
+          newObj.servicesid = subServices.servicesid;
+          newObj.servicename = servicesData.servicename;
+
+          data.push(newObj);
+        })
+      );
+
+      return res.send({
+        status: true,
+        message: `${data.length} offer found into system.`,
+        data: data,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `${data.length} offer not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createOffer,
   updateOffer,
   getAllOffer,
   deleteOffer,
   changeOfferStatus,
+  getAllOfferAdmin,
 };

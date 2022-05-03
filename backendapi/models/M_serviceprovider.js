@@ -29,58 +29,7 @@ const ServiceProviderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    details: {
-      duration: {
-        type: String,
-      },
-      turnaroundtime: {
-        type: String,
-      },
-      pricing: {
-        type: String,
-        default: "fixed",
-      },
-      bathroomcleaning: {
-        type: Boolean,
-        enum: [true, false],
-        default: true, // true-Included, false-Not_Included
-      },
-      kitchencleaning: {
-        type: Boolean,
-        enum: [true, false],
-        default: true, // true-Included, false-Not_Included
-      },
-      bedroomcleaning: {
-        type: Boolean,
-        enum: [true, false],
-        default: true, // true-Included, false-Not_Included
-      },
-      sofacleaning: {
-        type: Boolean,
-        enum: [true, false],
-        default: true, // true-Included, false-Not_Included
-      },
-      carpetcleaning: {
-        type: Boolean,
-        enum: [true, false],
-        default: true, // true-Included, false-Not_Included
-      },
-      balconycleaning: {
-        type: Boolean,
-        enum: [true, false],
-        default: true, // true-Included, false-Not_Included
-      },
-      fridgecleaning: {
-        type: Boolean,
-        enum: [true, false],
-        default: true, // true-Included, false-Not_Included
-      },
-      overcleaning: {
-        type: Boolean,
-        enum: [true, false],
-        default: true, // true-Included, false-Not_Included
-      },
-    },
+    servicedetails: { type: Array },
     isactive: {
       type: Boolean,
       enum: [true, false],

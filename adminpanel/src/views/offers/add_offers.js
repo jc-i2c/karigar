@@ -11,9 +11,9 @@ import {
   CCol,
   CContainer,
   CForm,
-  CFormInput,
   CRow,
   CButton,
+  CFormInput,
   CFormLabel,
   CFormSelect,
 } from "@coreui/react";
@@ -27,14 +27,53 @@ const AddServices = () => {
 
   const [spinner, setSpinner] = useState(false);
 
-  // Edit services code
   const [isEdit, setIsEdit] = useState(false);
+  const [offerId, setOfferId] = useState("");
   const [servicesId, setServicesId] = useState("");
+  const [subServicesId, setSubServicesId] = useState("");
+  const [servicesProviderId, setServicesProviderId] = useState("");
+  const [currentPrice, setCurrentPrice] = useState("");
+  const [actualPrice, setActualPrice] = useState("");
+
   const [allServices, setAllServices] = useState([]);
   const [allSubServices, setAllSubServices] = useState([]);
+  const [allServiceProvider, setAllServiceProvider] = useState([]);
 
   // Error state
   const [servicesError, setServicesError] = useState("");
+  const [subServiceError, setSubServiceError] = useState("");
+  const [ServicesProviderError, setServicesProviderError] = useState("");
+  const [currentPriceError, setCurrentPriceError] = useState("");
+  const [actualPriceError, setActualPriceError] = useState("");
+
+  // Error state empty.
+  useEffect(() => {
+    setServicesError("");
+    setSubServiceError("");
+    setServicesProviderError("");
+    setCurrentPriceError("");
+    setActualPriceError("");
+    setValidated(false);
+  }, [
+    servicesId,
+    subServicesId,
+    servicesProviderId,
+    currentPrice,
+    actualPrice,
+  ]);
+
+  // Edit offers.
+  useEffect(() => {
+    if (location.state) {
+      setIsEdit(true);
+      setOfferId(location.state.offerid);
+      setServicesId(location.state.servicesid);
+      setSubServicesId(location.state.subserviceid);
+      setServicesProviderId(location.state.serviceproviderid);
+      setCurrentPrice(location.state.currentprice);
+      setActualPrice(location.state.actualprice);
+    }
+  }, []);
 
   // Gel all services.
   useEffect(() => {
@@ -65,9 +104,9 @@ const AddServices = () => {
       });
   }, []);
 
-  // Get sub services
+  // Get all sub services.
   useEffect(() => {
-    let unmounted = false;
+    // console.log("allsubservices", servicesId);
 
     var data = new FormData();
     data.append("servicesid", servicesId);
@@ -75,7 +114,7 @@ const AddServices = () => {
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/subservices/allsubservices`,
-        { data },
+        data,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -83,13 +122,17 @@ const AddServices = () => {
       .then((data) => {
         const records = [];
         if (data.data.data) {
+          // console.log(data.data.data, "data.data.data");
           data.data.data.map((record) => {
+            // console.log(record, "record");
             records.push({
               subserviceid: record._id,
-              subservicename: record.servicename,
+              subservicename: record.subservicename,
             });
           });
           setAllSubServices(records);
+        } else {
+          // toast.error(data.data.message);
         }
       })
       .catch((error) => {
@@ -97,73 +140,114 @@ const AddServices = () => {
       });
   }, [servicesId]);
 
+  // Get all service provider
   useEffect(() => {
-    setServicesError("");
-    setValidated(false);
-  }, [servicesId]);
+    // console.log("serviceprovider", subServicesId);
 
-  useEffect(() => {
-    if (location.state) {
-      setIsEdit(true);
-    }
-  }, []);
+    var data = new FormData();
+    data.append("subserviceid", subServicesId);
 
-  function addNewUsers() {
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/all`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        const records = [];
+        if (data.data.data) {
+          // console.log(data.data.data, "data.data.data");
+          data.data.data.map((record) => {
+            // console.log(record, "record");
+            records.push({
+              serviceproviderid: record._id,
+              serviceprovidername: record.name,
+            });
+          });
+          setAllServiceProvider(records);
+        } else {
+          // toast.error(data.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }, [subServicesId]);
+
+  // Add and edit offers.
+  function addOffers() {
     if (!servicesId) {
       setValidated(true);
       setServicesError("Please select services");
+    }
+    if (!subServicesId) {
+      setValidated(true);
+      setSubServiceError("Please select sub services");
+    }
+    if (!servicesProviderId) {
+      setValidated(true);
+      setServicesProviderError("Please select services provider");
+    }
+    if (!/^[0-9]/i.test(currentPrice)) {
+      setValidated(true);
+      setCurrentPriceError("Enter valid price (Only Number)");
+    }
+    if (!/^[0-9]/i.test(actualPrice)) {
+      setValidated(true);
+      setActualPriceError("Enter valid price (Only Number)");
     } else {
       if (isEdit) {
-        // // Admin edit userdata.
-        // var data = new FormData();
-        // data.append("emailaddress", emailAddress);
-        // data.append("name", name);
-        // data.append("mobilenumber", mobileNumber);
-        // data.append("gender", gender);
-        // data.append("userid", userId);
-        // axios
-        //   .post(
-        //     `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
-        //     data,
-        //     {
-        //       headers: { Authorization: `Bearer ${token}` },
-        //     },
-        //   )
-        //   .then((data) => {
-        //     console.log(data, "data.data");
-        //     if (data.data.status) {
-        //       toast.success(data.data.message, {
-        //         onClose: () => {
-        //           navigate("/users");
-        //         },
-        //       });
-        //     } else {
-        //       toast.error(data.data.message);
-        //     }
-        //     setSpinner(false);
-        //   })
-        //   .catch((error) => {
-        //     console.log(error, "error");
-        //     setSpinner(false);
-        //   });
-      } else {
-        // Add new users.
+        // Edit offers.
         var data = new FormData();
-        data.append("serviceid", servicesId);
+        data.append("offerid", offerId);
+        data.append("subserviceid", subServicesId);
+        data.append("serviceproviderid", servicesProviderId);
+        data.append("currentprice", currentPrice);
+        data.append("actualprice", actualPrice);
 
         axios
-          .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
+          .post(`${process.env.REACT_APP_APIURL}/karigar/offer/update`, data, {
             headers: { Authorization: `Bearer ${token}` },
           })
           .then((data) => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/users");
+                  navigate("/viewoffers");
                 },
               });
             } else {
-              toast.error(data.data.message);
+              toast.warning(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      } else {
+        // Add new users.
+        var data = new FormData();
+        data.append("subserviceid", subServicesId);
+        data.append("serviceproviderid", servicesProviderId);
+        data.append("currentprice", currentPrice);
+        data.append("actualprice", actualPrice);
+
+        axios
+          .post(`${process.env.REACT_APP_APIURL}/karigar/offer/create`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate("/viewoffers");
+                },
+              });
+            } else {
+              toast.warning(data.data.message);
             }
             setSpinner(false);
           })
@@ -186,18 +270,29 @@ const AddServices = () => {
                   className="row g-3"
                   noValidate
                   validated={validated}
-                  onSubmit={addNewUsers}
+                  onSubmit={addOffers}
                 >
-                  <h2>Service Offers</h2>
+                  <h2>Offers</h2>
                   <hr />
 
-                  <CCol md={3}>
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="servicename"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Select Service
+                    </CFormLabel>
                     <CFormSelect
                       required
                       id="services"
                       name="services"
                       value={servicesId}
                       onChange={(e) => {
+                        setServicesId("");
+                        setSubServicesId("");
+                        setServicesProviderId("");
+                        setAllSubServices([]);
+                        setAllServiceProvider([]);
                         setServicesId(e.target.value);
                       }}
                     >
@@ -217,30 +312,125 @@ const AddServices = () => {
                     )}
                   </CCol>
 
-                  {/* <CCol md={6}>
+                  <CCol md={4}>
                     <CFormLabel
-                      htmlFor="emailaddress"
+                      htmlFor="servicename"
                       className="col-sm-4 col-form-label"
                     >
-                      Email Address
+                      Sub Service
+                    </CFormLabel>
+                    <CFormSelect
+                      required
+                      id="subservices"
+                      name="subservices"
+                      value={subServicesId}
+                      onChange={(e) => {
+                        setSubServicesId("");
+                        setServicesProviderId("");
+                        setAllServiceProvider([]);
+                        setSubServicesId(e.target.value);
+                      }}
+                    >
+                      <option value="" selected>
+                        Select Sub Services
+                      </option>
+
+                      {allSubServices.map((item) => (
+                        <option
+                          key={item.subserviceid}
+                          value={item.subserviceid}
+                        >
+                          {item.subservicename}
+                        </option>
+                      ))}
+                    </CFormSelect>
+
+                    {subServiceError && (
+                      <p className="text-danger">{subServiceError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="servicename"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Service Provider
+                    </CFormLabel>
+                    <CFormSelect
+                      required
+                      id="servicesprovider"
+                      name="servicesprovider"
+                      value={servicesProviderId}
+                      onChange={(e) => {
+                        setServicesProviderId("");
+                        setServicesProviderId(e.target.value);
+                      }}
+                    >
+                      <option value="" selected>
+                        Select Service Provider
+                      </option>
+
+                      {allServiceProvider.map((item) => (
+                        <option
+                          key={item.serviceproviderid}
+                          value={item.serviceproviderid}
+                        >
+                          {item.serviceprovidername}
+                        </option>
+                      ))}
+                    </CFormSelect>
+
+                    {ServicesProviderError && (
+                      <p className="text-danger">{ServicesProviderError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="email"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Current Price
                     </CFormLabel>
                     <CFormInput
-                      type="emailaddress"
-                      id="emailaddress"
-                      placeholder="Email address"
-                      autoComplete="emailaddress"
+                      type="number"
+                      id="currentprice"
+                      placeholder="Current Price"
+                      autoComplete="currentprice"
                       required
-                      disabled
-                      value={emailAddress ? emailAddress : ""}
+                      value={currentPrice ? currentPrice : ""}
                       onChange={(e) => {
-                        setEmailAddress(e.target.value);
+                        setCurrentPrice(e.target.value);
                       }}
                     />
-
-                    {emailAdressError && (
-                      <p className="text-danger">{emailAdressError}</p>
+                    {currentPriceError && (
+                      <p className="text-danger">{currentPriceError}</p>
                     )}
-                  </CCol> */}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="actualprice"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Actual Price
+                    </CFormLabel>
+                    <CFormInput
+                      type="number"
+                      id="actualPrice"
+                      placeholder="Actual Price"
+                      autoComplete="actualPrice"
+                      required
+                      value={actualPrice ? actualPrice : ""}
+                      onChange={(e) => {
+                        setActualPrice(e.target.value);
+                      }}
+                    />
+                    {actualPriceError && (
+                      <p className="text-danger">{actualPriceError}</p>
+                    )}
+                  </CCol>
 
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                     {spinner ? (
@@ -251,7 +441,7 @@ const AddServices = () => {
                       <CButton
                         color="primary"
                         onClick={() => {
-                          addNewUsers();
+                          addOffers();
                         }}
                       >
                         Submit
@@ -261,7 +451,7 @@ const AddServices = () => {
                     <CButton
                       color="primary"
                       onClick={() => {
-                        navigate("/users");
+                        navigate("/viewoffers");
                       }}
                     >
                       Back

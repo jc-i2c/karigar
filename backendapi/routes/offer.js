@@ -9,7 +9,7 @@ const {
   updateOffer,
   getAllOffer,
   deleteOffer,
-  changeOfferStatus,
+  changeOfferStatus, getAllOfferAdmin
 } = require("../controller/C_offer");
 
 router.post("/create", auth, multipartMiddleware, createOffer);
@@ -21,5 +21,7 @@ router.post("/getall", auth, multipartMiddleware, getAllOffer);
 router.post("/delete", auth, multipartMiddleware, deleteOffer);
 
 router.post("/changestatus", auth, multipartMiddleware, changeOfferStatus);
+
+router.post("/getalloffer", auth, multipartMiddleware, getAllOfferAdmin);
 
 module.exports = router;
