@@ -52,10 +52,10 @@ const WidgetsDropdown = () => {
           className="mb-3"
           color="info"
           inverse
-          title="SERVICES PROVIDER"
-          value={servicesprovider ? servicesprovider : 0}
+          title="SERVICES"
+          value={services ? services : 0}
           onClick={() => {
-            navigate("/serviceprovider");
+            navigate("/services");
           }}
         />
       </CCol>
@@ -64,10 +64,10 @@ const WidgetsDropdown = () => {
           className="mb-3"
           color="warning"
           inverse
-          title="SERVICES"
-          value={services ? services : 0}
+          title="SERVICES PROVIDER"
+          value={servicesprovider ? servicesprovider : 0}
           onClick={() => {
-            navigate("/services");
+            navigate("/serviceprovider");
           }}
         />
       </CCol>

@@ -115,7 +115,11 @@ const ViewSubServices = () => {
                 type="button"
                 className="btn btn-success"
                 onClick={() => {
-                  navigate("/addsubservices");
+                  navigate("/addsubservices", {
+                    state: {
+                      servicesid: servicesId,
+                    },
+                  });
                 }}
               >
                 Add Sub Services

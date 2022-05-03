@@ -23,63 +23,41 @@ const AddServices = () => {
 
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
   const [validated, setValidated] = useState(false);
-  const [servicesName, setServicesName] = useState("");
-  const [serviceImage, setServiceImage] = useState("");
-  const [serviceNameError, setServiceNameError] = useState("");
-  const [serviceImageError, setServiceImageError] = useState("");
   const [spinner, setSpinner] = useState(false);
 
+  const [userroleName, setUserroleName] = useState("");
+
+  const [userroleError, setUserroleError] = useState("");
+
   // Edit services code
-  const [servicesId, setServicesId] = useState("");
   const [isEdit, setIsEdit] = useState(false);
-  const [imagePath, setImagePath] = useState("");
-  const initialState = { alt: "", src: "" };
+  const [userroleId, setUserroleId] = useState("");
 
   useEffect(() => {
-    setServiceNameError("");
-    setServiceImageError("");
+    setUserroleError("");
+
     setValidated(false);
-  }, [servicesName, serviceImage]);
+  }, [userroleName]);
 
   useEffect(() => {
     if (location.state) {
       setIsEdit(true);
-      setServicesId(location.state.serviceid);
-      setServicesName(location.state.servicename);
-      setServiceImage(location.state.serviceimage);
+      setUserroleId(location.state.serviceid);
+      setUserroleName(location.state.servicename);
     }
-  }, [servicesId]);
-
-  // Handle image.
-  const fileHandle = (e) => {
-    e.preventDefault();
-    var serviceImage = e.target.files[0];
-    setServiceImage(serviceImage);
-
-    const { files } = e.target;
-    const fileValue = files.length
-      ? URL.createObjectURL(serviceImage)
-      : initialState;
-    setImagePath(fileValue);
-  };
+  }, [userroleId]);
 
   function addServices() {
-    if (!/^[a-zA-Z]/i.test(servicesName)) {
+    if (!/^[a-zA-Z]/i.test(userroleName)) {
       setValidated(true);
-      setServiceNameError("Please enter valid services name");
-    }
-    if (!serviceImage) {
-      setValidated(true);
-      setServiceImageError("Please provide service image");
+      setUserroleError("Please enter valid userrole name");
     } else {
       if (isEdit) {
         // Edit data
-
         setSpinner(true);
         var data = new FormData();
-        data.append("servicesid", servicesId);
-        data.append("servicename", servicesName);
-        data.append("serviceimage", serviceImage);
+        data.append("servicesid", userroleId);
+        data.append("servicename", userroleName);
 
         axios
           .post(`${process.env.REACT_APP_APIURL}/karigar/services/edit`, data, {
@@ -89,7 +67,7 @@ const AddServices = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/services");
+                  navigate("/viewuserrole");
                 },
               });
             } else {
@@ -104,8 +82,7 @@ const AddServices = () => {
       } else {
         // Add new data
         var data = new FormData();
-        data.append("servicename", servicesName);
-        data.append("serviceimage", serviceImage);
+        data.append("servicename", userroleName);
 
         axios
           .post(
@@ -119,7 +96,7 @@ const AddServices = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/services");
+                  navigate("/viewuserrole");
                 },
               });
             } else {
@@ -148,79 +125,29 @@ const AddServices = () => {
                   validated={validated}
                   onSubmit={addServices}
                 >
-                  <h2>Services</h2>
+                  <h2>Userrole</h2>
                   <hr />
 
-                  <CCol md={6}>
+                  <CCol md={4}>
                     <CFormLabel
                       htmlFor="email"
                       className="col-sm-4 col-form-label"
                     >
-                      Service Name
+                      Userrole Name
                     </CFormLabel>
                     <CFormInput
                       type="text"
-                      id="servicesname"
-                      placeholder="Service Name"
-                      autoComplete="servicesname"
+                      id="userrolename"
+                      placeholder="Userrole Name"
+                      autoComplete="userrolename"
                       required
-                      value={servicesName ? servicesName : ""}
+                      value={userroleName ? userroleName : ""}
                       onChange={(e) => {
-                        setServicesName(e.target.value);
+                        setUserroleName(e.target.value);
                       }}
                     />
-                    {serviceNameError && (
-                      <p className="text-danger">{serviceNameError}</p>
-                    )}
-                  </CCol>
-
-                  <CCol md={6}>
-                    <CFormLabel
-                      htmlFor="email"
-                      className="col-sm-4 col-form-label"
-                    >
-                      Services Image
-                    </CFormLabel>
-
-                    <CFormInput
-                      type="file"
-                      placeholder="Service Name"
-                      autoComplete="servicesimage"
-                      id="servicesimage"
-                      required
-                      onChange={(e) => {
-                        fileHandle(e);
-                      }}
-                    />
-
-                    {serviceImageError && (
-                      <p className="text-danger">{serviceImageError}</p>
-                    )}
-                  </CCol>
-
-                  <CCol className="mb-3">
-                    {imagePath ? (
-                      <img
-                        src={imagePath}
-                        alt={imagePath}
-                        style={{
-                          height: "80px",
-                          width: "80px",
-                        }}
-                      />
-                    ) : serviceImage ? (
-                      <img
-                        src={
-                          `${process.env.REACT_APP_PROFILEPIC}` + serviceImage
-                        }
-                        alt={serviceImage}
-                        style={{
-                          height: "80px",
-                          width: "80px",
-                        }}
-                      />
-                    ) : (
-                      ""
+                    {userroleError && (
+                      <p className="text-danger">{userroleError}</p>
                     )}
                   </CCol>
 

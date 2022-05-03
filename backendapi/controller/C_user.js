@@ -868,13 +868,6 @@ const getAllCustomer = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        // Set user gender.
-        if (resData.gender == 1) {
-          resData.gender = "male";
-        } else if (resData.gender == 2) {
-          resData.gender = "female";
-        }
-
         // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
         resData.createdAt = resData.createdAt
           .toISOString()
@@ -887,7 +880,6 @@ const getAllCustomer = async (req, res, next) => {
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        delete resData.userroll; // delete resData["password"]
         delete resData.password; // delete resData["password"]
         delete resData.otp; // delete resData["otp"]
         delete resData.__v; // delete resData["__v"]
@@ -925,13 +917,6 @@ const getAllServiceProvider = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        // Set user gender.
-        if (resData.gender == 1) {
-          resData.gender = "male";
-        } else if (resData.gender == 2) {
-          resData.gender = "female";
-        }
-
         // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
         resData.createdAt = resData.createdAt
           .toISOString()
@@ -944,7 +929,6 @@ const getAllServiceProvider = async (req, res, next) => {
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        delete resData.userroll; // delete resData["password"]
         delete resData.password; // delete resData["password"]
         delete resData.otp; // delete resData["otp"]
         delete resData.__v; // delete resData["__v"]

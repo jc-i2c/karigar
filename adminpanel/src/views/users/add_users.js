@@ -63,7 +63,6 @@ const AddServices = () => {
       )
       .then((data) => {
         const records = [];
-        // console.log(data.data.data, "data");
         if (data.data.data) {
           data.data.data.map((record) => {
             records.push({
@@ -82,6 +81,7 @@ const AddServices = () => {
     };
   }, []);
 
+  // Error state empty.
   useEffect(() => {
     setNameError("");
     setEmailAdressError("");
@@ -102,6 +102,7 @@ const AddServices = () => {
     gender,
   ]);
 
+  // Props data set.
   useEffect(() => {
     if (location.state) {
       setIsEdit(true);
@@ -114,6 +115,7 @@ const AddServices = () => {
     }
   }, []);
 
+  // Add edit users.
   function addNewUsers() {
     if (!/^[a-zA-Z]/i.test(name)) {
       setValidated(true);
@@ -174,11 +176,10 @@ const AddServices = () => {
             },
           )
           .then((data) => {
-            console.log(data, "data.data");
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/users");
+                  navigate(-1);
                 },
               });
             } else {
@@ -210,7 +211,7 @@ const AddServices = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/users");
+                  navigate(-1);
                 },
               });
             } else {
@@ -457,12 +458,7 @@ const AddServices = () => {
                       </CButton>
                     )}
 
-                    <CButton
-                      color="primary"
-                      onClick={() => {
-                        navigate("/users");
-                      }}
-                    >
+                    <CButton color="primary" onClick={() => navigate(-1)}>
                       Back
                     </CButton>
                   </div>

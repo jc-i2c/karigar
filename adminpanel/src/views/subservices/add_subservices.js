@@ -44,6 +44,10 @@ const AddSubServices = () => {
   useEffect(() => {
     let unmounted = false;
 
+    if (location.state) {
+      setServiceId(location.state.servicesid);
+    }
+
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/services/all`,
@@ -89,7 +93,7 @@ const AddSubServices = () => {
   useEffect(() => {
     let unmounted = false;
 
-    if (location.state) {
+    if (location.state.subserviceid) {
       setIsEdit(true);
       setServiceId(location.state.servicesid);
       setSubServiceId(location.state.subserviceid);
@@ -180,7 +184,9 @@ const AddSubServices = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/services");
+                  navigate("/subservices", {
+                    state: { serviceid: serviceId },
+                  });
                 },
               });
             } else {
@@ -338,12 +344,7 @@ const AddSubServices = () => {
                       </CButton>
                     )}
 
-                    <CButton
-                      color="primary"
-                      onClick={() => {
-                        navigate("/subservices");
-                      }}
-                    >
+                    <CButton color="primary" onClick={() => navigate(-1)}>
                       Back
                     </CButton>
                   </div>

@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 import {
@@ -27,6 +28,7 @@ import {
 const ViewCustomer = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
   const [customers, setCustomers] = useState([]);
 
@@ -39,9 +41,7 @@ const ViewCustomer = () => {
       )
       .then((data) => {
         const records = [];
-        // console.log(data.data.data, "data");
         data.data.data.map((record) => {
-          // console.log(record._id, "record._id");
           records.push({
             customerid: record._id,
             emailaddress: record.emailaddress,
@@ -50,6 +50,7 @@ const ViewCustomer = () => {
             status: record.status,
             isactive: record.isactive,
             mobilenumber: record.mobilenumber,
+            userroll: record.userroll,
           });
         });
         setCustomers(records);
@@ -170,7 +171,13 @@ const ViewCustomer = () => {
                       <div>{item.name ? item.name : "-"}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <div>{item.gender ? item.gender : "-"}</div>
+                      <div>
+                        {item.gender == 1
+                          ? "Male"
+                          : item.gender == 2
+                          ? "Female"
+                          : "-"}
+                      </div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.mobilenumber ? item.mobilenumber : "-"}</div>
@@ -200,6 +207,23 @@ const ViewCustomer = () => {
                       />
                     </CTableDataCell>
                     <CTableDataCell>
+                      <EditIcon
+                        variant="contained"
+                        color="inherit"
+                        onClick={() => {
+                          navigate("/addusers", {
+                            state: {
+                              userid: item.customerid,
+                              emailaddress: item.emailaddress,
+                              name: item.name,
+                              userroll: item.userroll,
+                              mobilenumber: item.mobilenumber,
+                              gender: item.gender,
+                              pagename: "dashboard",
+                            },
+                          });
+                        }}
+                      />
                       <DeleteIcon
                         variant="contained"
                         color="inherit"

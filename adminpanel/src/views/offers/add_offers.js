@@ -448,12 +448,7 @@ const AddServices = () => {
                       </CButton>
                     )}
 
-                    <CButton
-                      color="primary"
-                      onClick={() => {
-                        navigate("/viewoffers");
-                      }}
-                    >
+                    <CButton color="primary" onClick={() => navigate(-1)}>
                       Back
                     </CButton>
                   </div>

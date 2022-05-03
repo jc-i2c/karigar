@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const Services = require("../models/M_services");
+const Subservices = require("../models/M_subservices");
 const {
   createServicesVal,
   editServicesVal,
 } = require("../helper/joivalidation");
 const { removeFile } = require("../helper/removefile");
+const { ObjectId } = require("mongodb");
 
 // Create new services API.
 const createServices = async (req, res, next) => {
@@ -167,8 +169,25 @@ const deleteServices = async (req, res, next) => {
         await Promise.all(
           findQry.map(async (allServices) => {
             cntServices = cntServices + 1;
-            await Services.findByIdAndDelete(allServices._id);
-            removeFile(allServices.serviceimage);
+
+            await Subservices.find()
+              .where({ servicesid: mongoose.Types.ObjectId(allServices._id) })
+              .then(async (data) => {
+                data.map(async (item) => {
+                  await Subservices.findByIdAndDelete(item._id)
+                    .then(async (data) => {
+                      removeFile(item.subserviceimage);
+                    })
+                    .catch((error) => {
+                      console.log(error.message);
+                    });
+                });
+                await Services.findByIdAndDelete(allServices._id);
+                removeFile(allServices.serviceimage);
+              })
+              .catch((error) => {
+                console.log(error.message);
+              });
           })
         );
 

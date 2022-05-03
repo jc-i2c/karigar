@@ -20,6 +20,10 @@ const Viewcustomer = React.lazy(() => import("./views/users/view_customer"));
 const Viewoffers = React.lazy(() => import("./views/offers/view_all_offers"));
 const Addoffers = React.lazy(() => import("./views/offers/add_offers"));
 
+// Userrole.
+const Viewuserrole = React.lazy(() => import("./views/userrole/view_userrole"));
+const Adduserrole = React.lazy(() => import("./views/userrole/add_userrole"));
+
 const routes = [
   // { path: "/", exact: true, name: "Home" },
 
@@ -44,6 +48,10 @@ const routes = [
   // Service offers.
   { path: "/viewoffers", name: "Viewoffers", element: Viewoffers },
   { path: "/addoffers", name: "Addoffers", element: Addoffers },
+
+  // Userrole.
+  { path: "/viewuserrole", name: "Viewuserrole", element: Viewuserrole },
+  { path: "/adduserrole", name: "Adduserrole", element: Adduserrole },
 
 ];
 
