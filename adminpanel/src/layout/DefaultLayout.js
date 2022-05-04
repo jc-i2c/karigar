@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   AppContent,
@@ -10,9 +10,15 @@ import {
 const DefaultLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+
   const url = location.pathname;
 
   useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
     if (url === "/") {
       navigate("/dashboard");
     }

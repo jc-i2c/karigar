@@ -117,6 +117,7 @@ function Login() {
                       <CFormInput
                         type="email"
                         id="validationServer01"
+                        placeholder="Email Address"
                         label="Email"
                         valid
                         required
@@ -159,12 +160,18 @@ function Login() {
                             className="px-4"
                             type="submit"
                           >
-                            Login
+                            SIGN IN
                           </CButton>
                         </CCol>
                       )}
                       <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
+                        <CButton
+                          color="link"
+                          className="px-0"
+                          onClick={() => {
+                            navigate("/forgotpassword");
+                          }}
+                        >
                           Forgot password?
                         </CButton>
                       </CCol>

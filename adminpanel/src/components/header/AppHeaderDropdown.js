@@ -48,7 +48,7 @@ const AppHeaderDropdown = () => {
           <CIcon icon={cilUser} className="me-2" />
           Profile
         </CDropdownItem>
-        <CDropdownItem href="#">
+        <CDropdownItem href="changepassword">
           <CIcon icon={cilSettings} className="me-2" />
           Change Password
         </CDropdownItem>
@@ -56,7 +56,7 @@ const AppHeaderDropdown = () => {
 
         <CDropdownItem onClick={SignOut}>
           <CIcon icon={cilLockLocked} className="me-2" />
-          Sign out
+          SIGN OUT
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>

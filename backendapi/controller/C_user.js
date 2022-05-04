@@ -289,13 +289,13 @@ const verifyOtp = async (req, res, next) => {
         } else {
           return res.send({
             status: false,
-            message: `Please enter valid data.`,
+            message: `Please enter valid OTP.`,
           });
         }
       } else {
         return res.send({
           status: false,
-          message: `Please enter valid data.`,
+          message: `Please enter valid OTP.`,
         });
       }
     }

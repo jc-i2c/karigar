@@ -15,6 +15,7 @@ const AllUser = React.lazy(() => import("./views/users/all_users"));
 const Addusers = React.lazy(() => import("./views/users/add_users"));
 const Serviceprovider = React.lazy(() => import("./views/users/view_service_provider"));
 const Viewcustomer = React.lazy(() => import("./views/users/view_customer"));
+const Changepassword = React.lazy(() => import("./views/users/change_password"));
 
 // Service offers.
 const Viewoffers = React.lazy(() => import("./views/offers/view_all_offers"));
@@ -52,6 +53,7 @@ const routes = [
   // Userrole.
   { path: "/viewuserrole", name: "Viewuserrole", element: Viewuserrole },
   { path: "/adduserrole", name: "Adduserrole", element: Adduserrole },
+  { path: "/changepassword", name: "Changepassword", element: Changepassword },
 
 ];
 
