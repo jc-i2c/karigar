@@ -32,8 +32,6 @@ UserroleSchema.methods.toJSON = function () {
   const userrole = this;
   const userroleObj = userrole.toObject();
   delete userroleObj.__v;
-  delete userroleObj.createdAt;
-  delete userroleObj.updatedAt;
   return userroleObj;
 };
 

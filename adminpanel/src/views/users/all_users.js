@@ -181,8 +181,8 @@ const AllUsers = () => {
                         {item.gender == 1
                           ? "Male"
                           : item.gender == 2
-                          ? "Female"
-                          : "-"}
+                            ? "Female"
+                            : "-"}
                       </div>
                     </CTableDataCell>
                     <CTableDataCell>

@@ -75,16 +75,38 @@ const getAllRole = async (req, res, next) => {
       select: "modulesname",
     });
 
+    let findData = [];
+
     if (getAllUserRole.length > 0) {
+      getAllUserRole.map(async (item) => {
+        let objectData = {};
+        objectData = item.toJSON();
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        objectData.createdAt = objectData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        objectData.updatedAt = objectData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        delete objectData.__v; // delete objectData["__v"]
+
+        findData.push(objectData);
+      });
       return res.send({
         status: true,
-        message: `${getAllUserRole.length} user role found into system.`,
-        data: getAllUserRole,
+        message: `${findData.length} user role found into system.`,
+        data: findData,
       });
     } else {
       return res.send({
         status: false,
-        message: `${getAllUserRole.length} user role not found into system.`,
+        message: `${findData.length} user role not found into system.`,
       });
     }
   } catch (error) {

@@ -1,3 +1,4 @@
+const { string } = require("joi");
 const mongoose = require("mongoose");
 
 const systemModulesSchema = new mongoose.Schema(
@@ -7,18 +8,7 @@ const systemModulesSchema = new mongoose.Schema(
       unique: [true, "Modules name is already exists."],
       required: [true, "Modules name is required."],
     },
-    modulespermission: [
-      {
-        name: {
-          type: String,
-          required: [true, "Modules permission is required."],
-        },
-        id: {
-          type: String,
-          required: [true, "Modules permission is required."],
-        },
-      },
-    ],
+    modulespermission: { type: Array },
   },
   {
     timestamps: true,
@@ -29,8 +19,6 @@ systemModulesSchema.methods.toJSON = function () {
   const systemModules = this;
   const systemModulesObj = systemModules.toObject();
   delete systemModulesObj.__v;
-  delete systemModulesObj.createdAt;
-  delete systemModulesObj.updatedAt;
   return systemModulesObj;
 };
 

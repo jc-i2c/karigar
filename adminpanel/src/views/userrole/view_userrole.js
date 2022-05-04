@@ -42,8 +42,8 @@ const ViewServices = () => {
           records.push({
             userroleid: record._id,
             rolename: record.rolename,
-            // createdAt: record.createdAt,
-            // updatedAt: record.updatedAt,
+            createdAt: record.createdAt,
+            updatedAt: record.updatedAt,
           });
         });
         setUserrole(records);

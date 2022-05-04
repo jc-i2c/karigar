@@ -7,13 +7,25 @@ const createModules = async (req, res, next) => {
 
     modulesname = modulesname.toLowerCase();
 
+    let data = [];
+
+    let readObj = {};
+    readObj.name = "read";
+    readObj.id = "1";
+
+    let writeObj = {};
+    writeObj.name = "write";
+    writeObj.id = "2";
+
+    let delObj = {};
+    delObj.name = "delete";
+    delObj.id = "3";
+
+    data.push(readObj, writeObj, delObj);
+
     var addSystemModules = new SystemModules({
       modulesname: modulesname,
-      modulespermission: [
-        { name: "read", id: 1 },
-        { name: "write", id: 2 },
-        { name: "delete", id: 3 },
-      ],
+      modulespermission: data,
     });
 
     const insertQry = await addSystemModules.save();
@@ -21,18 +33,18 @@ const createModules = async (req, res, next) => {
     if (insertQry) {
       return res.send({
         status: true,
-        message: "System modules added.",
+        message: `System modules added.`,
         data: insertQry,
       });
     } else {
       return res.send({
         status: true,
-        message: "System modules not added.",
+        message: `System modules not added.`,
         data: insertQry,
       });
     }
   } catch (error) {
-    // console.log(error, "ERROR");
+    // console.log(error, `ERROR`);
     next(error);
   }
 };
@@ -42,20 +54,41 @@ const getModules = async (req, res, next) => {
   try {
     const getAllPermission = await SystemModules.find();
 
+    let findData = [];
     if (getAllPermission.length > 0) {
+      getAllPermission.map((item) => {
+        let objectData = {};
+        objectData = item.toObject();
+
+        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        objectData.createdAt = objectData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        objectData.updatedAt = objectData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        delete objectData.__v; // delete objectData["__v"]
+
+        findData.push(objectData);
+      });
       return res.send({
         status: true,
-        message: "System modules found into system.",
-        data: getAllPermission,
+        message: `${findData.length} System modules found into system.`,
+        data: findData,
       });
     } else {
       return res.send({
         status: true,
-        message: "System modules not found into system.",
+        message: `System modules not found into system.`,
       });
     }
   } catch (error) {
-    console.log(error, "ERROR");
+    console.log(error, `ERROR`);
   }
 };
 
