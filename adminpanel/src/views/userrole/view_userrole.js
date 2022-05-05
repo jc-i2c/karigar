@@ -23,7 +23,7 @@ import {
   CButton,
 } from "@coreui/react";
 
-const ViewServices = () => {
+const ViewAllUserRoles = () => {
   const navigate = useNavigate();
 
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
@@ -39,9 +39,18 @@ const ViewServices = () => {
       .then((data) => {
         const records = [];
         data.data.data.map((record) => {
+          let newArray = [];
+          record.permissions.map((item, index) => {
+            let newObj = {};
+            newObj.systemmodulesid = item.systemmodulesid._id;
+            newObj.access = item.access;
+            newArray.push(newObj);
+          });
+
           records.push({
             userroleid: record._id,
             rolename: record.rolename,
+            permissions: newArray,
             createdAt: record.createdAt,
             updatedAt: record.updatedAt,
           });
@@ -53,9 +62,9 @@ const ViewServices = () => {
       });
   }, []);
 
-  function deleteServices(serviceId) {
+  function deleteUserRoles(userRoleId) {
     let data = new FormData();
-    data.append("servicesid", serviceId);
+    data.append("userroleid", userRoleId);
 
     axios
       .post(`${process.env.REACT_APP_APIURL}/karigar/userrole/delete`, data, {
@@ -65,11 +74,11 @@ const ViewServices = () => {
         if (data.data.status) {
           toast.success(data.data.message);
 
-          let newServciesData = userrole.filter(
-            (item) => item.serviceid !== serviceId,
+          let newUserRoleData = userrole.filter(
+            (item) => item.userroleid !== userRoleId,
           );
 
-          setUserrole(newServciesData);
+          setUserrole(newUserRoleData);
         } else {
           toast.error(data.data.message);
         }
@@ -140,20 +149,26 @@ const ViewServices = () => {
                         onClick={() => {
                           navigate("/adduserrole", {
                             state: {
-                              serviceid: item.serviceid,
-                              servicename: item.servicename,
-                              serviceimage: item.serviceimage,
+                              userroleid: item.userroleid,
+                              rolename: item.rolename,
+                              permissions: item.permissions,
                             },
                           });
                         }}
                       />
-                      <DeleteIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          deleteServices(item.serviceid);
-                        }}
-                      />
+                      {item.userroleid == "626113fadf6c093c730a54fa" ? (
+                        ""
+                      ) : item.userroleid == "6273bcdff5932013fc9e678b" ? (
+                        ""
+                      ) : (
+                        <DeleteIcon
+                          variant="contained"
+                          color="inherit"
+                          onClick={() => {
+                            deleteUserRoles(item.userroleid);
+                          }}
+                        />
+                      )}
                     </CTableDataCell>
                   </CTableRow>
                 ))}
@@ -168,4 +183,4 @@ const ViewServices = () => {
   );
 };
 
-export default ViewServices;
+export default ViewAllUserRoles;

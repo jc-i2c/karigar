@@ -24,7 +24,6 @@ const AddUserroles = () => {
   const location = useLocation();
 
   const token = localStorage.getItem("karigar_token");
-
   const [validated, setValidated] = useState(false);
   const [spinner, setSpinner] = useState(false);
 
@@ -33,18 +32,18 @@ const AddUserroles = () => {
   const [tempPermission, setTempPermission] = useState([]);
 
   const [userroleError, setUserroleError] = useState("");
-  const [permissionError, setPermissionError] = useState("");
 
   // Edit services code
   const [isEdit, setIsEdit] = useState(false);
   const [userroleId, setUserroleId] = useState("");
+  const [editPermission, setEditPermission] = useState("");
 
   // Error state empty.
   useEffect(() => {
     setUserroleError("");
-    setPermissionError("");
+
     setValidated(false);
-  }, [userroleName, tempPermission]);
+  }, [userroleName]);
 
   // Edit userrole.
   useEffect(() => {
@@ -106,6 +105,7 @@ const AddUserroles = () => {
     prevPermissions.map((module) => {
       if (module.systemmodulesid === currentModule.systemmodulesid) {
         if (module.access.length === 1 && module.access[0] === permissionId) {
+          // console.log("meet the condition");
         } else {
           if (module.access.includes(permissionId)) {
             latestPermission.push({
@@ -127,6 +127,7 @@ const AddUserroles = () => {
   };
 
   function arrayInSetPer(systemModulesId, permissionId) {
+    console.log(systemModulesId, permissionId);
     setTempPermission((prevPermissions) => {
       if (prevPermissions.length === 0) {
         return [
@@ -140,6 +141,7 @@ const AddUserroles = () => {
           prevPermissions,
           systemModulesId,
         );
+        // console.log(currentModule, "module");
         if (Object.keys(currentModule).length > 0) {
           return updateIfserviceAlreadyExist(
             prevPermissions,
@@ -163,33 +165,23 @@ const AddUserroles = () => {
     if (!/^[a-zA-Z]/i.test(userroleName)) {
       setValidated(true);
       setUserroleError("Please enter valid userrole name");
-    }
-    if (tempPermission.length === 0) {
-      setValidated(true);
-      setPermissionError("Please select permission");
     } else {
       if (isEdit) {
-        // Add new userrole.
-        var data = {};
-        var addUserRol = {};
-        addUserRol.rolename = userroleName;
-        addUserRol.permissions = tempPermission;
-        addUserRol.userroleid = userroleId;
-        data.data = addUserRol;
+        // Edit data
+        setSpinner(true);
+        var data = new FormData();
+        data.append("servicesid", userroleId);
+        data.append("servicename", userroleName);
 
         axios
-          .post(
-            `${process.env.REACT_APP_APIURL}/karigar/userrole/create`,
-            data,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          )
+          .post(`${process.env.REACT_APP_APIURL}/karigar/services/edit`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
           .then((data) => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate(-1);
+                  navigate("/viewuserrole");
                 },
               });
             } else {
@@ -202,16 +194,13 @@ const AddUserroles = () => {
             setSpinner(false);
           });
       } else {
-        // Add new userrole.
-        var data = {};
-        var addUserRol = {};
-        addUserRol.rolename = userroleName;
-        addUserRol.permissions = tempPermission;
-        data.data = addUserRol;
+        // Add new data
+        var data = new FormData();
+        data.append("servicename", userroleName);
 
         axios
           .post(
-            `${process.env.REACT_APP_APIURL}/karigar/userrole/create`,
+            `${process.env.REACT_APP_APIURL}/karigar/services/create`,
             data,
             {
               headers: { Authorization: `Bearer ${token}` },
@@ -221,7 +210,7 @@ const AddUserroles = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate(-1);
+                  navigate("/viewuserrole");
                 },
               });
             } else {
@@ -290,55 +279,50 @@ const AddUserroles = () => {
                               {systemModules.modulesname}
                             </CCardHeader>
                             <div className="container">
-                              {systemModules &&
-                                systemModules.modulespermission.map(
-                                  (permission, index) => {
-                                    return (
-                                      <CFormCheck
-                                        key={index}
-                                        type="checkbox"
-                                        color="primary"
-                                        size="xl"
-                                        label={permission.name}
-                                        checked={(() => {
-                                          let flag = false;
-                                          tempPermission &&
-                                            tempPermission.map((list) => {
+                              {systemModules.modulespermission.map(
+                                (permission, index) => {
+                                  return (
+                                    <CFormCheck
+                                      key={index}
+                                      type="checkbox"
+                                      color="primary"
+                                      size="xl"
+                                      label={permission.name}
+                                      checked={(() => {
+                                        let flag = false;
+                                        tempPermission &&
+                                          tempPermission.map((list) => {
+                                            if (
+                                              systemModules.id ==
+                                              list.systemmodulesid._id
+                                            ) {
                                               if (
-                                                systemModules.id ==
-                                                list.systemmodulesid
-                                              ) {
-                                                if (
-                                                  list.access.includes(
-                                                    permission.id,
-                                                  )
+                                                list.access.includes(
+                                                  permission.id,
                                                 )
-                                                  flag = true;
-                                              }
-                                            });
-                                          return flag;
-                                        })()}
-                                        onChange={(e) => {
-                                          arrayInSetPer(
-                                            systemModules.id,
-                                            permission.id,
-                                            e.target.value,
-                                          );
-                                        }}
-                                      />
-                                    );
-                                  },
-                                )}
+                                              )
+                                                flag = true;
+                                            }
+                                          });
+                                        return flag;
+                                      })()}
+                                      onChange={(e) => {
+                                        arrayInSetPer(
+                                          systemModules.id,
+                                          permission.id,
+                                          e.target.value,
+                                        );
+                                      }}
+                                    />
+                                  );
+                                },
+                              )}
                             </div>
                           </CCard>
                           <br />
                         </CCol>
                       ))}
-                    {permissionError && (
-                      <p className="text-danger">{permissionError}</p>
-                    )}
                   </div>
-
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                     {spinner ? (
                       <div className="spinner-border" role="status">

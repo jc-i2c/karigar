@@ -11,7 +11,7 @@ const DefaultLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const token = localStorage.getItem("karigar_token");
 
   const url = location.pathname;
 

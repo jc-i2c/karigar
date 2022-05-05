@@ -16,6 +16,7 @@ const createUserRole = async (req, res, next) => {
       });
 
       var saveData = {
+        rolename: data.rolename,
         permissions: permissions,
       };
 
@@ -139,11 +140,10 @@ const delUserRole = async (req, res, next) => {
           message: `${cntRole} userrole found into system.!`,
         });
       } else {
-        // Array of all services.
+        // Array of all userroles.
         await Promise.all(
           findQry.map(async (allRoles) => {
-            if (!allRoles._id == "626113fadf6c093c730a54fa") {
-              console.log(allRoles, "allRoles");
+            if (allRoles._id) {
               cntRole = cntRole + 1;
               await Userrole.findByIdAndDelete(allRoles._id);
             } else {

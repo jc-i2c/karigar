@@ -21,7 +21,7 @@ const AddServices = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const token = localStorage.getItem("karigar_token");
   const [validated, setValidated] = useState(false);
   const [servicesName, setServicesName] = useState("");
   const [serviceImage, setServiceImage] = useState("");
