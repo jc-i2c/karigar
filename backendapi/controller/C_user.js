@@ -812,18 +812,16 @@ const deleteUser = async (req, res, next) => {
         },
       });
 
-      // console.log(findQry, "findQry");
-
       var totalUser = findQry.length;
       var cntUsers = 0;
 
       if (totalUser <= 0) {
         return res.send({
           status: true,
-          message: `${cntUsers} services found into system.!`,
+          message: `${cntUsers} users found into system.!`,
         });
       } else {
-        // Array of all services.
+        // Array of all users.
         await Promise.all(
           findQry.map(async (usersList) => {
             cntUsers = cntUsers + 1;

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import VisibilityIcon from "@material-ui/icons/Visibility";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
@@ -21,13 +22,23 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
+  CModal,
+  CModalTitle,
+  CModalHeader,
+  CModalBody,
+  CModalFooter,
 } from "@coreui/react";
 
 const ViewAllUserRoles = () => {
   const navigate = useNavigate();
 
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const token = localStorage.getItem("karigar_token");
+
   const [userrole, setUserrole] = useState([]);
+
+  const [openAlertBox, setOpenAlertBox] = useState(false);
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteItemId, setDeleteItemId] = useState("");
 
   useEffect(() => {
     axios
@@ -63,6 +74,8 @@ const ViewAllUserRoles = () => {
   }, []);
 
   function deleteUserRoles(userRoleId) {
+    setOpenAlertBox(false);
+
     let data = new FormData();
     data.append("userroleid", userRoleId);
 
@@ -125,7 +138,9 @@ const ViewAllUserRoles = () => {
                   <CTableHeaderCell>Userrole Name</CTableHeaderCell>
                   <CTableHeaderCell>CreateAT</CTableHeaderCell>
                   <CTableHeaderCell>UpdateAT</CTableHeaderCell>
-                  <CTableHeaderCell>Action</CTableHeaderCell>
+                  <CTableHeaderCell>View</CTableHeaderCell>
+                  <CTableHeaderCell>Edit</CTableHeaderCell>
+                  <CTableHeaderCell>Delete</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -134,12 +149,26 @@ const ViewAllUserRoles = () => {
                     <CTableDataCell>
                       <div>{item.rolename}</div>
                     </CTableDataCell>
-
                     <CTableDataCell>
                       <div>{item.createdAt}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.updatedAt}</div>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <VisibilityIcon
+                        variant="contained"
+                        color="inherit"
+                        onClick={() => {
+                          navigate("/adduserrole", {
+                            state: {
+                              userroleid: item.userroleid,
+                              rolename: item.rolename,
+                              permissions: item.permissions,
+                            },
+                          });
+                        }}
+                      />
                     </CTableDataCell>
 
                     <CTableDataCell>
@@ -156,16 +185,20 @@ const ViewAllUserRoles = () => {
                           });
                         }}
                       />
+                    </CTableDataCell>
+                    <CTableDataCell>
                       {item.userroleid == "626113fadf6c093c730a54fa" ? (
-                        ""
+                        "-"
                       ) : item.userroleid == "6273bcdff5932013fc9e678b" ? (
-                        ""
+                        "-"
                       ) : (
                         <DeleteIcon
                           variant="contained"
                           color="inherit"
                           onClick={() => {
-                            deleteUserRoles(item.userroleid);
+                            setOpenAlertBox(true);
+                            setDeleteTitle(item.rolename);
+                            setDeleteItemId(item.userroleid);
                           }}
                         />
                       )}
@@ -174,6 +207,42 @@ const ViewAllUserRoles = () => {
                 ))}
               </CTableBody>
             </CTable>
+            {/* ----------------------Open Delete Dialog Box---------------------------------- */}
+            {openAlertBox && (
+              <template>
+                <CModal
+                  visible={openAlertBox && openAlertBox}
+                  alignment="center"
+                  onClose={() => {
+                    setOpenAlertBox(false);
+                  }}
+                >
+                  <CModalHeader>
+                    <CModalTitle>Are you sure want to delete?</CModalTitle>
+                  </CModalHeader>
+                  <CModalBody>{deleteTitle && deleteTitle}</CModalBody>
+                  <CModalFooter>
+                    <CButton
+                      color="secondary"
+                      onClick={() => {
+                        setOpenAlertBox(false);
+                      }}
+                    >
+                      Close
+                    </CButton>
+                    <CButton
+                      color="primary"
+                      onClick={() => {
+                        deleteUserRoles(deleteItemId);
+                      }}
+                    >
+                      Delete
+                    </CButton>
+                  </CModalFooter>
+                </CModal>
+              </template>
+            )}
+            {/* ---------------------Close Delete Dialog Box---------------------------------- */}
             <br />
           </CCardBody>
           <ToastContainer />

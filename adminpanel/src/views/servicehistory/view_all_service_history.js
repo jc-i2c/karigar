@@ -43,7 +43,7 @@ const ViewServices = () => {
   useEffect(() => {
     axios
       .post(
-        `${process.env.REACT_APP_APIURL}/karigar/offer/getalloffer`,
+        `${process.env.REACT_APP_APIURL}/karigar/servicehistory/all`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       )
@@ -52,7 +52,7 @@ const ViewServices = () => {
         // console.log(data.data.data, "data");
         data.data.data.map((record) => {
           records.push({
-            offerid: record._id,
+            servicehistoryid: record._id,
             servicesid: record.servicesid,
             servicename: record.servicename,
             subserviceid: record.subserviceid._id,
@@ -133,8 +133,8 @@ const ViewServices = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">Offers List</CCardHeader>
-          <CCardHeader className="mb-0 border">
+          <CCardHeader className="mb-0 border">Service historys</CCardHeader>
+          {/* <CCardHeader className="mb-0 border">
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"
@@ -147,7 +147,7 @@ const ViewServices = () => {
                 Add Offers
               </CButton>
             </div>
-          </CCardHeader>
+          </CCardHeader> */}
 
           <CCardBody>
             <CTable

@@ -22,13 +22,22 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
+  CModal,
+  CModalTitle,
+  CModalHeader,
+  CModalBody,
+  CModalFooter,
 } from "@coreui/react";
 
 const ViewServices = () => {
   const navigate = useNavigate();
 
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const token = localStorage.getItem("karigar_token");
+
   const [services, setServices] = useState([]);
+  const [openAlertBox, setOpenAlertBox] = useState(false);
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteItemId, setDeleteItemId] = useState("");
 
   useEffect(() => {
     axios
@@ -57,6 +66,8 @@ const ViewServices = () => {
   }, []);
 
   function deleteServices(serviceId) {
+    setOpenAlertBox(false);
+
     let data = new FormData();
     data.append("servicesid", serviceId);
 
@@ -130,6 +141,7 @@ const ViewServices = () => {
                     <CTableDataCell>
                       <div>{item.servicename}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>
                         {item.serviceimage ? (
@@ -194,11 +206,14 @@ const ViewServices = () => {
                           });
                         }}
                       />
+
                       <DeleteIcon
                         variant="contained"
                         color="inherit"
                         onClick={() => {
-                          deleteServices(item.serviceid);
+                          setOpenAlertBox(true);
+                          setDeleteTitle(item.servicename);
+                          setDeleteItemId(item.serviceid);
                         }}
                       />
                     </CTableDataCell>
@@ -206,6 +221,42 @@ const ViewServices = () => {
                 ))}
               </CTableBody>
             </CTable>
+            {/* ----------------------Open Delete Dialog Box---------------------------------- */}
+            {openAlertBox && (
+              <template>
+                <CModal
+                  visible={openAlertBox && openAlertBox}
+                  alignment="center"
+                  onClose={() => {
+                    setOpenAlertBox(false);
+                  }}
+                >
+                  <CModalHeader>
+                    <CModalTitle>Are you sure want to delete?</CModalTitle>
+                  </CModalHeader>
+                  <CModalBody>{deleteTitle && deleteTitle}</CModalBody>
+                  <CModalFooter>
+                    <CButton
+                      color="secondary"
+                      onClick={() => {
+                        setOpenAlertBox(false);
+                      }}
+                    >
+                      Close
+                    </CButton>
+                    <CButton
+                      color="primary"
+                      onClick={() => {
+                        deleteServices(deleteItemId);
+                      }}
+                    >
+                      Delete
+                    </CButton>
+                  </CModalFooter>
+                </CModal>
+              </template>
+            )}
+            {/* ---------------------Close Delete Dialog Box---------------------------------- */}
             <br />
           </CCardBody>
           <ToastContainer />

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -21,15 +21,25 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
+  CModal,
+  CModalTitle,
+  CModalHeader,
+  CModalBody,
+  CModalFooter,
 } from "@coreui/react";
 
 const ViewSubServices = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const token = localStorage.getItem("karigar_token");
+
   const [subServices, setSubServices] = useState([]);
   const [servicesId, setServiceId] = useState("");
+
+  const [openAlertBox, setOpenAlertBox] = useState(false);
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteItemId, setDeleteItemId] = useState("");
 
   useEffect(() => {
     let unmounted = false;
@@ -77,8 +87,11 @@ const ViewSubServices = () => {
   }, [servicesId]);
 
   function deleteSubServices(subServiceId) {
+    setOpenAlertBox(false);
+
     let data = new FormData();
     data.append("subservicesid", subServiceId);
+
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/subServices/delete`,
@@ -216,7 +229,9 @@ const ViewSubServices = () => {
                         variant="contained"
                         color="inherit"
                         onClick={() => {
-                          deleteSubServices(item.subserviceid);
+                          setOpenAlertBox(true);
+                          setDeleteTitle(item.subservicename);
+                          setDeleteItemId(item.subserviceid);
                         }}
                       />
                     </CTableDataCell>
@@ -224,6 +239,42 @@ const ViewSubServices = () => {
                 ))}
               </CTableBody>
             </CTable>
+            {/* ----------------------Open Delete Dialog Box---------------------------------- */}
+            {openAlertBox && (
+              <template>
+                <CModal
+                  visible={openAlertBox && openAlertBox}
+                  alignment="center"
+                  onClose={() => {
+                    setOpenAlertBox(false);
+                  }}
+                >
+                  <CModalHeader>
+                    <CModalTitle>Are you sure want to delete?</CModalTitle>
+                  </CModalHeader>
+                  <CModalBody>{deleteTitle && deleteTitle}</CModalBody>
+                  <CModalFooter>
+                    <CButton
+                      color="secondary"
+                      onClick={() => {
+                        setOpenAlertBox(false);
+                      }}
+                    >
+                      Close
+                    </CButton>
+                    <CButton
+                      color="primary"
+                      onClick={() => {
+                        deleteSubServices(deleteItemId);
+                      }}
+                    >
+                      Delete
+                    </CButton>
+                  </CModalFooter>
+                </CModal>
+              </template>
+            )}
+            {/* ---------------------Close Delete Dialog Box---------------------------------- */}
             <br />
           </CCardBody>
           <ToastContainer />

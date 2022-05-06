@@ -25,6 +25,9 @@ const Addoffers = React.lazy(() => import("./views/offers/add_offers"));
 const Viewuserrole = React.lazy(() => import("./views/userrole/view_userrole"));
 const Adduserrole = React.lazy(() => import("./views/userrole/add_userrole"));
 
+// Service history.
+const Viewservicehistory = React.lazy(() => import("./views/servicehistory/view_all_service_history"));
+
 const routes = [
   // { path: "/", exact: true, name: "Home" },
 
@@ -55,6 +58,8 @@ const routes = [
   { path: "/adduserrole", name: "Adduserrole", element: Adduserrole },
   { path: "/changepassword", name: "Changepassword", element: Changepassword },
 
+  // Userrole.
+  { path: "/servicehistory", name: "Viewservicehistory", element: Viewservicehistory },
 ];
 
 export default routes;

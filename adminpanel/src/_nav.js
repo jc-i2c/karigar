@@ -41,16 +41,23 @@ const _nav = [
   },
   {
     component: CNavItem,
+    name: "Service history",
+    to: "/servicehistory",
+    id: "626fb5108f7cc6c12b2672ab",
+    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: "All Users",
     to: "/users",
-    id: "6260ffe81c78176ea1c01eb1",
+    id: "627376c155b4c75c3b3abcd5",
     icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: "User role",
     to: "/viewuserrole",
-    // id: "6260ffe81c78176ea1c01eb1",
+    id: "6274ca16b9b11b68cba45777",
     icon: <CIcon icon={cilAppsSettings} customClassName="nav-icon" />,
   },
 ];

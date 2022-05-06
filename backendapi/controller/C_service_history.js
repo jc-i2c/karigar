@@ -83,7 +83,6 @@ const getAllServicehistory = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        delete resData.updatedAt; // delete person["updatedAt"]
         delete resData.__v; // delete person["__v"]
 
         // Set time morning or afternoon.
@@ -134,7 +133,14 @@ const getAllServicehistory = async (req, res, next) => {
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
+        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
+        resData.updatedAt = resData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
         findData.push(resData);
+        a;
       });
 
       return res.send({

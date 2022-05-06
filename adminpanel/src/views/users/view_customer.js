@@ -1,6 +1,6 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,14 +23,25 @@ import {
   CFormSwitch,
   CFormCheck,
   CButton,
+  CModal,
+  CModalTitle,
+  CModalHeader,
+  CModalBody,
+  CModalFooter,
+  CPagination,
+  CPaginationItem,
 } from "@coreui/react";
 
 const ViewCustomer = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const token = localStorage.getItem("karigar_token");
+
   const [customers, setCustomers] = useState([]);
+
+  const [openAlertBox, setOpenAlertBox] = useState(false);
+  const [deleteTitle, setDeleteTitle] = useState("");
+  const [deleteItemId, setDeleteItemId] = useState("");
 
   useEffect(() => {
     axios
@@ -93,6 +104,8 @@ const ViewCustomer = () => {
   }
 
   function deleteCustomer(customerId) {
+    setOpenAlertBox(false);
+
     let data = new FormData();
     data.append("userid", customerId);
 
@@ -228,7 +241,9 @@ const ViewCustomer = () => {
                         variant="contained"
                         color="inherit"
                         onClick={() => {
-                          deleteCustomer(item.customerid);
+                          setOpenAlertBox(true);
+                          setDeleteTitle(item.emailaddress);
+                          setDeleteItemId(item.customerid);
                         }}
                       />
                     </CTableDataCell>
@@ -236,6 +251,42 @@ const ViewCustomer = () => {
                 ))}
               </CTableBody>
             </CTable>
+            {/* ----------------------Open Delete Dialog Box---------------------------------- */}
+            {openAlertBox && (
+              <template>
+                <CModal
+                  visible={openAlertBox}
+                  alignment="center"
+                  onClose={() => {
+                    setOpenAlertBox(false);
+                  }}
+                >
+                  <CModalHeader>
+                    <CModalTitle>Are you sure want to delete?</CModalTitle>
+                  </CModalHeader>
+                  <CModalBody>{deleteTitle && deleteTitle}</CModalBody>
+                  <CModalFooter>
+                    <CButton
+                      color="secondary"
+                      onClick={() => {
+                        setOpenAlertBox(false);
+                      }}
+                    >
+                      Close
+                    </CButton>
+                    <CButton
+                      color="primary"
+                      onClick={() => {
+                        deleteCustomer(deleteItemId);
+                      }}
+                    >
+                      Delete
+                    </CButton>
+                  </CModalFooter>
+                </CModal>
+              </template>
+            )}
+            {/* ---------------------Close Delete Dialog Box---------------------------------- */}
             <br />
           </CCardBody>
           <ToastContainer />
