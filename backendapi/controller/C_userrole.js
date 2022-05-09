@@ -1,3 +1,4 @@
+var moment = require("moment");
 const Userrole = require("../models/M_userrole");
 
 // Create and Update user role API.
@@ -83,17 +84,21 @@ const getAllRole = async (req, res, next) => {
         let objectData = {};
         objectData = item.toJSON();
 
-        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        objectData.createdAt = objectData.createdAt
+        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        createDate = objectData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        objectData.updatedAt = objectData.updatedAt
+        objectData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+
+        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        updateDate = objectData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
+
+        objectData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
 
         delete objectData.__v; // delete objectData["__v"]
 

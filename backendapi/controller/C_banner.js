@@ -1,4 +1,5 @@
 const Banner = require("../models/M_banner");
+var moment = require("moment");
 
 const { createBannerVal, updateBannerVal } = require("../helper/joivalidation");
 const { removeFile } = require("../helper/removefile");
@@ -157,15 +158,41 @@ const getAllBanner = async (req, res, next) => {
     let findQry = await Banner.find();
 
     if (findQry.length > 0) {
+      let findData = [];
+      let resData = {};
+      findQry.forEach((data) => {
+        resData = data.toObject();
+
+        delete resData.__v; // delete person["__v"]
+
+        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        createDate = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+
+        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        updateDate = resData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+
+        findData.push(resData);
+      });
+
       return res.send({
         status: true,
-        message: `${findQry.length} banner found into system.`,
-        data: findQry,
+        message: `${findData.length} banner found into system.`,
+        data: findData,
       });
     } else {
       return res.send({
         status: false,
-        message: `${findQry.length} banner not found into system.`,
+        message: `${findData.length} banner not found into system.`,
       });
     }
   } catch (error) {

@@ -26,8 +26,6 @@ BannerSchema.methods.toJSON = function () {
   const banner = this;
   const bannerObj = banner.toObject();
   delete bannerObj.__v;
-  delete bannerObj.createdAt;
-  delete bannerObj.updatedAt;
   return bannerObj;
 };
 

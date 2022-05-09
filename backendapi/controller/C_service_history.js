@@ -1,3 +1,4 @@
+var moment = require("moment");
 const mongoose = require("mongoose");
 const ServiceHistory = require("../models/M_service_history");
 
@@ -75,7 +76,15 @@ const createServicehistory = async (req, res, next) => {
 // Get all service history API.
 const getAllServicehistory = async (req, res, next) => {
   try {
-    let getQry = await ServiceHistory.find();
+    let getQry = await ServiceHistory.find()
+      .populate({
+        path: "serviceproviderid",
+        select: "name",
+      })
+      .populate({
+        path: "customerid",
+        select: "name",
+      });
 
     if (getQry.length > 0) {
       let findData = [];
@@ -121,26 +130,28 @@ const getAllServicehistory = async (req, res, next) => {
           resData.paymentstatus = "Pending";
         }
 
-        // Servicedate date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        resData.servicedate = resData.servicedate
+        // Servicedate date convert into date and time (DD/MM/YYYY) format
+        var serviceDate = resData.servicedate.toISOString().slice(0, 10);
+        resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
+
+        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        resData.createdAt = resData.createdAt
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+
+        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        updateDate = resData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        resData.updatedAt = resData.updatedAt
-          .toISOString()
-          .replace(/T/, " ")
-          .replace(/\..+/, "");
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+
 
         findData.push(resData);
-        a;
       });
 
       return res.send({
@@ -211,17 +222,20 @@ const getSingleServicehistory = async (req, res, next) => {
           resData.paymentstatus = "Pending";
         }
 
-        // servicedate date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        resData.servicedate = resData.servicedate
+        // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        var serviceDate = resData.servicedate
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+        resData.servicedate = moment(serviceDate).format("DD-MM-YYYY SS:MM:HH");
+
+        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        resData.createdAt = resData.createdAt
-          .toISOString()
-          .replace(/T/, " ")
-          .replace(/\..+/, "");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
 
         return res.send({
           status: true,
@@ -438,17 +452,20 @@ const getServiceSerProvider = async (req, res, next) => {
             resData.paymentstatus = "Pending";
           }
 
-          // Servicedate date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-          resData.servicedate = resData.servicedate
+          // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          var serviceDate = resData.servicedate
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+          resData.servicedate = moment(serviceDate).format("DD-MM-YYYY SS:MM:HH");
+
+          // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          createDate = resData.createdAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-          resData.createdAt = resData.createdAt
-            .toISOString()
-            .replace(/T/, " ")
-            .replace(/\..+/, "");
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
 
           findData.push(resData);
         });
@@ -603,17 +620,20 @@ const customerBookService = async (req, res, next) => {
             resData.paymentstatus = "Pending";
           }
 
-          // Servicedate date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-          resData.servicedate = resData.servicedate
+          // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          var serviceDate = resData.servicedate
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+          resData.servicedate = moment(serviceDate).format("DD-MM-YYYY SS:MM:HH");
+
+          // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          createDate = resData.createdAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-          resData.createdAt = resData.createdAt
-            .toISOString()
-            .replace(/T/, " ")
-            .replace(/\..+/, "");
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
 
           findData.push(resData);
         });

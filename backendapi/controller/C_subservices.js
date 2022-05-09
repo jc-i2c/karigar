@@ -1,3 +1,4 @@
+var moment = require("moment");
 const mongoose = require("mongoose");
 const Subservices = require("../models/M_subservices");
 const Services = require("../models/M_services");
@@ -90,17 +91,21 @@ const getAllSubServices = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        resData.createdAt = resData.createdAt
+        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        resData.updatedAt = resData.updatedAt
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+
+        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        updateDate = resData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
+
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
 
         delete resData.__v; // delete resData["__v"]
 
@@ -144,17 +149,21 @@ const getSubServices = async (req, res, next) => {
         getQry.forEach((data) => {
           resData = data.toObject();
 
-          // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-          resData.createdAt = resData.createdAt
+          // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          createDate = resData.createdAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          // updatedAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-          resData.updatedAt = resData.updatedAt
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+
+          // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          updateDate = resData.updatedAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
+
+          resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
 
           delete resData.__v; // delete resData["__v"]
 

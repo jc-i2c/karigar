@@ -1,3 +1,4 @@
+var moment = require("moment");
 const ChatRequest = require("../models/M_chat_request");
 
 const { chatReqStatusVal } = require("../helper/joivalidation");
@@ -130,11 +131,13 @@ const getAllChatRequest = async (req, res, next) => {
           resData.chatstatus = "Reject";
         }
 
-        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        resData.createdAt = resData.createdAt
+        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
+
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH")
 
         findData.push(resData);
       });
@@ -184,11 +187,13 @@ const getAllCusChatRequest = async (req, res, next) => {
           resData.chatstatus = "Reject";
         }
 
-        // createdAt date convert into date and time (DD/MM/YYYY HH:MM:SS) format
-        resData.createdAt = resData.createdAt
+        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
+
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH")
 
         findData.push(resData);
       });

@@ -16,6 +16,7 @@ const Addusers = React.lazy(() => import("./views/users/add_users"));
 const Serviceprovider = React.lazy(() => import("./views/users/view_service_provider"));
 const Viewcustomer = React.lazy(() => import("./views/users/view_customer"));
 const Changepassword = React.lazy(() => import("./views/users/change_password"));
+const Profile = React.lazy(() => import("./views/users/profile"));
 
 // Service offers.
 const Viewoffers = React.lazy(() => import("./views/offers/view_all_offers"));
@@ -27,6 +28,9 @@ const Adduserrole = React.lazy(() => import("./views/userrole/add_userrole"));
 
 // Service history.
 const Viewservicehistory = React.lazy(() => import("./views/servicehistory/view_all_service_history"));
+
+// Service history.
+const Addbanner = React.lazy(() => import("./views/home_banner/Add_home_banner"));
 
 const routes = [
   // { path: "/", exact: true, name: "Home" },
@@ -48,6 +52,7 @@ const routes = [
   { path: "/addusers", name: "Addusers", element: Addusers },
   { path: "/serviceprovider", name: "Serviceprovider", element: Serviceprovider },
   { path: "/viewcustomer", name: "Viewcustomer", element: Viewcustomer },
+  { path: "/profile", name: "Profile", element: Profile },
 
   // Service offers.
   { path: "/viewoffers", name: "Viewoffers", element: Viewoffers },
@@ -58,8 +63,11 @@ const routes = [
   { path: "/adduserrole", name: "Adduserrole", element: Adduserrole },
   { path: "/changepassword", name: "Changepassword", element: Changepassword },
 
-  // Userrole.
+  // Service history.
   { path: "/servicehistory", name: "Viewservicehistory", element: Viewservicehistory },
+
+  // Home Banner
+  { path: "/addbanner", name: "Addbanner", element: Addbanner },
 ];
 
 export default routes;

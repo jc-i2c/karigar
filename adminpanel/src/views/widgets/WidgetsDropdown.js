@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const WidgetsDropdown = () => {
   const navigate = useNavigate();
 
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const token = localStorage.getItem("karigar_token");
   const [customers, setCustomers] = useState("");
   const [users, setUsers] = useState("");
   const [servicesprovider, setServicesProvider] = useState("");

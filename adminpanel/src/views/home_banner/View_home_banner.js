@@ -21,7 +21,6 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
-  CFormSwitch,
   CModal,
   CModalTitle,
   CModalHeader,
@@ -29,100 +28,62 @@ import {
   CModalFooter,
 } from "@coreui/react";
 
-const ViewServices = () => {
+const ViewCustomer = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("karigar_token");
-  const [offers, setOffers] = useState([]);
+
+  const [banners, setBanners] = useState([]);
 
   const [openAlertBox, setOpenAlertBox] = useState(false);
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteItemId, setDeleteItemId] = useState("");
 
-  // Get all offers list.
   useEffect(() => {
     axios
       .post(
-        `${process.env.REACT_APP_APIURL}/karigar/servicehistory/all`,
+        `${process.env.REACT_APP_APIURL}/karigar/dashboard/getall`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then((data) => {
         const records = [];
-        console.log(data.data.data, "data");
         data.data.data.map((record) => {
-          console.log(record, "record");
           records.push({
-            servicehistoryid: record._id,
-            name: record.name,
-            serviceprovidername: record.serviceproviderid.name,
-            customername: record.customerid.name,
-            addresstype: record.addresstype,
-            servicedate: record.servicedate,
-            sessiontype: record.servicetime.sessiontype,
-            sessiontime: record.servicetime.sessiontime,
-            servicestatus: record.servicestatus,
-            paymentstatus: record.paymentstatus,
+            bannerid: record._id,
+            bannertitle: record.bannertitle,
+            bannersubtitle: record.bannersubtitle,
+            bannerimage: record.bannerimage,
             createdAt: record.createdAt,
             updatedAt: record.updatedAt,
           });
         });
-        setOffers(records);
+        setBanners(records);
       })
       .catch((error) => {
         console.log(error, "error");
       });
   }, []);
 
-  function changeOfferStatus(offerId) {
-    let data = new FormData();
-    data.append("offerid", offerId);
-    axios
-      .post(
-        `${process.env.REACT_APP_APIURL}/karigar/offer/changestatus`,
-        data,
-        { headers: { Authorization: `Bearer ${token}` } },
-      )
-      .then((data) => {
-        if (data.data.status) {
-          toast.success(data.data.message);
-          let newOfferData = offers.map((offerList) => {
-            if (offerList.offerid == offerId) {
-              if (offerList.isactive) {
-                return { ...offerList, isactive: false };
-              } else {
-                return { ...offerList, isactive: true };
-              }
-            }
-            return offerList;
-          });
-          setOffers(newOfferData);
-        } else {
-          toast.error(data.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error, "error");
-      });
-  }
-
-  function deleteOffers(offerId) {
+  function deleteHomeBanner(bannerId) {
     setOpenAlertBox(false);
 
     let data = new FormData();
-    data.append("offerid", offerId);
+    data.append("bannerid", bannerId);
 
     axios
-      .post(`${process.env.REACT_APP_APIURL}/karigar/offer/delete`, data, {
+      .post(`${process.env.REACT_APP_APIURL}/karigar/dashboard/delete`, data, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((data) => {
         if (data.data.status) {
           toast.success(data.data.message);
 
-          let newOffersData = offers.filter((item) => item.offerid !== offerId);
+          let newBannerData = banners.filter(
+            (item) => item.bannerid !== bannerId,
+          );
 
-          setOffers(newOffersData);
+          setBanners(newBannerData);
         } else {
           toast.error(data.data.message);
         }
@@ -136,7 +97,21 @@ const ViewServices = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">Service historys</CCardHeader>
+          <CCardHeader className="mb-0 border">Home Banner List</CCardHeader>
+          <CCardHeader className="mb-0 border">
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <CButton
+                color="primary"
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  navigate("/addbanner");
+                }}
+              >
+                Add Banner
+              </CButton>
+            </div>
+          </CCardHeader>
 
           <CCardBody>
             <CTable
@@ -152,48 +127,39 @@ const ViewServices = () => {
             >
               <CTableHead color="light">
                 <CTableRow>
-                  <CTableHeaderCell>Name</CTableHeaderCell>
-                  <CTableHeaderCell>Service Provider Name</CTableHeaderCell>
-                  <CTableHeaderCell>Customer Name</CTableHeaderCell>
-                  <CTableHeaderCell>Address Type</CTableHeaderCell>
-                  <CTableHeaderCell>Service Time</CTableHeaderCell>
-                  <CTableHeaderCell>Service Date</CTableHeaderCell>
-                  <CTableHeaderCell>Service Status</CTableHeaderCell>
-                  <CTableHeaderCell>Payment Status</CTableHeaderCell>
-                  <CTableHeaderCell>CreatedAt</CTableHeaderCell>
-                  <CTableHeaderCell>UpdatedAt</CTableHeaderCell>
-                  {/* <CTableHeaderCell>Action</CTableHeaderCell> */}
+                  <CTableHeaderCell>Banner Title</CTableHeaderCell>
+                  <CTableHeaderCell>banner Sub Title</CTableHeaderCell>
+                  <CTableHeaderCell>banner Image</CTableHeaderCell>
+                  <CTableHeaderCell>CreateAT</CTableHeaderCell>
+                  <CTableHeaderCell>UpdateAT</CTableHeaderCell>
+                  <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {offers.map((item, index) => (
+                {banners.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
                     <CTableDataCell>
-                      <div>{item.name}</div>
+                      <div>{item.bannertitle}</div>
+                    </CTableDataCell>
+                    <CTableDataCell>
+                      <div>{item.bannersubtitle}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>
-                        {item.serviceprovidername && item.serviceprovidername}
+                        {item.bannerimage && (
+                          <img
+                            src={
+                              `${process.env.REACT_APP_PROFILEPIC}` +
+                              item.bannerimage
+                            }
+                            alt={item.bannerimage}
+                            style={{
+                              height: "70px",
+                              width: "70px",
+                            }}
+                          />
+                        )}
                       </div>
-                    </CTableDataCell>
-
-                    <CTableDataCell>
-                      <div>{item.customername}</div>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <div>{item.addresstype}</div>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <div>{item.sessiontype + " " + item.sessiontime}</div>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <div>{item.servicedate}</div>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <div>{item.servicestatus}</div>
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      <div>{item.paymentstatus}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.createdAt}</div>
@@ -202,19 +168,17 @@ const ViewServices = () => {
                       <div>{item.updatedAt}</div>
                     </CTableDataCell>
 
-                    {/* <CTableDataCell>
+                    <CTableDataCell>
                       <EditIcon
                         variant="contained"
                         color="inherit"
                         onClick={() => {
-                          navigate("/addoffers", {
+                          navigate("/addbanner", {
                             state: {
-                              offerid: item.offerid,
-                              servicesid: item.servicesid,
-                              subserviceid: item.subserviceid,
-                              serviceproviderid: item.serviceproviderid,
-                              currentprice: item.currentprice,
-                              actualprice: item.actualprice,
+                              bannerid: item.bannerid,
+                              bannertitle: item.bannertitle,
+                              bannersubtitle: item.bannersubtitle,
+                              bannerimage: item.bannerimage,
                             },
                           });
                         }}
@@ -224,11 +188,11 @@ const ViewServices = () => {
                         color="inherit"
                         onClick={() => {
                           setOpenAlertBox(true);
-                          setDeleteTitle(item.serviceprovidername);
-                          setDeleteItemId(item.offerid);
+                          setDeleteTitle(item.bannertitle);
+                          setDeleteItemId(item.bannerid);
                         }}
                       />
-                    </CTableDataCell> */}
+                    </CTableDataCell>
                   </CTableRow>
                 ))}
               </CTableBody>
@@ -237,7 +201,7 @@ const ViewServices = () => {
             {openAlertBox && (
               <template>
                 <CModal
-                  visible={openAlertBox && openAlertBox}
+                  visible={openAlertBox}
                   alignment="center"
                   onClose={() => {
                     setOpenAlertBox(false);
@@ -259,7 +223,7 @@ const ViewServices = () => {
                     <CButton
                       color="primary"
                       onClick={() => {
-                        deleteOffers(deleteItemId);
+                        deleteHomeBanner(deleteItemId);
                       }}
                     >
                       Delete
@@ -278,4 +242,4 @@ const ViewServices = () => {
   );
 };
 
-export default ViewServices;
+export default ViewCustomer;
