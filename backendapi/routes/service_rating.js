@@ -10,6 +10,7 @@ const {
   getCusOwnedRate,
   getServiceRate,
   countRate,
+  getAll,
 } = require("../controller/C_service_rating");
 
 router.post("/create", auth, multipartMiddleware, createServiceRate);
@@ -27,5 +28,7 @@ router.post("/customerrate", auth, multipartMiddleware, getCusOwnedRate);
 router.post("/getservicerate", auth, multipartMiddleware, getServiceRate);
 
 router.post("/countrate", auth, multipartMiddleware, countRate);
+
+router.post("/getall", auth, multipartMiddleware, getAll);
 
 module.exports = router;

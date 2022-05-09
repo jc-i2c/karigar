@@ -43,6 +43,9 @@ const Addtitle = React.lazy(() => import("./views/customersupport/add_title"));
 const Viewsubtitle = React.lazy(() => import("./views/customersupportsubtitle/viewsubtitle"));
 const Addsubtitle = React.lazy(() => import("./views/customersupportsubtitle/add_sub_title"));
 
+// Service Rating
+const Viewservicerating = React.lazy(() => import("./views/servicerating/view_service_rating"));
+
 const routes = [
   // { path: "/", exact: true, name: "Home" },
 
@@ -90,6 +93,9 @@ const routes = [
   // Customer Support Sub Title
   { path: "/viewsubtitle", name: "Viewsubtitle", element: Viewsubtitle },
   { path: "/addsubtitle", name: "Addsubtitle", element: Addsubtitle },
+
+  // Service Rating
+  { path: "/viewservicerating", name: "Viewservicerating", element: Viewservicerating },
 ];
 
 export default routes;

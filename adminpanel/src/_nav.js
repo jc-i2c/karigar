@@ -10,6 +10,7 @@ import {
   cilTask,
   cilLockLocked,
   cilSync,
+  cilStar,
 } from "@coreui/icons";
 
 import { CNavItem } from "@coreui/react";
@@ -70,6 +71,13 @@ const _nav = [
     to: "/privacypolicy",
     id: "6274ca16b9b11b68cba45777",
     icon: <CIcon icon={cilLockLocked} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: "Service Rating",
+    to: "/viewservicerating",
+    id: "6274ca16b9b11b68cba45777",
+    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
   },
 ];
 
