@@ -32,6 +32,17 @@ const Viewservicehistory = React.lazy(() => import("./views/servicehistory/view_
 // Service history.
 const Addbanner = React.lazy(() => import("./views/home_banner/Add_home_banner"));
 
+// Privacy policy
+const Privacypolicy = React.lazy(() => import("./views/privacypolicy/privacypolicy"));
+
+// Customer Support
+const Viewcustomersupport = React.lazy(() => import("./views/customersupport/View_customer_support"));
+const Addtitle = React.lazy(() => import("./views/customersupport/add_title"));
+
+// Customer Support Sub Title
+const Viewsubtitle = React.lazy(() => import("./views/customersupportsubtitle/viewsubtitle"));
+const Addsubtitle = React.lazy(() => import("./views/customersupportsubtitle/add_sub_title"));
+
 const routes = [
   // { path: "/", exact: true, name: "Home" },
 
@@ -68,6 +79,17 @@ const routes = [
 
   // Home Banner
   { path: "/addbanner", name: "Addbanner", element: Addbanner },
+
+  // Privacy policy
+  { path: "/privacypolicy", name: "Privacypolicy", element: Privacypolicy },
+
+  // Customer Support
+  { path: "/viewcustomersupport", name: "Viewcustomersupport", element: Viewcustomersupport },
+  { path: "/addtitle", name: "Addtitle", element: Addtitle },
+
+  // Customer Support Sub Title
+  { path: "/viewsubtitle", name: "Viewsubtitle", element: Viewsubtitle },
+  { path: "/addsubtitle", name: "Addsubtitle", element: Addsubtitle },
 ];
 
 export default routes;

@@ -86,8 +86,8 @@ const getAllServicehistory = async (req, res, next) => {
         select: "name",
       });
 
+    let findData = [];
     if (getQry.length > 0) {
-      let findData = [];
       let resData = {};
       getQry.forEach((data) => {
         resData = data.toObject();
@@ -156,13 +156,13 @@ const getAllServicehistory = async (req, res, next) => {
 
       return res.send({
         status: true,
-        message: `${getQry.length} service history found into system.`,
+        message: `${findData.length} service history found into system.`,
         data: findData,
       });
     } else {
       return res.send({
         status: false,
-        message: `${getQry.length} service history not found into system.`,
+        message: `${findData.length} service history not found into system.`,
       });
     }
   } catch (error) {

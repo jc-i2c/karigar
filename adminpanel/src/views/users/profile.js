@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,7 +20,6 @@ import {
 
 const UserProfile = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const token = localStorage.getItem("karigar_token");
 
@@ -75,16 +74,6 @@ const UserProfile = () => {
     setGenderError("");
     setValidated(false);
   }, [name, emailAddress, mobileNumber]);
-
-  // Props data set.
-  useEffect(() => {
-    if (location.state) {
-      setEmailAddress(location.state.emailaddress);
-      setName(location.state.name);
-      setMobileNumber(location.state.mobilenumber);
-      setGender(location.state.gender);
-    }
-  }, []);
 
   // User profile details.
   function userProfiledetails() {

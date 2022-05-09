@@ -27,8 +27,6 @@ custSupSubTitleSchema.methods.toJSON = function () {
   const custSupSubTitle = this;
   const custSupSubTitleObj = custSupSubTitle.toObject();
   delete custSupSubTitleObj.__v;
-  delete custSupSubTitleObj.createdAt;
-  delete custSupSubTitleObj.updatedAt;
   return custSupSubTitleObj;
 };
 

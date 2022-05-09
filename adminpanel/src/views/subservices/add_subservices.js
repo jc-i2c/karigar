@@ -40,7 +40,7 @@ const AddSubServices = () => {
   const [imagePath, setImagePath] = useState("");
   const initialState = { alt: "", src: "" };
 
-  // Gel all services
+  // Get all services
   useEffect(() => {
     let unmounted = false;
 

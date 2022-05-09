@@ -1,3 +1,4 @@
+var moment = require("moment");
 const Custsupttitle = require("../models/M_custsupttitle");
 
 const { editCusSupTitleVal } = require("../helper/joivalidation");
@@ -35,16 +36,43 @@ const getAllCusSupTitle = async (req, res, next) => {
   try {
     const findQry = await Custsupttitle.find();
 
+    let findData = [];
+
     if (findQry.length > 0) {
+      let resData = {};
+      findQry.forEach((data) => {
+        resData = data.toObject();
+
+        delete resData.__v; // delete person["__v"]
+
+        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        createDate = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+
+        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        updateDate = resData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+
+        findData.push(resData);
+      });
+
       return res.send({
         status: true,
-        message: `${findQry.length} Customer support title found into system.`,
-        data: findQry,
+        message: `${findData.length} Customer support title found into system.`,
+        data: findData,
       });
     } else {
       return res.send({
         status: false,
-        message: `${findQry.length} Customer support title not found into system.`,
+        message: `${findData.length} Customer support title not found into system.`,
       });
     }
   } catch (error) {

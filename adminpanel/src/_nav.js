@@ -1,21 +1,18 @@
 import React from "react";
 import CIcon from "@coreui/icons-react";
+
 import {
-  cilBell,
-  cilCalculator,
-  cilChartPie,
-  cilCursor,
-  cilDrop,
   cilNotes,
-  cilPencil,
-  cilStar,
   cilPuzzle,
   cilAppsSettings,
   cilSpeedometer,
   cilUser,
   cilTask,
+  cilLockLocked,
+  cilSync,
 } from "@coreui/icons";
-import { CNavGroup, CNavItem, CNavTitle } from "@coreui/react";
+
+import { CNavItem } from "@coreui/react";
 
 const _nav = [
   {
@@ -59,6 +56,20 @@ const _nav = [
     to: "/viewuserrole",
     id: "6274ca16b9b11b68cba45777",
     icon: <CIcon icon={cilAppsSettings} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: "Customer Support",
+    to: "/viewcustomersupport",
+    id: "6274ca16b9b11b68cba45777",
+    icon: <CIcon icon={cilSync} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: "Privacy Policy",
+    to: "/privacypolicy",
+    id: "6274ca16b9b11b68cba45777",
+    icon: <CIcon icon={cilLockLocked} customClassName="nav-icon" />,
   },
 ];
 
