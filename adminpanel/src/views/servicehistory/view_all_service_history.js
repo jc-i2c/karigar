@@ -136,7 +136,9 @@ const ViewServices = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">Service historys</CCardHeader>
+          <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
+            <div>Service historys</div>
+          </CCardHeader>
 
           <CCardBody>
             <CTable
@@ -150,7 +152,7 @@ const ViewServices = () => {
               itemsperpage={5}
               pagination="true"
             >
-              <CTableHead color="light">
+              <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Name</CTableHeaderCell>
                   <CTableHeaderCell>Service Provider Name</CTableHeaderCell>

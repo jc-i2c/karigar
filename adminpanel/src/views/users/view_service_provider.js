@@ -134,10 +134,8 @@ const ViewServiceProvider = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">
-            Service Provider List
-          </CCardHeader>
-          <CCardHeader className="mb-0 border">
+          <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
+            <div>Service Provider List</div>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"
@@ -164,7 +162,7 @@ const ViewServiceProvider = () => {
               itemsperpage={5}
               pagination="true"
             >
-              <CTableHead color="light">
+              <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Email Address</CTableHeaderCell>
                   <CTableHeaderCell>Name</CTableHeaderCell>

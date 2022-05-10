@@ -8,25 +8,8 @@ const createModules = async (req, res, next) => {
 
     modulesname = modulesname.toLowerCase();
 
-    let data = [];
-
-    let readObj = {};
-    readObj.name = "read";
-    readObj.id = "1";
-
-    let writeObj = {};
-    writeObj.name = "write";
-    writeObj.id = "2";
-
-    let delObj = {};
-    delObj.name = "delete";
-    delObj.id = "3";
-
-    data.push(readObj, writeObj, delObj);
-
     var addSystemModules = new SystemModules({
       modulesname: modulesname,
-      modulespermission: data,
     });
 
     const insertQry = await addSystemModules.save();

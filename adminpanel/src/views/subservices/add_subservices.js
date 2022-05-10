@@ -215,7 +215,7 @@ const AddSubServices = () => {
                   validated={validated}
                   onSubmit={addSubServices}
                 >
-                  <h2>Sub Services</h2>
+                  <h3>Sub Services</h3>
                   <hr />
 
                   <CCol md={6}>

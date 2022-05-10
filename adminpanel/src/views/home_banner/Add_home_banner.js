@@ -164,7 +164,7 @@ const HomeBanner = () => {
                   validated={validated}
                   onSubmit={addBanner}
                 >
-                  <h2>Home Banner</h2>
+                  <h3>Home Banner</h3>
                   <hr />
 
                   <CCol md={6}>

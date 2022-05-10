@@ -29,7 +29,6 @@ const AddServices = () => {
 
   const [emailAddressError, setEmailAddressError] = useState("");
 
-
   useEffect(() => {
     const token = localStorage.getItem("karigar_token");
     if (token) {
@@ -98,7 +97,7 @@ const AddServices = () => {
                     validated={validated}
                     onSubmit={forgotPassword}
                   >
-                    <h2>Forgot Password</h2>
+                    <h3>Forgot Password</h3>
                     <hr />
 
                     <CCol md={8}>
@@ -140,7 +139,10 @@ const AddServices = () => {
                         </CButton>
                       )}
 
-                      <CButton color="primary" onClick={() => navigate(-1)}>
+                      <CButton
+                        color="primary"
+                        onClick={() => navigate("/login")}
+                      >
                         Back
                       </CButton>
                     </div>

@@ -17,8 +17,8 @@ const PermissionContextProvider = ({ children }) => {
         },
       )
       .then((res) => {
-        // console.log(res.data.data.permissions, "PERMISSIONS");
-        setPermissions(res.data.data.permissions);
+        // console.log(res.data.data.systemmodulesid, "PERMISSIONS");
+        setPermissions(res.data.data.systemmodulesid);
       })
       .catch((error) => {
         console.log(error, "error");

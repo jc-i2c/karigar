@@ -97,7 +97,7 @@ const AddServices = () => {
                     validated={validated}
                     onSubmit={forgotPassword}
                   >
-                    <h2>OTP Verification</h2>
+                    <h3>OTP Verification</h3>
                     <hr />
 
                     <CCol md={8}>

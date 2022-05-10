@@ -183,7 +183,7 @@ const AddCustomerSubTitle = () => {
                   validated={validated}
                   onSubmit={addSubTitle}
                 >
-                  <h2>Customer Support Sub Title</h2>
+                  <h3>Customer Support Sub Title</h3>
                   <hr />
 
                   <CCol md={6}>

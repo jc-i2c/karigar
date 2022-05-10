@@ -97,8 +97,8 @@ const ViewCustomer = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">Home Banner List</CCardHeader>
-          <CCardHeader className="mb-0 border">
+          <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
+            <div>Home Banner List</div>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"
@@ -125,11 +125,11 @@ const ViewCustomer = () => {
               itemsperpage={5}
               pagination="true"
             >
-              <CTableHead color="light">
+              <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Banner Title</CTableHeaderCell>
-                  <CTableHeaderCell>banner Sub Title</CTableHeaderCell>
-                  <CTableHeaderCell>banner Image</CTableHeaderCell>
+                  <CTableHeaderCell>Banner Sub Title</CTableHeaderCell>
+                  <CTableHeaderCell>Banner Image</CTableHeaderCell>
                   <CTableHeaderCell>CreateAT</CTableHeaderCell>
                   <CTableHeaderCell>UpdateAT</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>

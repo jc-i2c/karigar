@@ -7,8 +7,8 @@ const systemModulesSchema = new mongoose.Schema(
       type: String,
       unique: [true, "Modules name is already exists."],
       required: [true, "Modules name is required."],
+      lowercase: [true, "Lower case only accept."],
     },
-    modulespermission: { type: Array },
   },
   {
     timestamps: true,

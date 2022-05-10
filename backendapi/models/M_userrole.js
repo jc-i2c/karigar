@@ -6,20 +6,13 @@ const UserroleSchema = new mongoose.Schema(
       type: String,
       unique: [true, "User rolename is already exists."],
       required: [true, "User rolename is required."],
+      lowercase: [true, "Lower case only accept."],
     },
-    permissions: [
+    systemmodulesid: [
       {
-        systemmodulesid: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "system_modules",
-          required: [true, "System modules Id is required."],
-        },
-        access: [
-          {
-            type: String,
-            required: [true, "Modules permission is required."],
-          },
-        ],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "system_modules",
+        required: [true, "System modules Id is required."],
       },
     ],
   },

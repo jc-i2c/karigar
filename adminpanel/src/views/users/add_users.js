@@ -241,7 +241,7 @@ const AddServices = () => {
                   validated={validated}
                   onSubmit={addNewUsers}
                 >
-                  <h2>Users</h2>
+                  <h3>Users</h3>
                   <hr />
 
                   <CCol md={6}>

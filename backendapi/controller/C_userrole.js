@@ -1,28 +1,51 @@
 var moment = require("moment");
 const Userrole = require("../models/M_userrole");
 
-// Create and Update user role API.
-const createUserRole = async (req, res, next) => {
+// Create userrole API.
+const createRole = async (req, res, next) => {
   try {
-    var data = req.body.data;
-    let userroleid = data.userroleid;
+    var data = req.body;
 
-    let checkUserRole = await Userrole.findById(userroleid);
+    var saveData = new Userrole({
+      rolename: data.rolename,
+      systemmodulesid: data.systemmodulesid,
+    });
 
-    if (checkUserRole) {
-      // if  exists
-      let permissions = [];
-      data.permissions.map((item) => {
-        permissions.push(item);
+    const insertQry = await saveData.save();
+
+    if (insertQry) {
+      return res.send({
+        status: true,
+        message: "Userrole created.",
+        data: insertQry,
       });
+    } else {
+      return res.send({
+        status: false,
+        message: "Userrole not created.",
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
 
-      var saveData = {
-        rolename: data.rolename,
-        permissions: permissions,
-      };
+// Update userrole API.
+const updateRole = async (req, res, next) => {
+  try {
+    var roleId = req.body.roleid;
 
-      let updateQry = await Userrole.findByIdAndUpdate(userroleid, {
-        $set: saveData,
+    let findQry = await Userrole.findById(roleId);
+
+    if (findQry) {
+      // Find userrole
+      let data = {};
+      data.rolename = req.body.rolename;
+      data.systemmodulesid = req.body.systemmodulesid;
+
+      let updateQry = await Userrole.findByIdAndUpdate(roleId, {
+        $set: data,
       });
 
       if (updateQry) {
@@ -37,31 +60,10 @@ const createUserRole = async (req, res, next) => {
         });
       }
     } else {
-      // new create
-      let permissions = [];
-      data.permissions.map((item) => {
-        permissions.push(item);
+      return res.send({
+        status: false,
+        message: "Userrole not found into system.",
       });
-
-      var saveData = new Userrole({
-        rolename: data.rolename,
-        permissions: permissions,
-      });
-
-      const insertQry = await saveData.save();
-
-      if (insertQry) {
-        return res.send({
-          status: true,
-          message: "User role added.",
-          data: insertQry,
-        });
-      } else {
-        return res.send({
-          status: false,
-          message: "User role not added.",
-        });
-      }
     }
   } catch (error) {
     // console.log(error, "ERROR");
@@ -73,7 +75,7 @@ const createUserRole = async (req, res, next) => {
 const getAllRole = async (req, res, next) => {
   try {
     const getAllUserRole = await Userrole.find().populate({
-      path: "permissions.systemmodulesid",
+      path: "systemmodulesid",
       select: "modulesname",
     });
 
@@ -181,6 +183,7 @@ const delUserRole = async (req, res, next) => {
   }
 };
 
+// Get user permission API.
 const getPermission = async (req, res, next) => {
   try {
     const userroll = res.user.userroll;
@@ -190,7 +193,7 @@ const getPermission = async (req, res, next) => {
         _id: userroll,
       })
       .populate({
-        path: "permissions.systemmodulesid",
+        path: "systemmodulesid",
         select: "modulesname",
       });
 
@@ -207,13 +210,15 @@ const getPermission = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log(error, "ERROR");
+    // console.log(error, "ERROR");
+    next(error);
   }
 };
 
 module.exports = {
-  createUserRole,
   getAllRole,
+  createRole,
+  updateRole,
   delUserRole,
   getPermission,
 };

@@ -135,8 +135,8 @@ const ViewCustomer = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">Customer List</CCardHeader>
-          <CCardHeader className="mb-0 border">
+          <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
+            <div>Customer List</div>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"
@@ -163,7 +163,7 @@ const ViewCustomer = () => {
               itemsperpage={5}
               pagination="true"
             >
-              <CTableHead color="light">
+              <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Email Address</CTableHeaderCell>
                   <CTableHeaderCell>Name</CTableHeaderCell>

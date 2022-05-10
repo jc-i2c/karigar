@@ -101,10 +101,8 @@ const ViewCustomerSupport = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">
-            Customer Support List
-          </CCardHeader>
-          <CCardHeader className="mb-0 border">
+          <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
+            <div>Customer Support List</div>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"
@@ -131,7 +129,7 @@ const ViewCustomerSupport = () => {
               itemsperpage={5}
               pagination="true"
             >
-              <CTableHead color="light">
+              <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Customer Support Title</CTableHeaderCell>
                   <CTableHeaderCell>View Sub Title</CTableHeaderCell>

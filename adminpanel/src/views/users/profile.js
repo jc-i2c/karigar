@@ -139,7 +139,7 @@ const UserProfile = () => {
                   validated={validated}
                   onSubmit={userProfiledetails}
                 >
-                  <h2>My Profile</h2>
+                  <h3>My Profile</h3>
                   <hr />
 
                   <CCol md={6}>

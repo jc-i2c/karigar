@@ -17,7 +17,7 @@ import {
   CFormLabel,
 } from "@coreui/react";
 
-const AddServices = () => {
+const ViewSystemModules = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -26,40 +26,41 @@ const AddServices = () => {
   const [spinner, setSpinner] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
-  const [custSupTitleId, setcustSupTitleId] = useState("");
-  const [title, setTitle] = useState("");
+  const [systemModulesError, setSystemModulesError] = useState("");
 
-  const [titleError, setTitleError] = useState("");
+  // Edit system modules
+  const [systemModulesId, setSystemModulesId] = useState("");
+  const [systemModulesName, setSystemModulesName] = useState("");
 
   useEffect(() => {
-    setTitleError("");
+    setSystemModulesError("");
     setValidated(false);
-  }, [title]);
+  }, [systemModulesName]);
 
   useEffect(() => {
     if (location.state) {
       setIsEdit(true);
-      setcustSupTitleId(location.state.custsuptitleid);
-      setTitle(location.state.title);
+      setSystemModulesId(location.state.systemmodulesid);
+      setSystemModulesName(location.state.modulesname);
     }
-  }, [custSupTitleId]);
+  }, [systemModulesId]);
 
-  function addServices() {
-    if (!/^[a-zA-Z]/i.test(title)) {
+  function systemModules() {
+    if (!/^[a-zA-Z]/i.test(systemModulesName)) {
       setValidated(true);
-      setTitleError("Please enter valid customer support title");
+      setSystemModulesError("Please enter valid system modules name.");
     } else {
       if (isEdit) {
         // Edit data
 
         setSpinner(true);
         var data = new FormData();
-        data.append("custsuptitleid", custSupTitleId);
-        data.append("title", title);
+        data.append("systemmodulesid", systemModulesId);
+        data.append("modulesname", systemModulesName);
 
         axios
           .post(
-            `${process.env.REACT_APP_APIURL}/karigar/custsuptitle/edit`,
+            `${process.env.REACT_APP_APIURL}/karigar/systemmodules/update`,
             data,
             {
               headers: { Authorization: `Bearer ${token}` },
@@ -84,11 +85,11 @@ const AddServices = () => {
       } else {
         // Add new data
         var data = new FormData();
-        data.append("title", title);
+        data.append("modulesname", systemModulesName);
 
         axios
           .post(
-            `${process.env.REACT_APP_APIURL}/karigar/custsuptitle/create`,
+            `${process.env.REACT_APP_APIURL}/karigar/systemmodules/create`,
             data,
             {
               headers: { Authorization: `Bearer ${token}` },
@@ -125,30 +126,32 @@ const AddServices = () => {
                   className="row g-3"
                   noValidate
                   validated={validated}
-                  onSubmit={addServices}
+                  onSubmit={systemModules}
                 >
-                  <h3>Customer Support</h3>
+                  <h3>System Modules</h3>
                   <hr />
 
                   <CCol md={6}>
                     <CFormLabel
-                      htmlFor="email"
+                      htmlFor="systemmodules"
                       className="col-sm-4 col-form-label"
                     >
-                      Customer Support Title
+                      System Modules Name
                     </CFormLabel>
                     <CFormInput
                       type="text"
-                      id="customersupporttitle"
-                      placeholder="Customer Support Title"
-                      autoComplete="customersupporttitle"
+                      id="systemmodulesname"
+                      placeholder="System Modules Name"
+                      autoComplete="systemmodulesname"
                       required
-                      value={title ? title : ""}
+                      value={systemModulesName ? systemModulesName : ""}
                       onChange={(e) => {
-                        setTitle(e.target.value);
+                        setSystemModulesName(e.target.value);
                       }}
                     />
-                    {titleError && <p className="text-danger">{titleError}</p>}
+                    {systemModulesError && (
+                      <p className="text-danger">{systemModulesError}</p>
+                    )}
                   </CCol>
 
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -160,7 +163,7 @@ const AddServices = () => {
                       <CButton
                         color="primary"
                         onClick={() => {
-                          addServices();
+                          systemModules();
                         }}
                       >
                         Submit
@@ -182,4 +185,4 @@ const AddServices = () => {
   );
 };
 
-export default AddServices;
+export default ViewSystemModules;

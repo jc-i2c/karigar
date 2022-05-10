@@ -15,7 +15,6 @@ import {
   CRow,
   CButton,
   CFormLabel,
-  CCardHeader,
   CFormCheck,
 } from "@coreui/react";
 
@@ -28,11 +27,11 @@ const AddUserroles = () => {
   const [validated, setValidated] = useState(false);
   const [spinner, setSpinner] = useState(false);
 
-  const [userroleName, setUserroleName] = useState("");
+  const [userRoleName, setUserroleName] = useState("");
   const [allSystemModules, setAllSystemModules] = useState([]);
-  const [tempPermission, setTempPermission] = useState([]);
+  const [rolePermission, setRolePermission] = useState([]);
 
-  const [userroleError, setUserroleError] = useState("");
+  const [userRoleError, setUserroleError] = useState("");
   const [permissionError, setPermissionError] = useState("");
 
   // Edit services code
@@ -44,17 +43,7 @@ const AddUserroles = () => {
     setUserroleError("");
     setPermissionError("");
     setValidated(false);
-  }, [userroleName, tempPermission]);
-
-  // Edit userrole.
-  useEffect(() => {
-    if (location.state) {
-      setIsEdit(true);
-      setUserroleId(location.state.userroleid);
-      setUserroleName(location.state.rolename);
-      setTempPermission(location.state.permissions);
-    }
-  }, [userroleId]);
+  }, [userRoleName, rolePermission]);
 
   // Get all system modules list.
   useEffect(() => {
@@ -71,11 +60,8 @@ const AddUserroles = () => {
         if (data.data.data) {
           data.data.data.map((record) => {
             records.push({
-              id: record._id,
+              modulesid: record._id,
               modulesname: record.modulesname,
-              modulespermission: record.modulespermission,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
             });
           });
           setAllSystemModules(records);
@@ -86,156 +72,65 @@ const AddUserroles = () => {
       });
   }, []);
 
-  const checkModuleExitance = (prevPermissions, systemModulesId) => {
-    let currentModule = {};
-    prevPermissions.map((item) => {
-      if (item.systemmodulesid === systemModulesId) {
-        currentModule = item;
-      }
-    });
-
-    return currentModule;
-  };
-
-  const updateIfserviceAlreadyExist = (
-    prevPermissions,
-    currentModule,
-    permissionId,
-  ) => {
-    const latestPermission = [];
-    prevPermissions.map((module) => {
-      if (module.systemmodulesid === currentModule.systemmodulesid) {
-        if (module.access.length === 1 && module.access[0] === permissionId) {
-        } else {
-          if (module.access.includes(permissionId)) {
-            latestPermission.push({
-              ...module,
-              access: module.access.filter((per) => per !== permissionId),
-            });
-          } else {
-            latestPermission.push({
-              ...module,
-              access: [...module.access, permissionId],
-            });
-          }
-        }
-      } else {
-        latestPermission.push({ ...module });
-      }
-    });
-    return latestPermission;
-  };
-
-  function arrayInSetPer(systemModulesId, permissionId) {
-    setTempPermission((prevPermissions) => {
-      if (prevPermissions.length === 0) {
-        return [
-          {
-            systemmodulesid: systemModulesId,
-            access: [permissionId],
-          },
-        ];
-      } else {
-        const currentModule = checkModuleExitance(
-          prevPermissions,
-          systemModulesId,
-        );
-        if (Object.keys(currentModule).length > 0) {
-          return updateIfserviceAlreadyExist(
-            prevPermissions,
-            currentModule,
-            permissionId,
-          );
-        } else {
-          return [
-            ...prevPermissions,
-            {
-              systemmodulesid: systemModulesId,
-              access: [permissionId],
-            },
-          ];
-        }
-      }
-    });
-  }
+  useEffect(() => {
+    if (location.state) {
+      setIsEdit(true);
+      setUserroleId(location.state.userroleid);
+      setUserroleName(location.state.rolename);
+      setRolePermission(location.state.rolepermission);
+    }
+  }, [userroleId]);
 
   function addUserrole() {
-    if (!/^[a-zA-Z]/i.test(userroleName)) {
+    if (!/^[a-zA-Z]/i.test(userRoleName)) {
       setValidated(true);
       setUserroleError("Please enter valid userrole name");
     }
-    if (tempPermission.length === 0) {
+    if (rolePermission.length === 0) {
       setValidated(true);
       setPermissionError("Please select permission");
     } else {
-      if (isEdit) {
-        // Add new userrole.
-        var data = {};
-        var addUserRol = {};
-        addUserRol.rolename = userroleName;
-        addUserRol.permissions = tempPermission;
-        addUserRol.userroleid = userroleId;
-        data.data = addUserRol;
+      // Add new userrole
+      let insertData = {};
+      insertData.rolename = userRoleName;
+      insertData.systemmodulesid = rolePermission;
 
-        axios
-          .post(
-            `${process.env.REACT_APP_APIURL}/karigar/userrole/create`,
-            data,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          )
-          .then((data) => {
-            if (data.data.status) {
-              toast.success(data.data.message, {
-                onClose: () => {
-                  navigate(-1);
-                },
-              });
-            } else {
-              toast.error(data.data.message);
-            }
-            setSpinner(false);
-          })
-          .catch((error) => {
-            console.log(error, "error");
-            setSpinner(false);
-          });
-      } else {
-        // Add new userrole.
-        var data = {};
-        var addUserRol = {};
-        addUserRol.rolename = userroleName;
-        addUserRol.permissions = tempPermission;
-        data.data = addUserRol;
-
-        axios
-          .post(
-            `${process.env.REACT_APP_APIURL}/karigar/userrole/create`,
-            data,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          )
-          .then((data) => {
-            if (data.data.status) {
-              toast.success(data.data.message, {
-                onClose: () => {
-                  navigate(-1);
-                },
-              });
-            } else {
-              toast.error(data.data.message);
-            }
-            setSpinner(false);
-          })
-          .catch((error) => {
-            console.log(error, "error");
-            setSpinner(false);
-          });
-      }
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/userrole/create`,
+          insertData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+        .then((data) => {
+          if (data.data.status) {
+            toast.success(data.data.message, {
+              onClose: () => {
+                navigate(-1);
+              },
+            });
+          } else {
+            toast.error(data.data.message);
+          }
+          setSpinner(false);
+        })
+        .catch((error) => {
+          console.log(error, "error");
+          setSpinner(false);
+        });
     }
   }
+
+  function setPermission(modulesId) {
+    if (rolePermission.includes(modulesId)) {
+      const id = rolePermission.indexOf(modulesId);
+      return rolePermission.splice(id, 1);
+    } else {
+      setRolePermission([...rolePermission, modulesId]);
+    }
+  }
+  // console.log(rolePermission, "rolePermission");
 
   return (
     <div>
@@ -250,11 +145,12 @@ const AddUserroles = () => {
                   validated={validated}
                   onSubmit={addUserrole}
                 >
-                  <h2>Userrole</h2>
+                  <h3>Userrole</h3>
                   <hr />
+
                   <CCol md={4}>
                     <CFormLabel
-                      htmlFor="email"
+                      htmlFor="rolename"
                       className="col-sm-4 col-form-label"
                     >
                       Userrole Name
@@ -265,78 +161,68 @@ const AddUserroles = () => {
                       placeholder="Userrole Name"
                       autoComplete="userrolename"
                       required
-                      value={userroleName ? userroleName : ""}
+                      value={userRoleName ? userRoleName : ""}
                       onChange={(e) => {
                         setUserroleName(e.target.value);
                       }}
                     />
-                    {userroleError && (
-                      <p className="text-danger">{userroleError}</p>
+                    {userRoleError && (
+                      <p className="text-danger">{userRoleError}</p>
                     )}
                   </CCol>
 
-                  {/* Systemmodules Cards */}
-                  <br />
                   <br />
                   <br />
                   <br />
                   <br />
                   <div className="row">
-                    {allSystemModules &&
-                      allSystemModules.map((systemModules, index) => (
-                        <CCol key={index}>
-                          <CCard style={{ width: "8rem" }}>
-                            <CCardHeader className="p-6 mb-1 bg-secondary text-black text-center">
-                              {systemModules.modulesname}
-                            </CCardHeader>
-                            <div className="container">
-                              {systemModules &&
-                                systemModules.modulespermission.map(
-                                  (permission, index) => {
-                                    return (
-                                      <CFormCheck
-                                        key={index}
-                                        type="checkbox"
-                                        color="primary"
-                                        size="xl"
-                                        label={permission.name}
-                                        checked={(() => {
-                                          let flag = false;
-                                          tempPermission &&
-                                            tempPermission.map((list) => {
-                                              if (
-                                                systemModules.id ==
-                                                list.systemmodulesid
-                                              ) {
-                                                if (
-                                                  list.access.includes(
-                                                    permission.id,
-                                                  )
-                                                )
-                                                  flag = true;
-                                              }
-                                            });
-                                          return flag;
-                                        })()}
-                                        onChange={(e) => {
-                                          arrayInSetPer(
-                                            systemModules.id,
-                                            permission.id,
-                                            e.target.value,
-                                          );
-                                        }}
-                                      />
-                                    );
-                                  },
-                                )}
-                            </div>
-                          </CCard>
-                          <br />
-                        </CCol>
-                      ))}
-                    {permissionError && (
-                      <p className="text-danger">{permissionError}</p>
-                    )}
+                    <CCol md={6}>
+                      <CFormLabel
+                        htmlFor="rolename"
+                        className="col-sm-4 col-form-label"
+                      >
+                        Select Permission
+                      </CFormLabel>
+
+                      <div className="container">
+                        {allSystemModules &&
+                          allSystemModules.map((item, index) => {
+                            return (
+                              <CFormCheck
+                                key={index}
+                                type="checkbox"
+                                color="primary"
+                                size="xl"
+                                label={item.modulesname}
+                                checked={(() => {
+                                  let flag = false;
+                                  rolePermission &&
+                                    rolePermission.map((list) => {
+                                      if (item.modulesid === list._id) {
+                                        if (
+                                          rolePermission.includes(
+                                            item.modulesid,
+                                          )
+                                        ) {
+                                          console.log("YES");
+                                          flag = true;
+                                        }
+                                      }
+                                    });
+                                  return flag;
+                                })()}
+                                onChange={(e) => {
+                                  console.log(item.modulesid, item.modulesname);
+                                  setPermission(item.modulesid);
+                                }}
+                              />
+                            );
+                          })}
+                        {permissionError && (
+                          <p className="text-danger">{permissionError}</p>
+                        )}
+                      </div>
+                    </CCol>
                   </div>
 
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">

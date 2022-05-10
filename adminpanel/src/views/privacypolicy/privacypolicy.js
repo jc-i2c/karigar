@@ -114,7 +114,7 @@ const PrivacyPolicy = () => {
                   validated={validated}
                   onSubmit={PrivacyPolicyDetails}
                 >
-                  <h2>Privacy Policy</h2>
+                  <h3>Privacy Policy</h3>
                   <hr />
 
                   <CCol md={12}>

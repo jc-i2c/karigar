@@ -125,7 +125,24 @@ const ViewCustomerSupport = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">
+          <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
+            <div>Customer Support Sub Title</div>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <CButton
+                color="primary"
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  navigate("/addsubtitle", {
+                    state: { titleid: cusSupportTitleId },
+                  });
+                }}
+              >
+                Add Sub Title
+              </CButton>
+            </div>
+          </CCardHeader>
+          {/* <CCardHeader className="mb-0 border">
             Customer Support Sub Title
           </CCardHeader>
           <CCardHeader className="mb-0 border">
@@ -143,7 +160,7 @@ const ViewCustomerSupport = () => {
                 Add Sub Title
               </CButton>
             </div>
-          </CCardHeader>
+          </CCardHeader> */}
 
           <CCardBody>
             <CTable
@@ -157,7 +174,7 @@ const ViewCustomerSupport = () => {
               itemsperpage={5}
               pagination="true"
             >
-              <CTableHead color="light">
+              <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Customer Support Title</CTableHeaderCell>
                   <CTableHeaderCell>

@@ -786,7 +786,7 @@ const Tables = () => {
             </p>
             <DocsExample href="components/table#table-head">
               <CTable>
-                <CTableHead color="light">
+                <CTableHead color="dark">
                   <CTableRow>
                     <CTableHeaderCell scope="col">#</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Class</CTableHeaderCell>
@@ -858,7 +858,7 @@ const Tables = () => {
           <CCardBody>
             <DocsExample href="components/table#table-foot">
               <CTable>
-                <CTableHead color="light">
+                <CTableHead color="dark">
                   <CTableRow>
                     <CTableHeaderCell scope="col">#</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Class</CTableHeaderCell>

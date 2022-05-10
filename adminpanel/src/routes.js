@@ -46,6 +46,10 @@ const Addsubtitle = React.lazy(() => import("./views/customersupportsubtitle/add
 // Service Rating
 const Viewservicerating = React.lazy(() => import("./views/servicerating/view_service_rating"));
 
+// System Modules
+const Viewsystemmodules = React.lazy(() => import("./views/systemmodules/viewsystemmodules"));
+const Addsystemmodules = React.lazy(() => import("./views/systemmodules/add_systemmodules"));
+
 const routes = [
   // { path: "/", exact: true, name: "Home" },
 
@@ -96,6 +100,10 @@ const routes = [
 
   // Service Rating
   { path: "/viewservicerating", name: "Viewservicerating", element: Viewservicerating },
+
+  // System Modules
+  { path: "/viewsystemmodules", name: "Viewsystemmodules", element: Viewsystemmodules },
+  { path: "/addsystemmodules", name: "Addsystemmodules", element: Addsystemmodules },
 ];
 
 export default routes;

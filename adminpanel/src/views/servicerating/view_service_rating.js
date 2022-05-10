@@ -102,8 +102,9 @@ const ViewServiceRating = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">Service Rating List</CCardHeader>
-
+          <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
+            <div>Service Rating List</div>
+          </CCardHeader>
           <CCardBody>
             <CTable
               align="middle"
@@ -116,7 +117,7 @@ const ViewServiceRating = () => {
               itemsperpage={5}
               pagination="true"
             >
-              <CTableHead color="light">
+              <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Customer Name</CTableHeaderCell>
                   <CTableHeaderCell>Service Provider Name</CTableHeaderCell>

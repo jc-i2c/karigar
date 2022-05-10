@@ -123,7 +123,7 @@ const AddServices = () => {
                     validated={validated}
                     onSubmit={createNewPassword}
                   >
-                    <h2>Create New Password</h2>
+                    <h3>Create New Password</h3>
                     <hr />
 
                     <CCol md={8}>

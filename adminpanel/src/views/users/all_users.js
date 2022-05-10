@@ -136,8 +136,8 @@ const AllUsers = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">Users List</CCardHeader>
-          <CCardHeader className="mb-0 border">
+          <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
+            <div>Users List</div>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"
@@ -164,7 +164,7 @@ const AllUsers = () => {
               itemsperpage={5}
               pagination="true"
             >
-              <CTableHead color="light">
+              <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Email Address</CTableHeaderCell>
                   <CTableHeaderCell>Name</CTableHeaderCell>
@@ -192,8 +192,8 @@ const AllUsers = () => {
                         {item.gender == 1
                           ? "Male"
                           : item.gender == 2
-                            ? "Female"
-                            : "-"}
+                          ? "Female"
+                          : "-"}
                       </div>
                     </CTableDataCell>
                     <CTableDataCell>

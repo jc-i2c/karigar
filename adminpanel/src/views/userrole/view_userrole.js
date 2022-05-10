@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import VisibilityIcon from "@material-ui/icons/Visibility";
+// import VisibilityIcon from "@material-ui/icons/Visibility";
 import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
+// import DeleteIcon from "@material-ui/icons/Delete";
 
 import {
   CCard,
@@ -50,18 +50,15 @@ const ViewAllUserRoles = () => {
       .then((data) => {
         const records = [];
         data.data.data.map((record) => {
-          let newArray = [];
-          record.permissions.map((item, index) => {
-            let newObj = {};
-            newObj.systemmodulesid = item.systemmodulesid._id;
-            newObj.access = item.access;
-            newArray.push(newObj);
+          let systemModulesArray = [];
+          record.systemmodulesid.map((item) => {
+            systemModulesArray.push(item._id);
           });
 
           records.push({
             userroleid: record._id,
             rolename: record.rolename,
-            permissions: newArray,
+            systemmodulesid: systemModulesArray,
             createdAt: record.createdAt,
             updatedAt: record.updatedAt,
           });
@@ -105,8 +102,8 @@ const ViewAllUserRoles = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
-          <CCardHeader className="mb-0 border">Userrole List</CCardHeader>
-          <CCardHeader className="mb-0 border">
+          <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
+            <div>Userrole List</div>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"
@@ -133,14 +130,14 @@ const ViewAllUserRoles = () => {
               itemsperpage={5}
               pagination="true"
             >
-              <CTableHead color="light">
+              <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Userrole Name</CTableHeaderCell>
                   <CTableHeaderCell>CreateAT</CTableHeaderCell>
                   <CTableHeaderCell>UpdateAT</CTableHeaderCell>
-                  <CTableHeaderCell>View</CTableHeaderCell>
-                  <CTableHeaderCell>Edit</CTableHeaderCell>
-                  <CTableHeaderCell>Delete</CTableHeaderCell>
+                  {/* <CTableHeaderCell>View</CTableHeaderCell> */}
+                  <CTableHeaderCell>Action</CTableHeaderCell>
+                  {/* <CTableHeaderCell>Delete</CTableHeaderCell> */}
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -155,41 +152,32 @@ const ViewAllUserRoles = () => {
                     <CTableDataCell>
                       <div>{item.updatedAt}</div>
                     </CTableDataCell>
-                    <CTableDataCell>
-                      <VisibilityIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          navigate("/adduserrole", {
-                            state: {
-                              userroleid: item.userroleid,
-                              rolename: item.rolename,
-                              permissions: item.permissions,
-                            },
-                          });
-                        }}
-                      />
-                    </CTableDataCell>
 
                     <CTableDataCell>
-                      <EditIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          navigate("/adduserrole", {
-                            state: {
-                              userroleid: item.userroleid,
-                              rolename: item.rolename,
-                              permissions: item.permissions,
-                            },
-                          });
-                        }}
-                      />
-                    </CTableDataCell>
-                    <CTableDataCell>
-                      {item.userroleid == "626113fadf6c093c730a54fa" ? (
+                      {item.userroleid == "627a23bac43d69171deaa3ae" ? (
                         "-"
-                      ) : item.userroleid == "6273bcdff5932013fc9e678b" ? (
+                      ) : (
+                        <EditIcon
+                          variant="contained"
+                          color="inherit"
+                          onClick={() => {
+                            navigate("/adduserrole", {
+                              state: {
+                                userroleid: item.userroleid,
+                                rolename: item.rolename,
+                                rolepermission: item.systemmodulesid,
+                              },
+                            });
+                          }}
+                        />
+                      )}
+                    </CTableDataCell>
+                    {/* <CTableDataCell>
+                      {item.userroleid == "627a23bac43d69171deaa3ae" ? (
+                        "-"
+                      ) : item.userroleid == "627a130c8351761097d515ac" ? (
+                        "-"
+                      ) : item.userroleid == "62611430df6c093c730a5504" ? (
                         "-"
                       ) : (
                         <DeleteIcon
@@ -202,7 +190,7 @@ const ViewAllUserRoles = () => {
                           }}
                         />
                       )}
-                    </CTableDataCell>
+                    </CTableDataCell> */}
                   </CTableRow>
                 ))}
               </CTableBody>

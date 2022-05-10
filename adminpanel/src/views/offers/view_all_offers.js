@@ -133,6 +133,22 @@ const ViewServices = () => {
     <CRow>
       <CCol xs>
         <CCard className="mb-4">
+          <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
+            <div>Offers List</div>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <CButton
+                color="primary"
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  navigate("/addoffers");
+                }}
+              >
+                Add Offers
+              </CButton>
+            </div>
+          </CCardHeader>
+          {/*           
           <CCardHeader className="mb-0 border">Offers List</CCardHeader>
           <CCardHeader className="mb-0 border">
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -147,7 +163,7 @@ const ViewServices = () => {
                 Add Offers
               </CButton>
             </div>
-          </CCardHeader>
+          </CCardHeader> */}
 
           <CCardBody>
             <CTable
@@ -161,7 +177,7 @@ const ViewServices = () => {
               itemsperpage={5}
               pagination="true"
             >
-              <CTableHead color="light">
+              <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Service Name</CTableHeaderCell>
                   <CTableHeaderCell>Sub Service Name</CTableHeaderCell>
