@@ -82,7 +82,7 @@ const ViewCustomerSupport = () => {
           });
       }
     } else {
-      navigate("/viewcustomersupport");
+      navigate("/customersupport");
     }
     return () => {
       unmounted = true;

@@ -34,7 +34,7 @@ const _nav = [
   {
     component: CNavItem,
     name: "Offers",
-    to: "/viewoffers",
+    to: "/offers",
     id: "6279f8e639ad89c7e11e1a28",
     icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" />,
   },
@@ -55,7 +55,7 @@ const _nav = [
   {
     component: CNavItem,
     name: "Customer Support",
-    to: "/viewcustomersupport",
+    to: "/customersupport",
     id: "6279f95b39ad89c7e11e1a3e",
     icon: <CIcon icon={cilSync} customClassName="nav-icon" />,
   },
@@ -69,22 +69,29 @@ const _nav = [
   {
     component: CNavItem,
     name: "Service Rating",
-    to: "/viewservicerating",
+    to: "/servicerating",
     id: "6279f99339ad89c7e11e1a54",
     icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: "User role",
-    to: "/viewuserrole",
+    to: "/userrole",
     id: "6274ca16b9b11b68cba45777",
     icon: <CIcon icon={cilAppsSettings} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: "System Modules",
-    to: "/viewsystemmodules",
+    to: "/systemmodules",
     id: "6279f9b939ad89c7e11e1a69",
+    icon: <CIcon icon={cilApps} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: "Service Provider",
+    to: "/providerlist",
+    id: "627b567c2edb1ae3b9be98e9",
     icon: <CIcon icon={cilApps} customClassName="nav-icon" />,
   },
 ];

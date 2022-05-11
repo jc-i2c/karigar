@@ -1,0 +1,571 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
+
+import {
+  CCard,
+  CCardBody,
+  CCol,
+  CContainer,
+  CForm,
+  CFormInput,
+  CRow,
+  CButton,
+  CFormLabel,
+  CFormSelect,
+  CFormTextarea,
+} from "@coreui/react";
+
+const ServiceProvider = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const token = localStorage.getItem("karigar_token");
+  const [isEdit, setIsEdit] = useState(false);
+  const [imagePath, setImagePath] = useState("");
+  const initialState = { alt: "", src: "" };
+
+  const [allServiceProvider, setAllServiceProvider] = useState([]);
+  const [allServices, setAllServices] = useState([]);
+  const [allSubServices, setAllSubServices] = useState([]);
+
+  const [servicesProviderId, setServiceProviderId] = useState("");
+  const [servicesId, setServicesId] = useState("");
+  const [subServicesId, setSubServicesId] = useState("");
+  const [price, setPrice] = useState("");
+  const [descripation, setDescripation] = useState("");
+  const [name, setName] = useState("");
+  const [uploadImage, setUploadImage] = useState("");
+
+  const [validated, setValidated] = useState(false);
+  const [spinner, setSpinner] = useState(false);
+
+  // Error state
+  const [serviceProviderError, setServiceProviderError] = useState("");
+  const [servicesError, setServicesError] = useState("");
+  const [subServiceError, setSubServiceError] = useState("");
+  const [priceError, setPriceError] = useState("");
+  const [descripationError, setDescripationError] = useState("");
+  const [imageError, setImageError] = useState("");
+  const [nameError, setNameError] = useState("");
+
+  console.log(uploadImage, "uploadImage");
+
+  // Gel all service provider API.
+  useEffect(() => {
+    let unmounted = false;
+
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/user/allserviceprovider`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        const records = [];
+        if (data.data.data) {
+          data.data.data.map((record) => {
+            records.push({
+              serviceproviderid: record._id,
+              name: record.name,
+            });
+          });
+          setAllServiceProvider(records);
+        }
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }, []);
+
+  // Gel all services.
+  useEffect(() => {
+    let unmounted = false;
+
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/services/all`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        const records = [];
+        if (data.data.data) {
+          data.data.data.map((record) => {
+            records.push({
+              serviceid: record._id,
+              servicename: record.servicename,
+            });
+          });
+          setAllServices(records);
+        }
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }, []);
+
+  // Get all sub services.
+  useEffect(() => {
+    if (servicesId) {
+      var data = new FormData();
+      data.append("servicesid", servicesId);
+
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/subservices/allsubservices`,
+          data,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+        .then((data) => {
+          const records = [];
+          if (data.data.data) {
+            data.data.data.map((record) => {
+              records.push({
+                subserviceid: record._id,
+                subservicename: record.subservicename,
+              });
+            });
+            setAllSubServices(records);
+          } else {
+            // toast.error(data.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    }
+  }, [servicesId]);
+
+  useEffect(() => {
+    if (location.state) {
+      setIsEdit(true);
+      setServicesId(location.state.serviceid);
+      setName(location.state.servicename);
+      setUploadImage(location.state.serviceimage);
+    }
+  }, [servicesId]);
+
+  // Handle file.
+  const fileHandle = (e) => {
+    e.preventDefault();
+    var uploadImage = e.target.files[0];
+    setUploadImage(uploadImage);
+
+    const { files } = e.target;
+    const fileValue = files.length
+      ? URL.createObjectURL(uploadImage)
+      : initialState;
+    setImagePath(fileValue);
+  };
+
+  // Error state empty.
+  useEffect(() => {
+    setServiceProviderError("");
+    setServicesError("");
+    setSubServiceError("");
+    setPriceError("");
+    setDescripationError("");
+    setNameError("");
+    setImageError("");
+    setValidated(false);
+  }, [
+    servicesProviderId,
+    servicesId,
+    subServicesId,
+    price,
+    descripation,
+    name,
+    uploadImage,
+  ]);
+
+  function serviceProvider() {
+    if (!servicesProviderId) {
+      setValidated(true);
+      setServiceProviderError("Please select service provider");
+    }
+    if (!servicesId) {
+      setValidated(true);
+      setServicesError("Please select service");
+    }
+    if (!subServicesId) {
+      setValidated(true);
+      setSubServiceError("Please select sub service");
+    }
+    if (!/^[0-9]/i.test(price)) {
+      setValidated(true);
+      setPriceError("Enter valid price (Only Number)");
+    }
+    if (!/^[a-zA-Z]/i.test(descripation)) {
+      setValidated(true);
+      setDescripationError("Please enter valid descripation");
+    }
+    if (!/^[a-zA-Z]/i.test(name)) {
+      setValidated(true);
+      setNameError("Please enter valid name");
+    }
+    if (!uploadImage) {
+      setValidated(true);
+      setImageError("Please select image");
+    } else {
+      if (isEdit) {
+        // Edit data
+
+        setSpinner(true);
+        var data = new FormData();
+        data.append("name", name);
+        data.append("description", descripation);
+        data.append("userid", servicesProviderId);
+        data.append("subserviceid", subServicesId);
+        data.append("price", price);
+        data.append("image", uploadImage);
+
+        axios
+          .post(`${process.env.REACT_APP_APIURL}/karigar/services/edit`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate("/services");
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      } else {
+        // Add new data
+        var data = new FormData();
+        data.append("name", name);
+        data.append("description", descripation);
+        data.append("userid", servicesProviderId);
+        data.append("subserviceid", subServicesId);
+        data.append("price", price);
+        data.append("image", uploadImage);
+
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/create`,
+            data,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate(-1);
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      }
+    }
+  }
+
+  return (
+    <div>
+      <CContainer>
+        <CRow>
+          <CCol sm="12">
+            <CCard>
+              <CCardBody className="p-4">
+                <CForm
+                  className="row g-6"
+                  noValidate
+                  validated={validated}
+                  onSubmit={serviceProvider}
+                >
+                  <h3>Service Provider</h3>
+                  <hr />
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="serviceprovider"
+                      className="col-sm-6 col-form-label"
+                    >
+                      Service Provider
+                    </CFormLabel>
+
+                    <CFormSelect
+                      required
+                      id="serviceprovider"
+                      name="serviceprovider"
+                      value={servicesProviderId}
+                      onChange={(e) => {
+                        setServiceProviderId(e.target.value);
+                      }}
+                    >
+                      <option defaultValue="select services" selected>
+                        Select Services
+                      </option>
+
+                      {allServiceProvider.map((item) => (
+                        <option
+                          key={item.serviceproviderid}
+                          value={item.serviceproviderid}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                    </CFormSelect>
+
+                    {serviceProviderError && (
+                      <p className="text-danger">{serviceProviderError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="servicename"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Service
+                    </CFormLabel>
+
+                    <CFormSelect
+                      required
+                      id="servicesname"
+                      name="servicesname"
+                      value={servicesId}
+                      onChange={(e) => {
+                        setServicesId(e.target.value);
+                      }}
+                    >
+                      <option defaultValue="select services" selected>
+                        Select Services
+                      </option>
+
+                      {allServices.map((servicesList) => (
+                        <option
+                          key={servicesList.serviceid}
+                          value={servicesList.serviceid}
+                        >
+                          {servicesList.servicename}
+                        </option>
+                      ))}
+                    </CFormSelect>
+
+                    {servicesError && (
+                      <p className="text-danger">{servicesError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="subservice"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Sub Service
+                    </CFormLabel>
+                    <CFormSelect
+                      required
+                      id="subservices"
+                      name="subservices"
+                      value={subServicesId}
+                      onChange={(e) => {
+                        setSubServicesId("");
+                        setSubServicesId(e.target.value);
+                      }}
+                    >
+                      <option value="" selected>
+                        Select Sub Services
+                      </option>
+
+                      {allSubServices.map((item) => (
+                        <option
+                          key={item.subserviceid}
+                          value={item.subserviceid}
+                        >
+                          {item.subservicename}
+                        </option>
+                      ))}
+                    </CFormSelect>
+
+                    {subServiceError && (
+                      <p className="text-danger">{subServiceError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="price"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Service Price
+                    </CFormLabel>
+                    <CFormInput
+                      type="number"
+                      id="price"
+                      placeholder="Service Price"
+                      autoComplete="price"
+                      required
+                      value={price ? price : ""}
+                      onChange={(e) => {
+                        setPrice(e.target.value);
+                      }}
+                    />
+                    {priceError && <p className="text-danger">{priceError}</p>}
+                  </CCol>
+
+                  <CCol md={8}>
+                    <CFormLabel
+                      htmlFor="descripation"
+                      className="col-sm-8 col-form-label"
+                    >
+                      Descripation
+                    </CFormLabel>
+                    <CFormTextarea
+                      type="textarea"
+                      rows="3"
+                      id="descripation"
+                      placeholder="Descripation"
+                      autoComplete="descripation"
+                      required
+                      value={descripation ? descripation : ""}
+                      onChange={(e) => {
+                        setDescripation(e.target.value);
+                      }}
+                    />
+                    {descripationError && (
+                      <p className="text-danger">{descripationError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={5}>
+                    <CFormLabel
+                      htmlFor="name"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Name
+                    </CFormLabel>
+                    <CFormInput
+                      type="text"
+                      id="name"
+                      placeholder="Name"
+                      autoComplete="name"
+                      required
+                      value={name ? name : ""}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                      }}
+                    />
+                    {nameError && <p className="text-danger">{nameError}</p>}
+                  </CCol>
+
+                  <CCol md={5}>
+                    <CFormLabel
+                      htmlFor="Image"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Image
+                    </CFormLabel>
+
+                    <CFormInput
+                      type="file"
+                      placeholder="Image"
+                      autoComplete="Image"
+                      id="Image"
+                      required
+                      onChange={(e) => {
+                        fileHandle(e);
+                      }}
+                    />
+
+                    {imageError && <p className="text-danger">{imageError}</p>}
+                  </CCol>
+
+                  <CCol className="mb-3">
+                    {imagePath ? (
+                      <img
+                        src={imagePath}
+                        alt={imagePath}
+                        style={{
+                          height: "80px",
+                          width: "80px",
+                        }}
+                      />
+                    ) : uploadImage ? (
+                      <img
+                        src={
+                          `${process.env.REACT_APP_PROFILEPIC}` + uploadImage
+                        }
+                        alt={uploadImage}
+                        style={{
+                          height: "80px",
+                          width: "80px",
+                        }}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="servicedetails"
+                      className="col-sm-6 col-form-label"
+                    >
+                      Add Service Details
+                    </CFormLabel>
+                    <AddCircleOutline />
+                  </CCol>
+
+                  <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    {spinner ? (
+                      <div className="spinner-border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </div>
+                    ) : (
+                      <CButton
+                        color="primary"
+                        onClick={() => {
+                          serviceProvider();
+                        }}
+                      >
+                        Submit
+                      </CButton>
+                    )}
+
+                    <CButton color="primary" onClick={() => navigate(-1)}>
+                      Back
+                    </CButton>
+                  </div>
+                </CForm>
+                <ToastContainer />
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+      </CContainer>
+    </div>
+  );
+};
+
+export default ServiceProvider;

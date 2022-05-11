@@ -79,7 +79,7 @@ const WidgetsDropdown = () => {
           title="OFFERS"
           value={offers ? offers : 0}
           onClick={() => {
-            navigate("/viewoffers");
+            navigate("/offers");
           }}
         />
       </CCol>

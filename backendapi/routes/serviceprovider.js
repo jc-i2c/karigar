@@ -13,6 +13,8 @@ const {
   editProvider,
   getAllProviderList,
   addServiceProviderDetails,
+  getAllServiceProvider,
+  changeStatus,
 } = require("../controller/C_serviceprovider");
 
 router.post(
@@ -44,6 +46,22 @@ router.post(
   userrollauth,
   multipartMiddleware,
   addServiceProviderDetails
+);
+
+router.post(
+  "/getall",
+  auth,
+  userrollauth,
+  multipartMiddleware,
+  getAllServiceProvider
+);
+
+router.post(
+  "/changestatus",
+  auth,
+  userrollauth,
+  multipartMiddleware,
+  changeStatus
 );
 
 module.exports = router;

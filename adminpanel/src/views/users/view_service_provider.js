@@ -183,7 +183,13 @@ const ViewServiceProvider = () => {
                       <div>{item.name ? item.name : "-"}</div>
                     </CTableDataCell>
                     <CTableDataCell>
-                      <div>{item.gender ? item.gender : "-"}</div>
+                      <div>
+                        {item.gender == 1
+                          ? "Male"
+                          : item.gender == 2
+                            ? "Female"
+                            : "-"}
+                      </div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.mobilenumber ? item.mobilenumber : "-"}</div>

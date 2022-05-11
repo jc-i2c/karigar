@@ -217,6 +217,9 @@ const AllUsers = () => {
                           checked={item.status}
                           size="xl"
                           disabled
+                          onChange={(e) => {
+                            // console.log(e);
+                          }}
                         />
                       ) : (
                         <CFormCheck
@@ -225,6 +228,9 @@ const AllUsers = () => {
                           color="primary"
                           checked={item.status}
                           size="xl"
+                          onChange={(e) => {
+                            // console.log(e);
+                          }}
                         />
                       )}
                     </CTableDataCell>

@@ -184,7 +184,9 @@ const userLogin = async (req, res, next) => {
                 .replace(/T/, " ")
                 .replace(/\..+/, "");
 
-              userData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+              userData.createdAt = moment(createDate).format(
+                "DD-MM-YYYY SS:MM:HH"
+              );
 
               // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
               updateDate = userData.updatedAt
@@ -192,7 +194,9 @@ const userLogin = async (req, res, next) => {
                 .replace(/T/, " ")
                 .replace(/\..+/, "");
 
-              userData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+              userData.updatedAt = moment(updateDate).format(
+                "DD-MM-YYYY SS:MM:HH"
+              );
 
               delete userData.status;
               delete userData.isactive;
@@ -870,7 +874,7 @@ const deleteUser = async (req, res, next) => {
 const getAllCustomer = async (req, res, next) => {
   try {
     let getQry = await User.find().where({
-      userroll: "626113fadf6c093c730a54fa",
+      userroll: "627a2409c43d69171deaa3ba",
     });
 
     if (getQry.length > 0 && getQry.length > -1) {
@@ -923,7 +927,7 @@ const getAllCustomer = async (req, res, next) => {
 const getAllServiceProvider = async (req, res, next) => {
   try {
     let getQry = await User.find().where({
-      userroll: "62611430df6c093c730a5504",
+      userroll: "627a23fbc43d69171deaa3b7",
     });
 
     if (getQry.length > 0 && getQry.length > -1) {

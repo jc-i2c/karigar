@@ -43,6 +43,8 @@ const createProvider = async (req, res, next) => {
           servicedetails: data.servicedetails,
         });
 
+        console.log(createProvider, "createProvider");
+
         const insertQry = await createProvider.save();
         if (insertQry) {
           return res.send({
@@ -363,6 +365,7 @@ const editProvider = async (req, res, next) => {
   }
 };
 
+// Get all service provider based on sub services API.
 const getAllProviderList = async (req, res, next) => {
   try {
     const subServiceId = req.body.subserviceid;
@@ -433,6 +436,7 @@ const addServiceProviderDetails = async (req, res, next) => {
   try {
     let serviceProviderId = req.body.serviceproviderid;
     let data = req.body;
+
     if (!serviceProviderId) {
       return res.send({
         status: false,
@@ -447,6 +451,8 @@ const addServiceProviderDetails = async (req, res, next) => {
       let findQry = await Serviceprovider.findOne({ _id: serviceProviderId });
       if (findQry) {
         let detailsData = [];
+
+        delete data["serviceproviderid"];
 
         for (const key in data) {
           let tempObj = {};
@@ -485,6 +491,103 @@ const addServiceProviderDetails = async (req, res, next) => {
   }
 };
 
+// Get all service provider list API.
+const getAllServiceProvider = async (req, res, next) => {
+  try {
+    let getQry = await Serviceprovider.find()
+      .populate({
+        path: "userid",
+        select: "name",
+      })
+      .populate({
+        path: "subserviceid",
+        select: "subservicename",
+      });
+
+    if (getQry.length > 0) {
+      return res.send({
+        status: true,
+        message: `${getQry.length} Service provider found into system.`,
+        data: getQry,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `${getQry.length} Service provider list not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
+// Service provider active or deactive API.
+const changeStatus = async (req, res, next) => {
+  try {
+    const serviceProviderId = req.body.serviceproviderid;
+
+    if (
+      !serviceProviderId ||
+      serviceProviderId == null ||
+      serviceProviderId == undefined ||
+      serviceProviderId == "null" ||
+      serviceProviderId == "undefined"
+    ) {
+      return res.send({
+        status: false,
+        message: `Service provider id is required.`,
+      });
+    } else {
+      const findQry = await Serviceprovider.findById(serviceProviderId);
+
+      if (findQry) {
+        if (findQry.isactive == true) {
+          let isActive = { isactive: false };
+          let updateQry = await Serviceprovider.findByIdAndUpdate(findQry._id, {
+            $set: isActive,
+          });
+          if (updateQry) {
+            return res.send({
+              status: true,
+              message: `Service provider Deactivated.`,
+            });
+          } else {
+            return res.send({
+              status: false,
+              message: `Data not updated.`,
+            });
+          }
+        } else if (findQry.isactive == false) {
+          let isActive = { isactive: true };
+          let updateQry = await Serviceprovider.findByIdAndUpdate(findQry._id, {
+            $set: isActive,
+          });
+          if (updateQry) {
+            return res.send({
+              status: true,
+              message: `Service provider Activated.`,
+            });
+          } else {
+            return res.send({
+              status: false,
+              message: `Data not updated.`,
+            });
+          }
+        }
+      } else {
+        return res.send({
+          status: false,
+          message: `Service provider not found into system.`,
+        });
+      }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createProvider,
   getAllProvider,
@@ -493,4 +596,6 @@ module.exports = {
   editProvider,
   getAllProviderList,
   addServiceProviderDetails,
+  getAllServiceProvider,
+  changeStatus,
 };

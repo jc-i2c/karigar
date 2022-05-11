@@ -215,7 +215,7 @@ const AddServices = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/viewoffers");
+                  navigate("/offers");
                 },
               });
             } else {
@@ -243,7 +243,7 @@ const AddServices = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/viewoffers");
+                  navigate("/offers");
                 },
               });
             } else {

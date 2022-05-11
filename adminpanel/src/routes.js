@@ -19,15 +19,15 @@ const Changepassword = React.lazy(() => import("./views/users/change_password"))
 const Profile = React.lazy(() => import("./views/users/profile"));
 
 // Service offers.
-const Viewoffers = React.lazy(() => import("./views/offers/view_all_offers"));
+const Offers = React.lazy(() => import("./views/offers/view_all_offers"));
 const Addoffers = React.lazy(() => import("./views/offers/add_offers"));
 
-// Userrole.
-const Viewuserrole = React.lazy(() => import("./views/userrole/view_userrole"));
+// User role.
+const Userrole = React.lazy(() => import("./views/userrole/view_userrole"));
 const Adduserrole = React.lazy(() => import("./views/userrole/add_userrole"));
 
 // Service history.
-const Viewservicehistory = React.lazy(() => import("./views/servicehistory/view_all_service_history"));
+const Servicehistory = React.lazy(() => import("./views/servicehistory/view_all_service_history"));
 
 // Service history.
 const Addbanner = React.lazy(() => import("./views/home_banner/Add_home_banner"));
@@ -36,19 +36,23 @@ const Addbanner = React.lazy(() => import("./views/home_banner/Add_home_banner")
 const Privacypolicy = React.lazy(() => import("./views/privacypolicy/privacypolicy"));
 
 // Customer Support
-const Viewcustomersupport = React.lazy(() => import("./views/customersupport/View_customer_support"));
+const Customersupport = React.lazy(() => import("./views/customersupport/View_customer_support"));
 const Addtitle = React.lazy(() => import("./views/customersupport/add_title"));
 
 // Customer Support Sub Title
-const Viewsubtitle = React.lazy(() => import("./views/customersupportsubtitle/viewsubtitle"));
+const Subtitle = React.lazy(() => import("./views/customersupportsubtitle/viewsubtitle"));
 const Addsubtitle = React.lazy(() => import("./views/customersupportsubtitle/add_sub_title"));
 
 // Service Rating
-const Viewservicerating = React.lazy(() => import("./views/servicerating/view_service_rating"));
+const Servicerating = React.lazy(() => import("./views/servicerating/view_service_rating"));
 
 // System Modules
-const Viewsystemmodules = React.lazy(() => import("./views/systemmodules/viewsystemmodules"));
+const Systemmodules = React.lazy(() => import("./views/systemmodules/viewsystemmodules"));
 const Addsystemmodules = React.lazy(() => import("./views/systemmodules/add_systemmodules"));
+
+// Service Provider
+const Providerlist = React.lazy(() => import("./views/serviceprovider/viewserviceprovider"));
+const Addserviceprovider = React.lazy(() => import("./views/serviceprovider/addserviceprovider"));
 
 const routes = [
   // { path: "/", exact: true, name: "Home" },
@@ -73,16 +77,16 @@ const routes = [
   { path: "/profile", name: "Profile", element: Profile },
 
   // Service offers.
-  { path: "/viewoffers", name: "Viewoffers", element: Viewoffers },
+  { path: "/offers", name: "Offers", element: Offers },
   { path: "/addoffers", name: "Addoffers", element: Addoffers },
 
-  // Userrole.
-  { path: "/viewuserrole", name: "Viewuserrole", element: Viewuserrole },
+  // User role.
+  { path: "/userrole", name: "Userrole", element: Userrole },
   { path: "/adduserrole", name: "Adduserrole", element: Adduserrole },
   { path: "/changepassword", name: "Changepassword", element: Changepassword },
 
   // Service history.
-  { path: "/servicehistory", name: "Viewservicehistory", element: Viewservicehistory },
+  { path: "/servicehistory", name: "Servicehistory", element: Servicehistory },
 
   // Home Banner
   { path: "/addbanner", name: "Addbanner", element: Addbanner },
@@ -91,19 +95,23 @@ const routes = [
   { path: "/privacypolicy", name: "Privacypolicy", element: Privacypolicy },
 
   // Customer Support
-  { path: "/viewcustomersupport", name: "Viewcustomersupport", element: Viewcustomersupport },
+  { path: "/customersupport", name: "Customersupport", element: Customersupport },
   { path: "/addtitle", name: "Addtitle", element: Addtitle },
 
   // Customer Support Sub Title
-  { path: "/viewsubtitle", name: "Viewsubtitle", element: Viewsubtitle },
+  { path: "/viewsubtitle", name: "Subtitle", element: Subtitle },
   { path: "/addsubtitle", name: "Addsubtitle", element: Addsubtitle },
 
   // Service Rating
-  { path: "/viewservicerating", name: "Viewservicerating", element: Viewservicerating },
+  { path: "/servicerating", name: "Servicerating", element: Servicerating },
 
   // System Modules
-  { path: "/viewsystemmodules", name: "Viewsystemmodules", element: Viewsystemmodules },
+  { path: "/systemmodules", name: "Systemmodules", element: Systemmodules },
   { path: "/addsystemmodules", name: "Addsystemmodules", element: Addsystemmodules },
+
+  // Service Provider
+  { path: "/providerlist", name: "Provider List", element: Providerlist },
+  { path: "/addserviceprovider", name: "Addserviceprovider", element: Addserviceprovider },
 ];
 
 export default routes;

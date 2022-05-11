@@ -181,7 +181,7 @@ const AddUserroles = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/viewuserrole");
+                  navigate("/userrole");
                 },
               });
             } else {
@@ -210,7 +210,7 @@ const AddUserroles = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/viewuserrole");
+                  navigate("/userrole");
                 },
               });
             } else {
