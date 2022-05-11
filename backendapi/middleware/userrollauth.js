@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/M_user");
+const mongoose = require("mongoose");
 
 const config = process.env;
 
@@ -17,9 +18,13 @@ const verifyUserRoll = async (req, res, next) => {
       req.userid = decoded.id;
 
       const findUser = await User.findById(req.userid).select("userroll");
+
+      let adminRoleId = mongoose.Types.ObjectId(findUser.userroll).toString();
+
       if (findUser) {
-        if (findUser.userroll == "627a130c8351761097d515ac") next();
-        else {
+        if (adminRoleId === decoded.userroll) {
+          next();
+        } else {
           return res.send({
             status: false,
             message: `Your not authorized users.`,

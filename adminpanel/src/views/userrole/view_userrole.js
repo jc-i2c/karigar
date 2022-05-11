@@ -5,9 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// import VisibilityIcon from "@material-ui/icons/Visibility";
 import EditIcon from "@material-ui/icons/Edit";
-// import DeleteIcon from "@material-ui/icons/Delete";
 
 import {
   CCard,
@@ -22,11 +20,6 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
-  CModal,
-  CModalTitle,
-  CModalHeader,
-  CModalBody,
-  CModalFooter,
 } from "@coreui/react";
 
 const ViewAllUserRoles = () => {
@@ -37,8 +30,6 @@ const ViewAllUserRoles = () => {
   const [userrole, setUserrole] = useState([]);
 
   const [openAlertBox, setOpenAlertBox] = useState(false);
-  const [deleteTitle, setDeleteTitle] = useState("");
-  const [deleteItemId, setDeleteItemId] = useState("");
 
   useEffect(() => {
     axios
@@ -154,83 +145,24 @@ const ViewAllUserRoles = () => {
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      {item.userroleid == "627a23bac43d69171deaa3ae" ? (
-                        "-"
-                      ) : (
-                        <EditIcon
-                          variant="contained"
-                          color="inherit"
-                          onClick={() => {
-                            navigate("/adduserrole", {
-                              state: {
-                                userroleid: item.userroleid,
-                                rolename: item.rolename,
-                                rolepermission: item.systemmodulesid,
-                              },
-                            });
-                          }}
-                        />
-                      )}
+                      <EditIcon
+                        variant="contained"
+                        color="inherit"
+                        onClick={() => {
+                          navigate("/adduserrole", {
+                            state: {
+                              userroleid: item.userroleid,
+                              rolename: item.rolename,
+                              rolepermission: item.systemmodulesid,
+                            },
+                          });
+                        }}
+                      />
                     </CTableDataCell>
-                    {/* <CTableDataCell>
-                      {item.userroleid == "627a23bac43d69171deaa3ae" ? (
-                        "-"
-                      ) : item.userroleid == "627a130c8351761097d515ac" ? (
-                        "-"
-                      ) : item.userroleid == "62611430df6c093c730a5504" ? (
-                        "-"
-                      ) : (
-                        <DeleteIcon
-                          variant="contained"
-                          color="inherit"
-                          onClick={() => {
-                            setOpenAlertBox(true);
-                            setDeleteTitle(item.rolename);
-                            setDeleteItemId(item.userroleid);
-                          }}
-                        />
-                      )}
-                    </CTableDataCell> */}
                   </CTableRow>
                 ))}
               </CTableBody>
             </CTable>
-            {/* ----------------------Open Delete Dialog Box---------------------------------- */}
-            {openAlertBox && (
-              <template>
-                <CModal
-                  visible={openAlertBox && openAlertBox}
-                  alignment="center"
-                  onClose={() => {
-                    setOpenAlertBox(false);
-                  }}
-                >
-                  <CModalHeader>
-                    <CModalTitle>Are you sure want to delete?</CModalTitle>
-                  </CModalHeader>
-                  <CModalBody>{deleteTitle && deleteTitle}</CModalBody>
-                  <CModalFooter>
-                    <CButton
-                      color="secondary"
-                      onClick={() => {
-                        setOpenAlertBox(false);
-                      }}
-                    >
-                      Close
-                    </CButton>
-                    <CButton
-                      color="primary"
-                      onClick={() => {
-                        deleteUserRoles(deleteItemId);
-                      }}
-                    >
-                      Delete
-                    </CButton>
-                  </CModalFooter>
-                </CModal>
-              </template>
-            )}
-            {/* ---------------------Close Delete Dialog Box---------------------------------- */}
             <br />
           </CCardBody>
           <ToastContainer />

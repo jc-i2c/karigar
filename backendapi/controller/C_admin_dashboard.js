@@ -11,21 +11,14 @@ const getWidgetData = async (req, res, next) => {
     let getTotalUsers = await Users.find().count();
     // console.log(getTotalUsers, "getTotalUsers");
 
-    // // Get total customer.
-    // let getCustomerTotal = await Users.find()
-    //   .where({
-    //     userroll: "626113fadf6c093c730a54fa",
-    //     isactive: true,
-    //   })
-    //   .count();
-
     // Get total services provider.
     let getServicesProviderTotal = await Users.find()
       .where({
-        userroll: "62611430df6c093c730a5504",
+        userroll: "627a23fbc43d69171deaa3b7",
         isactive: true,
       })
       .count();
+    // console.log(getServicesProviderTotal, "getServicesProviderTotal");
 
     // Get total services.
     let getServicesTotal = await Services.find().count();

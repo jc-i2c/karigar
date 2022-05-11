@@ -90,35 +90,68 @@ const AddUserroles = () => {
       setValidated(true);
       setPermissionError("Please select permission");
     } else {
-      // Add new userrole
-      let insertData = {};
-      insertData.rolename = userRoleName;
-      insertData.systemmodulesid = rolePermission;
+      if (isEdit) {
+        // Add new userrole
+        let insertData = {};
+        insertData.roleid = userroleId;
+        insertData.rolename = userRoleName;
+        insertData.systemmodulesid = rolePermission;
 
-      axios
-        .post(
-          `${process.env.REACT_APP_APIURL}/karigar/userrole/create`,
-          insertData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        )
-        .then((data) => {
-          if (data.data.status) {
-            toast.success(data.data.message, {
-              onClose: () => {
-                navigate(-1);
-              },
-            });
-          } else {
-            toast.error(data.data.message);
-          }
-          setSpinner(false);
-        })
-        .catch((error) => {
-          console.log(error, "error");
-          setSpinner(false);
-        });
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/userrole/edit`,
+            insertData,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate(-1);
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      } else {
+        // Add new userrole
+        let insertData = {};
+        insertData.rolename = userRoleName;
+        insertData.systemmodulesid = rolePermission;
+
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/userrole/create`,
+            insertData,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate(-1);
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      }
     }
   }
 
@@ -181,7 +214,7 @@ const AddUserroles = () => {
                         htmlFor="rolename"
                         className="col-sm-4 col-form-label"
                       >
-                        Select Permission
+                        <b>Select Permission</b>
                       </CFormLabel>
 
                       <div className="container">
@@ -198,7 +231,7 @@ const AddUserroles = () => {
                                   let flag = false;
                                   rolePermission &&
                                     rolePermission.map((list) => {
-                                      if (item.modulesid === list._id) {
+                                      if (item.modulesid === list) {
                                         if (
                                           rolePermission.includes(
                                             item.modulesid,
