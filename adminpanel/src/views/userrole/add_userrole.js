@@ -28,11 +28,14 @@ const AddUserroles = () => {
   const [spinner, setSpinner] = useState(false);
 
   const [userRoleName, setUserroleName] = useState("");
+  const [userRoleTag, setUserroleTag] = useState("");
+
   const [allSystemModules, setAllSystemModules] = useState([]);
   const [rolePermission, setRolePermission] = useState([]);
 
   const [userRoleError, setUserroleError] = useState("");
   const [permissionError, setPermissionError] = useState("");
+  const [roleTagError, setRoleTagError] = useState("");
 
   // Edit services code
   const [isEdit, setIsEdit] = useState(false);
@@ -42,8 +45,9 @@ const AddUserroles = () => {
   useEffect(() => {
     setUserroleError("");
     setPermissionError("");
+    setRoleTagError("");
     setValidated(false);
-  }, [userRoleName, rolePermission]);
+  }, [userRoleName, rolePermission, userRoleTag]);
 
   // Get all system modules list.
   useEffect(() => {
@@ -72,11 +76,13 @@ const AddUserroles = () => {
       });
   }, []);
 
+  // Edit data
   useEffect(() => {
     if (location.state) {
       setIsEdit(true);
       setUserroleId(location.state.userroleid);
       setUserroleName(location.state.rolename);
+      setUserroleTag(location.state.roletag);
       setRolePermission(location.state.rolepermission);
     }
   }, [userroleId]);
@@ -85,6 +91,10 @@ const AddUserroles = () => {
     if (!/^[a-zA-Z]/i.test(userRoleName)) {
       setValidated(true);
       setUserroleError("Please enter valid userrole name");
+    }
+    if (!/^[a-zA-Z]*$/i.test(userRoleTag)) {
+      setValidated(true);
+      setRoleTagError("Only A-Z character accept");
     }
     if (rolePermission.length === 0) {
       setValidated(true);
@@ -157,13 +167,14 @@ const AddUserroles = () => {
 
   function setPermission(modulesId) {
     if (rolePermission.includes(modulesId)) {
-      const id = rolePermission.indexOf(modulesId);
-      return rolePermission.splice(id, 1);
+      let newRolePermission = rolePermission.filter(
+        (list) => list !== modulesId,
+      );
+      setRolePermission(newRolePermission);
     } else {
       setRolePermission([...rolePermission, modulesId]);
     }
   }
-  // console.log(rolePermission, "rolePermission");
 
   return (
     <div>
@@ -204,6 +215,33 @@ const AddUserroles = () => {
                     )}
                   </CCol>
 
+                  {isEdit ? (
+                    ""
+                  ) : (
+                    <CCol md={4}>
+                      <CFormLabel
+                        htmlFor="roletag"
+                        className="col-sm-4 col-form-label"
+                      >
+                        Role Tag
+                      </CFormLabel>
+                      <CFormInput
+                        type="text"
+                        id="roletag"
+                        placeholder="Role Tag"
+                        autoComplete="roletag"
+                        required
+                        value={userRoleTag ? userRoleTag : ""}
+                        onChange={(e) => {
+                          setUserroleTag(e.target.value);
+                        }}
+                      />
+                      {roleTagError && (
+                        <p className="text-danger">{roleTagError}</p>
+                      )}
+                    </CCol>
+                  )}
+
                   <br />
                   <br />
                   <br />
@@ -237,7 +275,6 @@ const AddUserroles = () => {
                                             item.modulesid,
                                           )
                                         ) {
-                                          console.log("YES");
                                           flag = true;
                                         }
                                       }
@@ -245,7 +282,6 @@ const AddUserroles = () => {
                                   return flag;
                                 })()}
                                 onChange={(e) => {
-                                  console.log(item.modulesid, item.modulesname);
                                   setPermission(item.modulesid);
                                 }}
                               />

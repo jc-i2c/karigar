@@ -4,9 +4,14 @@ const UserroleSchema = new mongoose.Schema(
   {
     rolename: {
       type: String,
-      unique: [true, "User rolename is already exists."],
       required: [true, "User rolename is required."],
-      lowercase: [true, "Lower case only accept."],
+    },
+    roletag: {
+      type: String,
+      trim: true,
+      unique: [true, "Role tag is already exists."],
+      required: [true, "Role tag is required."],
+      uppercase: [true, "Upper case only accept."],
     },
     systemmodulesid: [
       {

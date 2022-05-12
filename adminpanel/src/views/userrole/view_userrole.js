@@ -50,6 +50,7 @@ const ViewAllUserRoles = () => {
             userroleid: record._id,
             rolename: record.rolename,
             systemmodulesid: systemModulesArray,
+            roletag: record.roletag,
             createdAt: record.createdAt,
             updatedAt: record.updatedAt,
           });
@@ -154,6 +155,7 @@ const ViewAllUserRoles = () => {
                               userroleid: item.userroleid,
                               rolename: item.rolename,
                               rolepermission: item.systemmodulesid,
+                              roletag: item.roletag,
                             },
                           });
                         }}

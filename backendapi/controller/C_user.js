@@ -155,6 +155,7 @@ const userLogin = async (req, res, next) => {
       });
     } else {
       const findUser = await User.findOne({ emailaddress: emailaddress });
+      console.log(findUser);
       if (findUser) {
         // Check verification status.
         if (findUser.status == 1) {

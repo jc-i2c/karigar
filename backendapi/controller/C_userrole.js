@@ -6,9 +6,13 @@ const createRole = async (req, res, next) => {
   try {
     var data = req.body;
 
+    let roleTag = req.body.roletag;
+    roleTag = roleTag.replace(/\s/g, "");
+
     var saveData = new Userrole({
       rolename: data.rolename,
       systemmodulesid: data.systemmodulesid,
+      roletag: roleTag,
     });
 
     const insertQry = await saveData.save();
@@ -41,6 +45,7 @@ const updateRole = async (req, res, next) => {
     if (findQry) {
       // Find userrole
       let data = {};
+
       data.rolename = req.body.rolename;
       data.systemmodulesid = req.body.systemmodulesid;
 

@@ -36,8 +36,8 @@ export const AppSidebarNav = ({ items }) => {
       <Component
         {...(rest.to &&
           !rest.items && {
-            component: NavLink,
-          })}
+          component: NavLink,
+        })}
         key={index}
         {...rest}
       >
@@ -67,6 +67,7 @@ export const AppSidebarNav = ({ items }) => {
     <React.Fragment>
       {items &&
         items.map((item, index) => {
+          console.log(item, "item");
           return item.items ? navGroup(item, index) : navItem(item, index);
         })}
     </React.Fragment>
