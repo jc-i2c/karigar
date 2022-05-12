@@ -235,7 +235,7 @@ const AddSubServices = () => {
                         setServiceId(e.target.value);
                       }}
                     >
-                      <option defaultValue="select services" selected>
+                      <option defaultValue="select services">
                         Select Services
                       </option>
 

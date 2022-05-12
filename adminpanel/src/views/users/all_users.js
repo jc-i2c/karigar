@@ -192,8 +192,8 @@ const AllUsers = () => {
                         {item.gender == 1
                           ? "Male"
                           : item.gender == 2
-                          ? "Female"
-                          : "-"}
+                            ? "Female"
+                            : "-"}
                       </div>
                     </CTableDataCell>
                     <CTableDataCell>
@@ -243,6 +243,9 @@ const AllUsers = () => {
                           checked={item.isactive}
                           size="xl"
                           disabled
+                          onChange={() => {
+                            // changeUserStatus(item.userid);
+                          }}
                         />
                       ) : (
                         <CFormSwitch
@@ -251,7 +254,7 @@ const AllUsers = () => {
                           color="success"
                           checked={item.isactive}
                           size="xl"
-                          onClick={() => {
+                          onChange={() => {
                             changeUserStatus(item.userid);
                           }}
                         />

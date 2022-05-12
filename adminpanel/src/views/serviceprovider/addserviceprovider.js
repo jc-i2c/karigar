@@ -6,6 +6,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
+import HighlightOffIcon from "@material-ui/icons/HighlightOff";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   CCard,
@@ -26,7 +28,10 @@ const ServiceProvider = () => {
   const location = useLocation();
 
   const token = localStorage.getItem("karigar_token");
+  const [validated, setValidated] = useState(false);
+  const [spinner, setSpinner] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+
   const [imagePath, setImagePath] = useState("");
   const initialState = { alt: "", src: "" };
 
@@ -34,16 +39,16 @@ const ServiceProvider = () => {
   const [allServices, setAllServices] = useState([]);
   const [allSubServices, setAllSubServices] = useState([]);
 
+  const [textBox, setTextBox] = useState([]);
+
   const [servicesProviderId, setServiceProviderId] = useState("");
+  const [serProEditId, setSerProEditId] = useState("");
   const [servicesId, setServicesId] = useState("");
   const [subServicesId, setSubServicesId] = useState("");
   const [price, setPrice] = useState("");
   const [descripation, setDescripation] = useState("");
   const [name, setName] = useState("");
   const [uploadImage, setUploadImage] = useState("");
-
-  const [validated, setValidated] = useState(false);
-  const [spinner, setSpinner] = useState(false);
 
   // Error state
   const [serviceProviderError, setServiceProviderError] = useState("");
@@ -53,8 +58,6 @@ const ServiceProvider = () => {
   const [descripationError, setDescripationError] = useState("");
   const [imageError, setImageError] = useState("");
   const [nameError, setNameError] = useState("");
-
-  console.log(uploadImage, "uploadImage");
 
   // Gel all service provider API.
   useEffect(() => {
@@ -148,14 +151,21 @@ const ServiceProvider = () => {
     }
   }, [servicesId]);
 
+  // Edit data.
   useEffect(() => {
     if (location.state) {
       setIsEdit(true);
-      setServicesId(location.state.serviceid);
-      setName(location.state.servicename);
-      setUploadImage(location.state.serviceimage);
+      setSerProEditId(location.state.serviceproviderid);
+      setServiceProviderId(location.state.userid);
+      setName(location.state.name);
+      setDescripation(location.state.description);
+      setUploadImage(location.state.image);
+      setSubServicesId(location.state.subserviceid);
+      setServicesId(location.state.servicesid);
+      setPrice(location.state.price);
+      setTextBox(location.state.servicedetails);
     }
-  }, [servicesId]);
+  }, [location.state]);
 
   // Handle file.
   const fileHandle = (e) => {
@@ -190,6 +200,7 @@ const ServiceProvider = () => {
     uploadImage,
   ]);
 
+  // Service provider create edit.
   function serviceProvider() {
     if (!servicesProviderId) {
       setValidated(true);
@@ -219,27 +230,32 @@ const ServiceProvider = () => {
       setValidated(true);
       setImageError("Please select image");
     } else {
+      setSpinner(true);
       if (isEdit) {
         // Edit data
-
-        setSpinner(true);
         var data = new FormData();
+        data.append("serviceproviderid", serProEditId);
+        data.append("userid", servicesProviderId);
         data.append("name", name);
         data.append("description", descripation);
-        data.append("userid", servicesProviderId);
         data.append("subserviceid", subServicesId);
         data.append("price", price);
         data.append("image", uploadImage);
+        data.append("servicedetails", JSON.stringify(textBox));
 
         axios
-          .post(`${process.env.REACT_APP_APIURL}/karigar/services/edit`, data, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/edit`,
+            data,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
           .then((data) => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/services");
+                  navigate(-1);
                 },
               });
             } else {
@@ -260,6 +276,7 @@ const ServiceProvider = () => {
         data.append("subserviceid", subServicesId);
         data.append("price", price);
         data.append("image", uploadImage);
+        data.append("servicedetails", JSON.stringify(textBox));
 
         axios
           .post(
@@ -289,6 +306,36 @@ const ServiceProvider = () => {
     }
   }
 
+  function addTextControll() {
+    if (textBox.length === 0) {
+      setTextBox([{ id: uuidv4(), name: "", value: "" }]);
+    } else {
+      setTextBox([...textBox, { id: uuidv4(), name: "", value: "" }]);
+    }
+  }
+
+  function delTextControll(selectedInputBoxId) {
+    const filteredBoxes = textBox.filter(
+      (item) => item.id !== selectedInputBoxId,
+    );
+    setTextBox(filteredBoxes);
+  }
+
+  const updateValue = (id, fieldName, value) => {
+    const updatedState = textBox.map((item, index) => {
+      console.log(item, "item");
+      if (item.id === id) {
+        return {
+          ...item,
+          [fieldName]: value,
+        };
+      } else {
+        return item;
+      }
+    });
+    setTextBox(updatedState);
+  };
+
   return (
     <div>
       <CContainer>
@@ -317,12 +364,12 @@ const ServiceProvider = () => {
                       required
                       id="serviceprovider"
                       name="serviceprovider"
-                      value={servicesProviderId}
+                      value={servicesProviderId ? servicesProviderId : ""}
                       onChange={(e) => {
                         setServiceProviderId(e.target.value);
                       }}
                     >
-                      <option defaultValue="select services" selected>
+                      <option defaultValue="select services">
                         Select Services
                       </option>
 
@@ -358,7 +405,7 @@ const ServiceProvider = () => {
                         setServicesId(e.target.value);
                       }}
                     >
-                      <option defaultValue="select services" selected>
+                      <option defaultValue="select services">
                         Select Services
                       </option>
 
@@ -394,9 +441,7 @@ const ServiceProvider = () => {
                         setSubServicesId(e.target.value);
                       }}
                     >
-                      <option value="" selected>
-                        Select Sub Services
-                      </option>
+                      <option value="">Select Sub Services</option>
 
                       {allSubServices.map((item) => (
                         <option
@@ -413,129 +458,222 @@ const ServiceProvider = () => {
                     )}
                   </CCol>
 
-                  <CCol md={4}>
-                    <CFormLabel
-                      htmlFor="price"
-                      className="col-sm-4 col-form-label"
-                    >
-                      Service Price
-                    </CFormLabel>
-                    <CFormInput
-                      type="number"
-                      id="price"
-                      placeholder="Service Price"
-                      autoComplete="price"
-                      required
-                      value={price ? price : ""}
-                      onChange={(e) => {
-                        setPrice(e.target.value);
-                      }}
-                    />
-                    {priceError && <p className="text-danger">{priceError}</p>}
-                  </CCol>
-
-                  <CCol md={8}>
-                    <CFormLabel
-                      htmlFor="descripation"
-                      className="col-sm-8 col-form-label"
-                    >
-                      Descripation
-                    </CFormLabel>
-                    <CFormTextarea
-                      type="textarea"
-                      rows="3"
-                      id="descripation"
-                      placeholder="Descripation"
-                      autoComplete="descripation"
-                      required
-                      value={descripation ? descripation : ""}
-                      onChange={(e) => {
-                        setDescripation(e.target.value);
-                      }}
-                    />
-                    {descripationError && (
-                      <p className="text-danger">{descripationError}</p>
-                    )}
-                  </CCol>
-
-                  <CCol md={5}>
-                    <CFormLabel
-                      htmlFor="name"
-                      className="col-sm-4 col-form-label"
-                    >
-                      Name
-                    </CFormLabel>
-                    <CFormInput
-                      type="text"
-                      id="name"
-                      placeholder="Name"
-                      autoComplete="name"
-                      required
-                      value={name ? name : ""}
-                      onChange={(e) => {
-                        setName(e.target.value);
-                      }}
-                    />
-                    {nameError && <p className="text-danger">{nameError}</p>}
-                  </CCol>
-
-                  <CCol md={5}>
-                    <CFormLabel
-                      htmlFor="Image"
-                      className="col-sm-4 col-form-label"
-                    >
-                      Image
-                    </CFormLabel>
-
-                    <CFormInput
-                      type="file"
-                      placeholder="Image"
-                      autoComplete="Image"
-                      id="Image"
-                      required
-                      onChange={(e) => {
-                        fileHandle(e);
-                      }}
-                    />
-
-                    {imageError && <p className="text-danger">{imageError}</p>}
-                  </CCol>
-
-                  <CCol className="mb-3">
-                    {imagePath ? (
-                      <img
-                        src={imagePath}
-                        alt={imagePath}
-                        style={{
-                          height: "80px",
-                          width: "80px",
+                  <CRow>
+                    <CCol md={6}>
+                      <CFormLabel
+                        htmlFor="descripation"
+                        className="col-sm-8 col-form-label"
+                      >
+                        Descripation
+                      </CFormLabel>
+                      <CFormTextarea
+                        type="textarea"
+                        rows="4"
+                        id="descripation"
+                        placeholder="Descripation"
+                        autoComplete="descripation"
+                        required
+                        value={descripation ? descripation : ""}
+                        onChange={(e) => {
+                          setDescripation(e.target.value);
                         }}
                       />
-                    ) : uploadImage ? (
-                      <img
-                        src={
-                          `${process.env.REACT_APP_PROFILEPIC}` + uploadImage
-                        }
-                        alt={uploadImage}
-                        style={{
-                          height: "80px",
-                          width: "80px",
+                      {descripationError && (
+                        <p className="text-danger">{descripationError}</p>
+                      )}
+                    </CCol>
+
+                    <CCol md={6}>
+                      <CRow>
+                        <CCol md={6}>
+                          <CFormLabel
+                            htmlFor="price"
+                            className="col-sm-6 col-form-label"
+                          >
+                            Service Price
+                          </CFormLabel>
+                          <CFormInput
+                            type="number"
+                            id="price"
+                            placeholder="Service Price"
+                            autoComplete="price"
+                            required
+                            value={price ? price : ""}
+                            onChange={(e) => {
+                              setPrice(e.target.value);
+                            }}
+                          />
+                          {priceError && (
+                            <p className="text-danger">{priceError}</p>
+                          )}
+                        </CCol>
+
+                        <CCol md={6}>
+                          <CFormLabel
+                            htmlFor="name"
+                            className="col-sm-6 col-form-label"
+                          >
+                            Name
+                          </CFormLabel>
+                          <CFormInput
+                            type="text"
+                            id="name"
+                            placeholder="Name"
+                            autoComplete="name"
+                            required
+                            value={name ? name : ""}
+                            onChange={(e) => {
+                              setName(e.target.value);
+                            }}
+                          />
+                          {nameError && (
+                            <p className="text-danger">{nameError}</p>
+                          )}
+                        </CCol>
+                      </CRow>
+
+                      <CRow>
+                        <CCol md={9}>
+                          <CFormLabel
+                            htmlFor="Image"
+                            className="col-sm-6 col-form-label"
+                          >
+                            Image
+                          </CFormLabel>
+
+                          <CFormInput
+                            type="file"
+                            placeholder="Image"
+                            autoComplete="Image"
+                            id="Image"
+                            required
+                            onChange={(e) => {
+                              fileHandle(e);
+                            }}
+                          />
+                          {imageError && (
+                            <p className="text-danger">{imageError}</p>
+                          )}
+                        </CCol>
+
+                        <CCol md={3}>
+                          <br />
+                          {imagePath ? (
+                            <img
+                              src={imagePath}
+                              alt={imagePath}
+                              style={{
+                                height: "80px",
+                                width: "80px",
+                              }}
+                            />
+                          ) : uploadImage ? (
+                            <img
+                              src={
+                                `${process.env.REACT_APP_PROFILEPIC}` +
+                                uploadImage
+                              }
+                              alt={uploadImage}
+                              style={{
+                                height: "80px",
+                                width: "80px",
+                              }}
+                            />
+                          ) : (
+                            <img
+                              style={{
+                                height: "80px",
+                                width: "80px",
+                              }}
+                            />
+                          )}
+                        </CCol>
+                      </CRow>
+                    </CCol>
+                  </CRow>
+
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <div>
+                    <CCol md={4}>
+                      <CFormLabel
+                        htmlFor="servicedetails"
+                        className="col-sm-6 col-form-label"
+                      >
+                        Add Service Details
+                      </CFormLabel>
+
+                      <AddCircleOutline
+                        onClick={() => {
+                          addTextControll();
                         }}
                       />
-                    ) : (
-                      ""
-                    )}
-                  </CCol>
-
-                  <CCol md={4}>
-                    <CFormLabel
-                      htmlFor="servicedetails"
-                      className="col-sm-6 col-form-label"
-                    >
-                      Add Service Details
-                    </CFormLabel>
-                    <AddCircleOutline />
-                  </CCol>
+                    </CCol>
+                    {textBox &&
+                      textBox.map((item, index) => {
+                        return (
+                          <CCol md={12} key={item.id}>
+                            <CRow>
+                              <CCol md={3}>
+                                <CFormLabel
+                                  htmlFor="keyname"
+                                  className="col-sm-6 col-form-label"
+                                >
+                                  Key Name
+                                </CFormLabel>
+                                <CFormInput
+                                  type="text"
+                                  id="keyname"
+                                  placeholder="Key Name"
+                                  autoComplete="keyname"
+                                  required
+                                  value={item.name}
+                                  onChange={(e) => {
+                                    updateValue(
+                                      item.id,
+                                      "name",
+                                      e.target.value,
+                                    );
+                                  }}
+                                />
+                              </CCol>
+                              <CCol md={3}>
+                                <CFormLabel
+                                  htmlFor="keyvalue"
+                                  className="col-sm-6 col-form-label"
+                                >
+                                  Key Value
+                                </CFormLabel>
+                                <CFormInput
+                                  type="text"
+                                  id="keyvalue"
+                                  placeholder="key Value"
+                                  autoComplete="keyvalue"
+                                  required
+                                  value={item.value}
+                                  onChange={(e) => {
+                                    updateValue(
+                                      item.id,
+                                      "value",
+                                      e.target.value,
+                                    );
+                                  }}
+                                />
+                              </CCol>
+                              <CCol md={3}>
+                                <HighlightOffIcon
+                                  onClick={() => {
+                                    delTextControll(item.id);
+                                  }}
+                                />
+                              </CCol>
+                            </CRow>
+                          </CCol>
+                        );
+                      })}
+                  </div>
 
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                     {spinner ? (

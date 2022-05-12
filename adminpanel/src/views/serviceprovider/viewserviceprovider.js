@@ -54,7 +54,6 @@ const ViewServiceProvider = () => {
       )
       .then((data) => {
         const records = [];
-        // console.log(data.data.data, "data");
         data.data.data.map((record) => {
           records.push({
             serviceproviderid: record._id,
@@ -246,7 +245,7 @@ const ViewServiceProvider = () => {
                           color="primary"
                           checked={item.isactive}
                           size="xl"
-                          onClick={() => {
+                          onChange={() => {
                             changeUserStatus(item.serviceproviderid);
                           }}
                         />
@@ -271,7 +270,22 @@ const ViewServiceProvider = () => {
                       <EditIcon
                         variant="contained"
                         color="inherit"
-                        onClick={() => {}}
+                        onClick={() => {
+                          navigate("/addserviceprovider", {
+                            state: {
+                              serviceproviderid: item.serviceproviderid,
+                              userid: item.userid._id,
+                              name: item.name,
+                              description: item.description,
+                              image: item.image,
+                              subserviceid: item.subserviceid._id,
+                              servicesid: item.subserviceid.servicesid._id,
+                              price: item.price,
+                              isactive: item.isactive,
+                              servicedetails: item.servicedetails,
+                            },
+                          });
+                        }}
                       />
 
                       <DeleteIcon
@@ -339,20 +353,24 @@ const ViewServiceProvider = () => {
                   <CModalBody>
                     {detailsData &&
                       detailsData.map((data, index) => {
-                        console.log(data, "data");
+                        let dataValue = "";
+                        if (data.value == "true") {
+                          dataValue = "Yes";
+                        } else if (data.value == "false") {
+                          dataValue = "No";
+                        } else {
+                          dataValue = data.value;
+                        }
                         return (
                           <p key={index}>
                             <b>{data.name + " : "}</b>
-                            {data.value}
+                            {dataValue}
                           </p>
                         );
                       })}
                   </CModalBody>
                   <CModalFooter>
-                    <CButton
-                      color="secondary"
-                      onClick={() => setVisible(false)}
-                    >
+                    <CButton color="primary" onClick={() => setVisible(false)}>
                       Close
                     </CButton>
                   </CModalFooter>

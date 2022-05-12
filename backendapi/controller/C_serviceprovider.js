@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const Serviceprovider = require("../models/M_serviceprovider");
+const Services = require("../models/M_services");
 const Offer = require("../models/M_offer");
 
 const { createSerProVal, editSerProVal } = require("../helper/joivalidation");
 const { removeFile } = require("../helper/removefile");
 
-// Create new services provider API.
+// Create new services provider with details API (Only adminpanel side).
 const createProvider = async (req, res, next) => {
   try {
     let data = {
@@ -14,7 +15,7 @@ const createProvider = async (req, res, next) => {
       userid: req.body.userid,
       subserviceid: req.body.subserviceid,
       price: req.body.price,
-      servicedetails: [],
+      servicedetails: JSON.parse(req.body.servicedetails),
     };
 
     if (req.file) {
@@ -43,8 +44,6 @@ const createProvider = async (req, res, next) => {
           servicedetails: data.servicedetails,
         });
 
-        console.log(createProvider, "createProvider");
-
         const insertQry = await createProvider.save();
         if (insertQry) {
           return res.send({
@@ -68,6 +67,99 @@ const createProvider = async (req, res, next) => {
   } catch (error) {
     // console.log(error, "ERROR");
     removeFile(serProviderImage);
+    next(error);
+  }
+};
+
+// Edit services provider API.
+const editProvider = async (req, res, next) => {
+  try {
+    let data = {
+      serviceproviderid: req.body.serviceproviderid,
+      userid: req.body.userid,
+      name: req.body.name,
+      description: req.body.description,
+      subserviceid: req.body.subserviceid,
+      price: req.body.price,
+      image: req.body.image,
+      servicedetails: JSON.parse(req.body.servicedetails),
+    };
+
+    if (req.file) {
+      var newImage = req.file.filename;
+      data.image = newImage;
+    }
+
+    if (!data.serviceproviderid) {
+      removeFile(newImage);
+
+      return res.send({
+        status: false,
+        message: `Service provider ID is not allowed to be empty.`,
+      });
+    } else {
+      // Joi validation.
+      let { error } = editSerProVal(data);
+
+      if (error) {
+        removeFile(newImage);
+
+        let errorMsg = {};
+        error.details.map(async (error) => {
+          errorMsg = { ...errorMsg, [`${error.path}`]: error.message };
+        });
+
+        return res.send({
+          status: false,
+          message: errorMsg,
+        });
+      }
+      let findQry = await Serviceprovider.findById(data.serviceproviderid);
+
+      if (findQry) {
+        servicename = data.servicename;
+
+        var updateData = {
+          name: data.name,
+          userid: data.userid,
+          description: data.description,
+          subserviceid: data.subserviceid,
+          price: data.price,
+          image: data.image,
+          servicedetails: data.servicedetails,
+        };
+
+        let updateQry = await Serviceprovider.findByIdAndUpdate(findQry._id, {
+          $set: updateData,
+        });
+
+        if (updateQry) {
+          if (req.file) {
+            removeFile(findQry.image);
+          }
+
+          return res.send({
+            status: true,
+            message: `Service provider updated.!`,
+          });
+        } else {
+          removeFile(newImage);
+          return res.send({
+            status: false,
+            message: `Service provider not updated.!`,
+          });
+        }
+      } else {
+        removeFile(newImage);
+        return res.send({
+          status: false,
+          message: `Service provider not found into system.!`,
+        });
+      }
+    }
+  } catch (error) {
+    removeFile(newImage);
+    // console.log(error, "ERROR");
     next(error);
   }
 };
@@ -255,116 +347,6 @@ const deleteProvider = async (req, res, next) => {
   }
 };
 
-// Edit services provider API.
-const editProvider = async (req, res, next) => {
-  try {
-    let data = {
-      serviceproviderid: req.body.serviceproviderid,
-      name: req.body.name,
-      description: req.body.description,
-      subserviceid: req.body.subserviceid,
-      price: req.body.price,
-      duration: req.body.duration,
-      turnaroundtime: req.body.turnaroundtime,
-      pricing: req.body.pricing,
-      bathroomcleaning: req.body.bathroomcleaning,
-      kitchencleaning: req.body.kitchencleaning,
-      bedroomcleaning: req.body.bedroomcleaning,
-      sofacleaning: req.body.sofacleaning,
-      carpetcleaning: req.body.carpetcleaning,
-      balconycleaning: req.body.balconycleaning,
-      fridgecleaning: req.body.fridgecleaning,
-      overcleaning: req.body.overcleaning,
-    };
-
-    if (req.file) {
-      var Image = req.file.filename;
-    }
-
-    if (!data.serviceproviderid) {
-      removeFile(Image);
-
-      return res.send({
-        status: false,
-        message: `Service provider ID is not allowed to be empty.`,
-      });
-    } else {
-      // Joi validation.
-      let { error } = editSerProVal(data);
-
-      if (error) {
-        removeFile(Image);
-
-        let errorMsg = {};
-        error.details.map(async (error) => {
-          errorMsg = { ...errorMsg, [`${error.path}`]: error.message };
-        });
-
-        return res.send({
-          status: false,
-          message: errorMsg,
-        });
-      }
-      let findQry = await Serviceprovider.findById(data.serviceproviderid);
-
-      if (findQry) {
-        servicename = data.servicename;
-
-        var updateData = {
-          name: data.name,
-          description: data.description,
-          subserviceid: data.subserviceid,
-          price: data.price,
-          details: {
-            duration: data.duration,
-            turnaroundtime: data.turnaroundtime,
-            pricing: data.pricing,
-            bathroomcleaning: data.bathroomcleaning,
-            kitchencleaning: data.kitchencleaning,
-            bedroomcleaning: data.bedroomcleaning,
-            sofacleaning: data.sofacleaning,
-            carpetcleaning: data.carpetcleaning,
-            balconycleaning: data.balconycleaning,
-            fridgecleaning: data.fridgecleaning,
-            overcleaning: data.overcleaning,
-          },
-        };
-
-        let updateQry = await Serviceprovider.findByIdAndUpdate(findQry._id, {
-          $set: updateData,
-        });
-
-        if (updateQry) {
-          if (req.file) {
-            removeFile(findQry.image);
-          }
-
-          return res.send({
-            status: true,
-            message: `Service provider updated.!`,
-          });
-        } else {
-          removeFile(Image);
-          return res.send({
-            status: false,
-            message: `Service provider not updated.!`,
-          });
-        }
-      } else {
-        removeFile(Image);
-        return res.send({
-          status: false,
-          message: `Service provider not found into system.!`,
-        });
-      }
-    }
-  } catch (error) {
-    removeFile(Image);
-    // console.log(error, "ERROR");
-    next(error);
-  }
-};
-
 // Get all service provider based on sub services API.
 const getAllProviderList = async (req, res, next) => {
   try {
@@ -431,7 +413,7 @@ const getAllProviderList = async (req, res, next) => {
   }
 };
 
-// Admin add services provider details dynamically API.
+// Admin add services provider details dynamically API. (Only postman use)
 const addServiceProviderDetails = async (req, res, next) => {
   try {
     let serviceProviderId = req.body.serviceproviderid;
@@ -449,6 +431,7 @@ const addServiceProviderDetails = async (req, res, next) => {
       });
     } else {
       let findQry = await Serviceprovider.findOne({ _id: serviceProviderId });
+
       if (findQry) {
         let detailsData = [];
 
@@ -472,7 +455,6 @@ const addServiceProviderDetails = async (req, res, next) => {
             message: `Service provider details updated.!`,
           });
         } else {
-          removeFile(Image);
           return res.send({
             status: false,
             message: `Service provider details not updated.!`,
@@ -502,6 +484,10 @@ const getAllServiceProvider = async (req, res, next) => {
       .populate({
         path: "subserviceid",
         select: "subservicename",
+        populate: {
+          path: "servicesid",
+          select: "servicename",
+        },
       });
 
     if (getQry.length > 0) {
@@ -590,10 +576,10 @@ const changeStatus = async (req, res, next) => {
 
 module.exports = {
   createProvider,
+  editProvider,
   getAllProvider,
   getSingleProvider,
   deleteProvider,
-  editProvider,
   getAllProviderList,
   addServiceProviderDetails,
   getAllServiceProvider,

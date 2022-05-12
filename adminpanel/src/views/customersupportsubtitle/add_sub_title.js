@@ -203,10 +203,7 @@ const AddCustomerSubTitle = () => {
                         setTitle(e.target.value);
                       }}
                     >
-                      <option
-                        defaultValue="select customer support title"
-                        selected
-                      >
+                      <option defaultValue="select customer support title">
                         Select Customer Support Title
                       </option>
 

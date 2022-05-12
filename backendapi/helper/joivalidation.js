@@ -201,22 +201,11 @@ const editSerProVal = (data) => {
     serviceproviderid: Joi.string().required().label("Service provider id"),
     name: Joi.string().required().label("Service provider name"),
     description: Joi.string().required().label("Service provider description"),
+    userid: Joi.string().required().label("User Id"),
     subserviceid: Joi.string().required().label("Sub service Id"),
     price: Joi.number().required().label("Price"),
-    duration: Joi.string().required().label("Duration"),
-    turnaroundtime: Joi.string().required().label("Turnaround time"),
-    pricing: Joi.string()
-      .default("fixed")
-      .required()
-      .label("Service provider name"),
-    bathroomcleaning: Joi.boolean().default(true).label("Bathroom cleaning"),
-    kitchencleaning: Joi.boolean().default(true).label("Kitchen cleaning"),
-    bedroomcleaning: Joi.boolean().default(true).label("Bedroom cleaning"),
-    sofacleaning: Joi.boolean().default(true).label("Sofa cleaning"),
-    carpetcleaning: Joi.boolean().default(true).label("Carpet cleaning"),
-    balconycleaning: Joi.boolean().default(true).label("Balcony cleaning"),
-    fridgecleaning: Joi.boolean().default(true).label("Fridge cleaning"),
-    overcleaning: Joi.boolean().default(true).label("Over cleaning"),
+    servicedetails: Joi.allow().label("Service details"),
+    image: Joi.string().required().label("Image"),
   });
   return editSerProVal.validate(data, {
     abortEarly: false,

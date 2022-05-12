@@ -214,7 +214,7 @@ const ViewServices = () => {
                         color="success"
                         checked={item.isactive}
                         size="xl"
-                        onClick={() => {
+                        onChange={() => {
                           changeOfferStatus(item.offerid);
                         }}
                       />
