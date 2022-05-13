@@ -7,10 +7,12 @@ import { PermissionContext } from "src/context/PermissionContext";
 
 export const AppSidebarNav = ({ items }) => {
   const { permissions, fetchPermission } = useContext(PermissionContext);
+  // console.log(permissions, "permissions");
+  const token = localStorage.getItem("karigar_token");
 
   useEffect(() => {
     if (permissions.length === 0) {
-      fetchPermission();
+      fetchPermission(token);
     }
   }, []);
 
@@ -45,6 +47,7 @@ export const AppSidebarNav = ({ items }) => {
       </Component>
     );
   };
+
   const navGroup = (item, index) => {
     const { component, name, icon, to, ...rest } = item;
     const Component = component;
@@ -67,8 +70,7 @@ export const AppSidebarNav = ({ items }) => {
     <React.Fragment>
       {items &&
         items.map((item, index) => {
-          console.log(item, "item");
-          return item.items ? navGroup(item, index) : navItem(item, index);
+          return permissions.includes(item.id) && navItem(item, index);
         })}
     </React.Fragment>
   );
@@ -77,20 +79,3 @@ export const AppSidebarNav = ({ items }) => {
 AppSidebarNav.propTypes = {
   items: PropTypes.arrayOf(PropTypes.any).isRequired,
 };
-
-// return (
-//   <React.Fragment>
-//     {items &&
-//       items.map((item, index) => {
-//         permissions.map((list) => {
-//           if (list.systemmodulesid._id == item.id) {
-//             console.log(item.id, "item");
-//             console.log(list.systemmodulesid._id, "list");
-//             return item.items ? navGroup(item, index) : navItem(item, index);
-//           } else {
-//             return item.items ? navGroup(item, index) : navItem(item, index);
-//           }
-//         });
-//       })}
-//   </React.Fragment>
-// );

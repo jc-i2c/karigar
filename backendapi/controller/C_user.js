@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const User = require("../models/M_user");
+const Userrole = require("../models/M_userrole");
 
 const {
   signUpVal,
@@ -155,7 +156,6 @@ const userLogin = async (req, res, next) => {
       });
     } else {
       const findUser = await User.findOne({ emailaddress: emailaddress });
-      console.log(findUser);
       if (findUser) {
         // Check verification status.
         if (findUser.status == 1) {
@@ -164,9 +164,15 @@ const userLogin = async (req, res, next) => {
 
           if (passVerify) {
             if (findUser.isactive === true) {
+              let getRoleData = await Userrole.findById(findUser.userroll);
+
               // Create token
               const token = jwt.sign(
-                { id: findUser._id, userroll: findUser.userroll },
+                {
+                  id: findUser._id,
+                  userroll: findUser.userroll,
+                  roletag: getRoleData.roletag,
+                },
                 process.env.TOKEN_KEY
               );
 

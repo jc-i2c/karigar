@@ -15,6 +15,7 @@ const {
   addServiceProviderDetails,
   getAllServiceProvider,
   changeStatus,
+  getServiceList,
 } = require("../controller/C_serviceprovider");
 
 router.post(
@@ -63,5 +64,7 @@ router.post(
   multipartMiddleware,
   changeStatus
 );
+
+router.post("/serviceslist", auth, multipartMiddleware, getServiceList);
 
 module.exports = router;

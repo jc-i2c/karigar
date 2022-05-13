@@ -574,6 +574,50 @@ const changeStatus = async (req, res, next) => {
   }
 };
 
+// Get all services based on userId.
+const getServiceList = async (req, res, next) => {
+  try {
+    let userId = req.userid;
+
+    if (userId) {
+      let getQry = await Serviceprovider.find()
+        .where({ userid: userId })
+        .populate({
+          path: "userid",
+          select: "name",
+        })
+        .populate({
+          path: "subserviceid",
+          select: "subservicename",
+          populate: {
+            path: "servicesid",
+          },
+        });
+
+      if (getQry.length > 0) {
+        return res.send({
+          status: true,
+          message: `${getQry.length} Service provider found into system.`,
+          data: getQry,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `${getQry.length} Service provider list not found into system.`,
+        });
+      }
+    } else {
+      return res.send({
+        status: false,
+        message: `User Id is required.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createProvider,
   editProvider,
@@ -584,4 +628,5 @@ module.exports = {
   addServiceProviderDetails,
   getAllServiceProvider,
   changeStatus,
+  getServiceList,
 };

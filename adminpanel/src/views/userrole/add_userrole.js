@@ -94,7 +94,7 @@ const AddUserroles = () => {
     }
     if (!/^[a-zA-Z]*$/i.test(userRoleTag)) {
       setValidated(true);
-      setRoleTagError("Only A-Z character accept");
+      setRoleTagError("Only A-Z character accept and not space allowed");
     }
     if (rolePermission.length === 0) {
       setValidated(true);

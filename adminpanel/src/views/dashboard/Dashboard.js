@@ -1,10 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import WidgetsDropdown from "../widgets/WidgetsDropdown";
 import HomeBanner from "../home_banner/View_home_banner";
 import ViewCustomer from "../users/view_customer";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("karigar_token");
+
+  const [roleName, setRoleName] = useState("");
+
+  // Identify user type.
+  useEffect(() => {
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        // console.log(data.data.data.roletag, "roletag");
+        setRoleName(data.data.data.roletag);
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }, []);
+
+  useEffect(() => {
+    if (roleName !== "ADMIN") {
+      navigate("/services");
+    }
+  }, [roleName]);
+
   return (
     <>
       <WidgetsDropdown />

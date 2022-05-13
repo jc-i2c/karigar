@@ -1,8 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import {
-  // CAvatar,
-  // CBadge,
   CDropdown,
   CDropdownDivider,
   CDropdownHeader,
@@ -11,28 +9,23 @@ import {
   CDropdownToggle,
 } from "@coreui/react";
 
-import {
-  // cilBell,
-  // cilCreditCard,
-  // cilCommentSquare,
-  // cilEnvelopeOpen,
-  // cilFile,
-  // cilTask,
-  cilLockLocked,
-  cilSettings,
-  cilUser,
-} from "@coreui/icons";
+import { cilLockLocked, cilSettings, cilUser } from "@coreui/icons";
 
 import { cilMenu } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import { useNavigate } from "react-router-dom";
 
+import { PermissionContext } from "./../../../src/context/PermissionContext";
+
 // import avatar8 from "./../../assets/images/avatars/8.jpg";
 
 const AppHeaderDropdown = () => {
+  const { setPermissions } = useContext(PermissionContext);
+
   const navigate = useNavigate();
 
   function SignOut() {
+    setPermissions([]);
     localStorage.removeItem("karigar_token");
     navigate("/login");
   }

@@ -26,8 +26,8 @@ const createServiceRate = async (req, res, next) => {
     } else {
       var serviceRating = new ServiceRating({
         customerid: customerid,
-        serviceproviderid: serviceproviderid,
         servicehistoryid: servicehistoryid,
+        serviceproviderid: serviceproviderid,
         rate: rate,
         description: description,
       });
@@ -156,11 +156,10 @@ const getCusOwnedRate = async (req, res, next) => {
   }
 };
 
-// Get service based rating API.
+// Get service based rating based on service provider Id API.
 const getServiceRate = async (req, res, next) => {
   try {
     const serviceProviderId = req.body.serviceproviderid;
-    // console.log(serviceProviderId, "serviceProviderId");
 
     const findQry = await ServiceRating.find()
       .where({
@@ -294,6 +293,69 @@ const getAll = async (req, res, next) => {
   }
 };
 
+// Get service based rating based on TOKEN API.
+const getServiceRating = async (req, res, next) => {
+  try {
+    const serviceProviderId = req.userid;
+
+    const findQry = await ServiceRating.find()
+      .where({
+        serviceproviderid: serviceProviderId,
+      })
+      .select("rate description createdAt updatedAt")
+      .populate({
+        path: "customerid",
+        select: "name",
+      })
+      .populate({
+        path: "serviceproviderid",
+        select: "name",
+      });
+
+    let findData = [];
+    if (findQry.length > 0) {
+      let resData = {};
+      findQry.forEach((data) => {
+        resData = data.toObject();
+
+        delete resData.__v; // delete person["__v"]
+
+        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        createDate = resData.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+
+        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        updateDate = resData.updatedAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+
+        findData.push(resData);
+      });
+
+      return res.send({
+        status: true,
+        message: `Service rating found into system.`,
+        data: findData,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `${findQry.length} Service based rating not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createServiceRate,
   deleteServiceRate,
@@ -301,4 +363,5 @@ module.exports = {
   getServiceRate,
   countRate,
   getAll,
+  getServiceRating,
 };

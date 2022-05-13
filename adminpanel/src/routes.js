@@ -54,7 +54,8 @@ const Addsystemmodules = React.lazy(() => import("./views/systemmodules/add_syst
 const Providerlist = React.lazy(() => import("./views/serviceprovider/viewserviceprovider"));
 const Addserviceprovider = React.lazy(() => import("./views/serviceprovider/addserviceprovider"));
 
-const routes = [
+let routes = [];
+routes = [
   // { path: "/", exact: true, name: "Home" },
 
   // Dashboard url

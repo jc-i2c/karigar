@@ -1,6 +1,7 @@
 var moment = require("moment");
 const mongoose = require("mongoose");
 const ServiceHistory = require("../models/M_service_history");
+const Serviceprovider = require("../models/M_serviceprovider");
 
 const {
   createServiceHisVal,
@@ -149,7 +150,6 @@ const getAllServicehistory = async (req, res, next) => {
           .replace(/\..+/, "");
 
         resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
-
 
         findData.push(resData);
       });
@@ -401,11 +401,13 @@ const editServicehistory = async (req, res, next) => {
 const getServiceSerProvider = async (req, res, next) => {
   try {
     let serProviderId = req.body.serproviderid;
+
     serProviderId = mongoose.Types.ObjectId(serProviderId);
-    // console.log(serProviderId);
 
     if (mongoose.isValidObjectId(serProviderId)) {
-      const getQry = await ServiceHistory.find(serProviderId);
+      const getQry = await ServiceHistory.find().where({
+        serviceproviderid: serProviderId,
+      });
 
       if (getQry.length > 0) {
         let findData = [];
@@ -413,7 +415,6 @@ const getServiceSerProvider = async (req, res, next) => {
         getQry.forEach((data) => {
           resData = data.toObject();
 
-          delete resData.updatedAt; // delete person["updatedAt"]
           delete resData.__v; // delete person["__v"]
 
           // Set time morning or afternoon.
@@ -457,7 +458,9 @@ const getServiceSerProvider = async (req, res, next) => {
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
-          resData.servicedate = moment(serviceDate).format("DD-MM-YYYY SS:MM:HH");
+          resData.servicedate = moment(serviceDate).format(
+            "DD-MM-YYYY SS:MM:HH"
+          );
 
           // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
           createDate = resData.createdAt
@@ -625,7 +628,9 @@ const customerBookService = async (req, res, next) => {
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
-          resData.servicedate = moment(serviceDate).format("DD-MM-YYYY SS:MM:HH");
+          resData.servicedate = moment(serviceDate).format(
+            "DD-MM-YYYY SS:MM:HH"
+          );
 
           // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
           createDate = resData.createdAt
@@ -836,6 +841,126 @@ const countJob = async (req, res, next) => {
   }
 };
 
+// Get service history based on service provider TOKEN API.
+const getSerProHistoty = async (req, res, next) => {
+  try {
+    let serProviderId = req.userid;
+
+    serProviderId = mongoose.Types.ObjectId(serProviderId);
+
+    if (mongoose.isValidObjectId(serProviderId)) {
+      const getQry = await ServiceHistory.find()
+        .populate({
+          path: "serviceproviderid",
+        })
+        .populate({
+          path: "customerid",
+          select: "name",
+        });
+
+      if (getQry.length > 0) {
+        let findData = [];
+        let resData = {};
+        getQry.forEach((data) => {
+          resData = data.toObject();
+
+          let userId = resData.serviceproviderid.userid.toString();
+
+          if (userId == serProviderId) {
+            delete resData.__v; // delete person["__v"]
+
+            // Set time morning or afternoon.
+            if (resData.servicetime.sessiontype == 1) {
+              resData.servicetime.sessiontype = "Morning";
+            } else if (resData.servicetime.sessiontype == 2) {
+              resData.servicetime.sessiontype = "Afternoon";
+            }
+
+            // Set address type.
+            if (resData.addresstype == 1) {
+              resData.addresstype = "Office";
+            } else if (resData.addresstype == 2) {
+              resData.addresstype = "Home";
+            }
+
+            // Set service status.
+            if (resData.servicestatus == 0) {
+              resData.servicestatus = "Booking_request_sent";
+            } else if (resData.servicestatus == 1) {
+              resData.servicestatus = "accept";
+            } else if (resData.servicestatus == 2) {
+              resData.servicestatus = "Booking_confirmed";
+            } else if (resData.servicestatus == 3) {
+              resData.servicestatus = "Job_started";
+            } else if (resData.servicestatus == 4) {
+              resData.servicestatus = "Job_Completed";
+            } else if (resData.servicestatus == 5) {
+              resData.servicestatus = "Reject";
+            }
+
+            // Set payment status.
+            if (resData.paymentstatus) {
+              resData.paymentstatus = "Completed";
+            } else {
+              resData.paymentstatus = "Pending";
+            }
+
+            // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+            var serviceDate = resData.servicedate
+              .toISOString()
+              .replace(/T/, " ")
+              .replace(/\..+/, "");
+            resData.servicedate = moment(serviceDate).format(
+              "DD-MM-YYYY SS:MM:HH"
+            );
+
+            // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+            createDate = resData.createdAt
+              .toISOString()
+              .replace(/T/, " ")
+              .replace(/\..+/, "");
+
+            resData.createdAt = moment(createDate).format(
+              "DD-MM-YYYY SS:MM:HH"
+            );
+
+            // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+            updateDate = resData.updatedAt
+              .toISOString()
+              .replace(/T/, " ")
+              .replace(/\..+/, "");
+
+            resData.updatedAt = moment(updateDate).format(
+              "DD-MM-YYYY SS:MM:HH"
+            );
+
+            findData.push(resData);
+          }
+        });
+
+        return res.send({
+          status: true,
+          message: `Service history found into system.`,
+          data: findData,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `Service history not found into system.`,
+        });
+      }
+    } else {
+      return res.send({
+        status: false,
+        message: `Service history ID is not valid.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createServicehistory,
   getAllServicehistory,
@@ -848,4 +973,5 @@ module.exports = {
   getServiceStatus,
   getPaymentStatus,
   countJob,
+  getSerProHistoty,
 };

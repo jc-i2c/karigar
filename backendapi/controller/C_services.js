@@ -9,7 +9,6 @@ const {
 } = require("../helper/joivalidation");
 
 const { removeFile } = require("../helper/removefile");
-const { ObjectId } = require("mongodb");
 
 // Create new services API.
 const createServices = async (req, res, next) => {

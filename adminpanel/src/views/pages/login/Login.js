@@ -73,6 +73,7 @@ function Login() {
         .then((data) => {
           if (data.data.token) {
             localStorage.setItem("karigar_token", data.data.token);
+
             toast.success(data.data.message, {
               onClose: () => {
                 navigate("/dashboard");

@@ -15,12 +15,14 @@ const userRoleAuth = async (req, res, next) => {
 
       // Find user.
       req.userid = decoded.id;
+      req.roletag = decoded.roletag;
 
       const findUser = await User.findById(req.userid).select("userroll");
-      let adminUser = findUser.userroll.toString();
+      // let adminUser = findUser.userroll.toString();
+      // console.log(decoded.roletag, "decoded.roletag");
 
       if (findUser) {
-        if (adminUser === "627a23bac43d69171deaa3ae") {
+        if (decoded.roletag === "ADMIN") {
           next();
         } else {
           return res.send({

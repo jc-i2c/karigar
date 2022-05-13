@@ -39,31 +39,80 @@ const ViewServices = () => {
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteItemId, setDeleteItemId] = useState("");
 
+  const [roleName, setRoleName] = useState("");
+
+  // Identify user type.
   useEffect(() => {
     axios
       .post(
-        `${process.env.REACT_APP_APIURL}/karigar/services/all`,
+        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
       )
       .then((data) => {
-        const records = [];
-        // console.log(data.data.data, "data");
-        data.data.data.map((record) => {
-          records.push({
-            serviceid: record._id,
-            servicename: record.servicename,
-            serviceimage: record.serviceimage,
-            createdAt: record.createdAt,
-            updatedAt: record.updatedAt,
-          });
-        });
-        setServices(records);
+        // console.log(data.data.data.roletag, "roletag");
+        setRoleName(data.data.data.roletag);
       })
       .catch((error) => {
         console.log(error, "error");
       });
   }, []);
+
+  // Get all services based on userrole
+  useEffect(() => {
+    if (roleName == "ADMIN") {
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/services/all`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .then((data) => {
+          const records = [];
+          // console.log(data.data.data, "data");
+          data.data.data.map((record) => {
+            records.push({
+              serviceid: record._id,
+              servicename: record.servicename,
+              serviceimage: record.serviceimage,
+              createdAt: record.createdAt,
+              updatedAt: record.updatedAt,
+            });
+          });
+          setServices(records);
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    } else {
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/serviceslist`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .then((data) => {
+          if (data.data.data) {
+            const records = [];
+            data.data.data.map((record) => {
+              records.push({
+                serviceid: record.subserviceid.servicesid._id,
+                servicename: record.subserviceid.servicesid.servicename,
+                serviceimage: record.subserviceid.servicesid.serviceimage,
+                createdAt: record.subserviceid.servicesid.createdAt,
+                updatedAt: record.subserviceid.servicesid.updatedAt,
+              });
+            });
+            setServices(records);
+          }
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    }
+  }, [roleName]);
 
   function deleteServices(serviceId) {
     setOpenAlertBox(false);
@@ -99,18 +148,20 @@ const ViewServices = () => {
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
             <div>Services List</div>
-            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <CButton
-                color="primary"
-                type="button"
-                className="btn btn-success"
-                onClick={() => {
-                  navigate("/addservices");
-                }}
-              >
-                Add Services
-              </CButton>
-            </div>
+            {roleName == "ADMIN" && (
+              <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                <CButton
+                  color="primary"
+                  type="button"
+                  className="btn btn-success"
+                  onClick={() => {
+                    navigate("/addservices");
+                  }}
+                >
+                  Add Services
+                </CButton>
+              </div>
+            )}
           </CCardHeader>
 
           <CCardBody>
@@ -132,7 +183,9 @@ const ViewServices = () => {
                   <CTableHeaderCell>View Subservices</CTableHeaderCell>
                   <CTableHeaderCell>CreateAT</CTableHeaderCell>
                   <CTableHeaderCell>UpdateAT</CTableHeaderCell>
-                  <CTableHeaderCell>Action</CTableHeaderCell>
+                  {roleName == "ADMIN" && (
+                    <CTableHeaderCell>Action</CTableHeaderCell>
+                  )}
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -192,31 +245,33 @@ const ViewServices = () => {
                       <div>{item.updatedAt}</div>
                     </CTableDataCell>
 
-                    <CTableDataCell>
-                      <EditIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          navigate("/addservices", {
-                            state: {
-                              serviceid: item.serviceid,
-                              servicename: item.servicename,
-                              serviceimage: item.serviceimage,
-                            },
-                          });
-                        }}
-                      />
+                    {roleName == "ADMIN" && (
+                      <CTableDataCell>
+                        <EditIcon
+                          variant="contained"
+                          color="inherit"
+                          onClick={() => {
+                            navigate("/addservices", {
+                              state: {
+                                serviceid: item.serviceid,
+                                servicename: item.servicename,
+                                serviceimage: item.serviceimage,
+                              },
+                            });
+                          }}
+                        />
 
-                      <DeleteIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          setOpenAlertBox(true);
-                          setDeleteTitle(item.servicename);
-                          setDeleteItemId(item.serviceid);
-                        }}
-                      />
-                    </CTableDataCell>
+                        <DeleteIcon
+                          variant="contained"
+                          color="inherit"
+                          onClick={() => {
+                            setOpenAlertBox(true);
+                            setDeleteTitle(item.servicename);
+                            setDeleteItemId(item.serviceid);
+                          }}
+                        />
+                      </CTableDataCell>
+                    )}
                   </CTableRow>
                 ))}
               </CTableBody>

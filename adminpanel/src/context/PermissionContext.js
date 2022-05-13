@@ -5,20 +5,26 @@ export const PermissionContext = createContext();
 
 const PermissionContextProvider = ({ children }) => {
   const [permissions, setPermissions] = useState([]);
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
 
-  const fetchPermission = () => {
+  const fetchPermission = (token) => {
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
         {},
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
       )
       .then((res) => {
         // console.log(res.data.data.systemmodulesid, "PERMISSIONS");
-        setPermissions(res.data.data.systemmodulesid);
+        const records = [];
+        res.data.data.systemmodulesid.map((item) => {
+          records.push(item._id);
+        });
+
+        setPermissions(records);
       })
       .catch((error) => {
         console.log(error, "error");
@@ -26,6 +32,7 @@ const PermissionContextProvider = ({ children }) => {
   };
 
   const value = {
+    setPermissions,
     fetchPermission,
     permissions,
   };

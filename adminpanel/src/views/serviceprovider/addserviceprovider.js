@@ -323,7 +323,7 @@ const ServiceProvider = () => {
 
   const updateValue = (id, fieldName, value) => {
     const updatedState = textBox.map((item, index) => {
-      console.log(item, "item");
+      // console.log(item, "item");
       if (item.id === id) {
         return {
           ...item,

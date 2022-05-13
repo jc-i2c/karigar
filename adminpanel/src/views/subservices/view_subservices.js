@@ -27,6 +27,7 @@ import {
   CModalBody,
   CModalFooter,
 } from "@coreui/react";
+import UserProfile from "../users/profile";
 
 const ViewSubServices = () => {
   const navigate = useNavigate();
@@ -41,50 +42,75 @@ const ViewSubServices = () => {
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteItemId, setDeleteItemId] = useState("");
 
-  useEffect(() => {
-    let unmounted = false;
+  const [roleName, setRoleName] = useState("");
 
+  // Identify user type.
+  useEffect(() => {
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        // console.log(data.data.data.roletag, "roletag");
+        setRoleName(data.data.data.roletag);
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }, []);
+
+  useEffect(() => {}, [servicesId]);
+
+  useEffect(() => {
     if (location.state) {
       setServiceId(location.state.serviceid);
+      if (servicesId) {
+        let unmounted = false;
 
-      let data = new FormData();
-      data.append("servicesid", servicesId);
+        let data = new FormData();
+        data.append("servicesid", servicesId);
 
-      axios
-        .post(
-          `${process.env.REACT_APP_APIURL}/karigar/subservices/allsubservices`,
-          data,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        )
-        .then((data) => {
-          const records = [];
-          if (data.data.data) {
-            data.data.data.map((record) => {
-              records.push({
-                subserviceid: record._id,
-                servicename: record.servicesid.servicename,
-                servicesid: record.servicesid._id,
-                subservicename: record.subservicename,
-                subserviceimage: record.subserviceimage,
-                createdAt: record.createdAt,
-                updatedAt: record.updatedAt,
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/subservices/allsubservices`,
+            data,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((data) => {
+            const records = [];
+            if (data.data.data) {
+              data.data.data.map((record) => {
+                records.push({
+                  subserviceid: record._id,
+                  servicename: record.servicesid.servicename,
+                  servicesid: record.servicesid._id,
+                  subservicename: record.subservicename,
+                  subserviceimage: record.subserviceimage,
+                  createdAt: record.createdAt,
+                  updatedAt: record.updatedAt,
+                });
               });
-            });
-            setSubServices(records);
-          }
-        })
-        .catch((error) => {
-          console.log(error, "error");
-        });
+              setSubServices(records);
+            }
+          })
+          .catch((error) => {
+            console.log(error, "error");
+          });
+
+        return () => {
+          unmounted = true;
+        };
+      }
     } else {
       navigate("/services");
     }
-    return () => {
-      unmounted = true;
-    };
-  }, [servicesId]);
+  }, [roleName]);
 
   function deleteSubServices(subServiceId) {
     setOpenAlertBox(false);
@@ -122,22 +148,24 @@ const ViewSubServices = () => {
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
             <div>Sub Services List</div>
-            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <CButton
-                color="primary"
-                type="button"
-                className="btn btn-success"
-                onClick={() => {
-                  navigate("/addsubservices", {
-                    state: {
-                      servicesid: servicesId,
-                    },
-                  });
-                }}
-              >
-                Add Sub Services
-              </CButton>
-            </div>
+            {roleName == "ADMIN" && (
+              <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                <CButton
+                  color="primary"
+                  type="button"
+                  className="btn btn-success"
+                  onClick={() => {
+                    navigate("/addsubservices", {
+                      state: {
+                        servicesid: servicesId,
+                      },
+                    });
+                  }}
+                >
+                  Add Sub Services
+                </CButton>
+              </div>
+            )}
           </CCardHeader>
 
           <CCardBody>
@@ -159,7 +187,10 @@ const ViewSubServices = () => {
                   <CTableHeaderCell>Sub Service Image</CTableHeaderCell>
                   <CTableHeaderCell>CreateAT</CTableHeaderCell>
                   <CTableHeaderCell>UpdateAT</CTableHeaderCell>
-                  <CTableHeaderCell>Action</CTableHeaderCell>
+
+                  {roleName == "ADMIN" && (
+                    <CTableHeaderCell>Action</CTableHeaderCell>
+                  )}
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -210,31 +241,33 @@ const ViewSubServices = () => {
                       <div>{item.updatedAt}</div>
                     </CTableDataCell>
 
-                    <CTableDataCell>
-                      <EditIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          navigate("/addsubservices", {
-                            state: {
-                              servicesid: item.servicesid,
-                              subserviceid: item.subserviceid,
-                              subservicename: item.subservicename,
-                              subserviceimage: item.subserviceimage,
-                            },
-                          });
-                        }}
-                      />
-                      <DeleteIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          setOpenAlertBox(true);
-                          setDeleteTitle(item.subservicename);
-                          setDeleteItemId(item.subserviceid);
-                        }}
-                      />
-                    </CTableDataCell>
+                    {roleName == "ADMIN" && (
+                      <CTableDataCell>
+                        <EditIcon
+                          variant="contained"
+                          color="inherit"
+                          onClick={() => {
+                            navigate("/addsubservices", {
+                              state: {
+                                servicesid: item.servicesid,
+                                subserviceid: item.subserviceid,
+                                subservicename: item.subservicename,
+                                subserviceimage: item.subserviceimage,
+                              },
+                            });
+                          }}
+                        />
+                        <DeleteIcon
+                          variant="contained"
+                          color="inherit"
+                          onClick={() => {
+                            setOpenAlertBox(true);
+                            setDeleteTitle(item.subservicename);
+                            setDeleteItemId(item.subserviceid);
+                          }}
+                        />
+                      </CTableDataCell>
+                    )}
                   </CTableRow>
                 ))}
               </CTableBody>

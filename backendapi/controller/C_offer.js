@@ -2,6 +2,7 @@ const Offer = require("../models/M_offer");
 const SubServices = require("../models/M_subservices");
 const ServiceProvider = require("../models/M_serviceprovider");
 const Services = require("../models/M_services");
+var moment = require("moment");
 
 const { updateOfferVal } = require("../helper/joivalidation");
 
@@ -333,6 +334,57 @@ const getAllOfferAdmin = async (req, res, next) => {
   }
 };
 
+// Get offer based on userId API.
+const userOffer = async (req, res, next) => {
+  try {
+    let userId = req.userid;
+
+    if (userId) {
+      let findQry = await Offer.find()
+        .select("currentprice actualprice")
+        .populate({
+          path: "subserviceid",
+          select: "subservicename",
+          populate: { path: "servicesid", select: "servicename" },
+        })
+        .populate({
+          path: "serviceproviderid",
+          select: "name userid",
+        });
+
+      let findData = [];
+
+      if (findQry.length > 0) {
+        let resData = {};
+        findQry.forEach((data) => {
+          resData = data.toObject();
+          let userIdData = resData.serviceproviderid.userid.toString();
+
+          if (userIdData == userId) {
+            delete resData.__v; // delete person["__v"]
+
+            findData.push(resData);
+          }
+        });
+
+        return res.send({
+          status: true,
+          message: `${findData.length} service rating found into system.`,
+          data: findData,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `User Id is required.`,
+        });
+      }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createOffer,
   updateOffer,
@@ -340,4 +392,5 @@ module.exports = {
   deleteOffer,
   changeOfferStatus,
   getAllOfferAdmin,
+  userOffer,
 };

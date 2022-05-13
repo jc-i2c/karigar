@@ -28,7 +28,6 @@ import {
   CModalHeader,
   CModalBody,
   CModalFooter,
-  CPopover,
 } from "@coreui/react";
 
 const ViewServiceProvider = () => {
@@ -44,6 +43,8 @@ const ViewServiceProvider = () => {
   const [openAlertBox, setOpenAlertBox] = useState(false);
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteItemId, setDeleteItemId] = useState("");
+
+  const [openDesBox, setOpenDesBox] = useState(false);
 
   useEffect(() => {
     axios
@@ -176,11 +177,17 @@ const ViewServiceProvider = () => {
                   <CTableHeaderCell>Person Name</CTableHeaderCell>
                   <CTableHeaderCell>Service Name</CTableHeaderCell>
                   <CTableHeaderCell>Sub Service Name</CTableHeaderCell>
-                  <CTableHeaderCell>Image</CTableHeaderCell>
-                  <CTableHeaderCell>Description</CTableHeaderCell>
                   <CTableHeaderCell>Price</CTableHeaderCell>
+                  <CTableHeaderCell className="text-center">
+                    Image
+                  </CTableHeaderCell>
+                  <CTableHeaderCell className="text-center">
+                    Description
+                  </CTableHeaderCell>
+                  <CTableHeaderCell className="text-center">
+                    Service Details
+                  </CTableHeaderCell>
                   <CTableHeaderCell>Is_Active</CTableHeaderCell>
-                  <CTableHeaderCell>Service Details</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
@@ -197,6 +204,10 @@ const ViewServiceProvider = () => {
 
                     <CTableDataCell>
                       <div>{item.subserviceid.subservicename}</div>
+                    </CTableDataCell>
+
+                    <CTableDataCell>
+                      <div>{item.price}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
@@ -229,12 +240,34 @@ const ViewServiceProvider = () => {
                       </div>
                     </CTableDataCell>
 
-                    <CTableDataCell>
-                      <div>{item.description}</div>
+                    <CTableDataCell className="text-center">
+                      <VisibilityIcon
+                        variant="contained"
+                        color="inherit"
+                        onClick={() => {
+                          setDetailsData("");
+                          setDetailsData(item.description && item.description);
+                          setTitle(item.name);
+                          setVisible(true);
+                          setOpenDesBox(true);
+                        }}
+                      />
                     </CTableDataCell>
 
-                    <CTableDataCell>
-                      <div>{item.price}</div>
+                    <CTableDataCell className="text-center">
+                      <VisibilityIcon
+                        variant="contained"
+                        color="inherit"
+                        onClick={() => {
+                          setOpenDesBox(false);
+                          setDetailsData("");
+                          setDetailsData(
+                            item.servicedetails && item.servicedetails,
+                          );
+                          setTitle(item.name);
+                          setVisible(true);
+                        }}
+                      />
                     </CTableDataCell>
 
                     <CTableDataCell>
@@ -250,20 +283,6 @@ const ViewServiceProvider = () => {
                           }}
                         />
                       }
-                    </CTableDataCell>
-
-                    <CTableDataCell>
-                      <VisibilityIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          setDetailsData(
-                            item.servicedetails && item.servicedetails,
-                          );
-                          setTitle(item.name);
-                          setVisible(true);
-                        }}
-                      />
                     </CTableDataCell>
 
                     <CTableDataCell>
@@ -351,7 +370,10 @@ const ViewServiceProvider = () => {
                     <CModalTitle>{title && title}</CModalTitle>
                   </CModalHeader>
                   <CModalBody>
-                    {detailsData &&
+                    {openDesBox ? (
+                      <p>{detailsData}</p>
+                    ) : (
+                      detailsData &&
                       detailsData.map((data, index) => {
                         let dataValue = "";
                         if (data.value == "true") {
@@ -367,7 +389,8 @@ const ViewServiceProvider = () => {
                             {dataValue}
                           </p>
                         );
-                      })}
+                      })
+                    )}
                   </CModalBody>
                   <CModalFooter>
                     <CButton color="primary" onClick={() => setVisible(false)}>

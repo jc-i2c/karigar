@@ -11,6 +11,7 @@ const {
   deleteOffer,
   changeOfferStatus,
   getAllOfferAdmin,
+  userOffer,
 } = require("../controller/C_offer");
 
 router.post("/create", auth, userrollauth, multipartMiddleware, createOffer);
@@ -30,5 +31,7 @@ router.post(
 );
 
 router.post("/getalloffer", auth, multipartMiddleware, getAllOfferAdmin);
+
+router.post("/useroffer", auth, multipartMiddleware, userOffer);
 
 module.exports = router;

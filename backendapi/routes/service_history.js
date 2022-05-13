@@ -16,6 +16,7 @@ const {
   getServiceStatus,
   getPaymentStatus,
   countJob,
+  getSerProHistoty,
 } = require("../controller/C_service_history");
 
 router.post("/create", auth, multipartMiddleware, createServicehistory);
@@ -67,5 +68,7 @@ router.post("/getservicestatus", auth, multipartMiddleware, getServiceStatus);
 router.post("/getpaymentstatus", auth, multipartMiddleware, getPaymentStatus);
 
 router.post("/countjob", auth, multipartMiddleware, countJob);
+
+router.post("/getserprohistoty", auth, multipartMiddleware, getSerProHistoty);
 
 module.exports = router;
