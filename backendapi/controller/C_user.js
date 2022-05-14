@@ -68,13 +68,13 @@ const userSignUp = async (req, res, next) => {
           if (!error) {
             return res.send({
               status: true,
-              message: `User created.`,
+              message: `User created`,
             });
           } else {
             let errorMsg = {};
 
             errorMsg.keys = Object.keys(error.keyPattern)[0];
-            errorMsg = `${error.keyValue.emailaddress} is already exists into system.`;
+            errorMsg = `${error.keyValue.emailaddress} is already exists into system`;
 
             return res.send({
               status: false,
@@ -108,13 +108,13 @@ const userSignUp = async (req, res, next) => {
 
               return res.send({
                 status: true,
-                message: `OTP sending on your email address ${emailaddress}.`,
+                message: `OTP sending on your email address ${emailaddress}`,
               });
             } else {
               let errorMsg = {};
 
               errorMsg.keys = Object.keys(error.keyPattern)[0];
-              errorMsg = `${error.keyValue.emailaddress} is already exists into system.`;
+              errorMsg = `${error.keyValue.emailaddress} is already exists into system`;
 
               return res.send({
                 status: false,
@@ -216,32 +216,32 @@ const userLogin = async (req, res, next) => {
 
               return res.send({
                 status: true,
-                message: `User login successfully.`,
+                message: `Login successfully`,
                 userdata: userData,
                 token: token,
               });
             } else {
               return res.send({
                 status: false,
-                message: `You are not activated. Please contact to admin.`,
+                message: `You are not activated. Please contact to admin`,
               });
             }
           } else {
             return res.send({
               status: false,
-              message: `Wrong credentials.`,
+              message: `Wrong credentials`,
             });
           }
         } else {
           return res.send({
             status: false,
-            message: `User not verified. First, you need to verify your account.`,
+            message: `User not verified. First, you need to verify your account`,
           });
         }
       } else {
         return res.send({
           status: false,
-          message: `Wrong credentials.`,
+          message: `Wrong credentials`,
         });
       }
     }
@@ -639,28 +639,12 @@ const profileDetails = async (req, res, next) => {
         data.status = "user_not_verified";
       }
 
-      // Set userroll.
-      if (data.userroll == 1) {
-        data.userroll = "admin";
-      } else if (data.userroll == 2) {
-        data.userroll = "service_provider";
-      } else if (data.userroll == 3) {
-        data.userroll = "customer";
-      }
-
       // Set user is active or not.
       if (data.isactive) {
         data.isactive = "yes";
       } else {
         data.isactive = "no";
       }
-
-      // // Set user gender.
-      // if (data.gender == 1) {
-      //   data.gender = "male";
-      // } else if (data.gender == 2) {
-      //   data.gender = "female";
-      // }
 
       // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
       createDate = data.createdAt
@@ -682,7 +666,6 @@ const profileDetails = async (req, res, next) => {
       delete data.otp; // delete data["otp"]
       delete data.__v; // delete data["__v"]
       delete data.status; // delete data["status"]
-      delete data.userroll; // delete data["userroll"]
       delete data.isactive; // delete data["isactive"]
       delete data.createdAt; // delete data["createdAt"]
       delete data.updatedAt; // delete data["updatedAt"]

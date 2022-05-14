@@ -32,6 +32,7 @@ const UserProfile = () => {
   const [name, setName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [gender, setGender] = useState("");
+  const [role, setRole] = useState("");
 
   // Error state
   const [emailAdressError, setEmailAdressError] = useState("");
@@ -52,11 +53,11 @@ const UserProfile = () => {
         },
       )
       .then((data) => {
-        // console.log(data.data.data, "data");
         setEmailAddress(data.data.data.emailaddress);
         setName(data.data.data.name);
         setMobileNumber(data.data.data.mobilenumber);
         setGender(data.data.data.gender);
+        setRole(data.data.data.userroll.rolename);
       })
       .catch((error) => {
         console.log(error, "error");
@@ -157,10 +158,7 @@ const UserProfile = () => {
                         autoComplete="emailaddress"
                         required
                         disabled
-                        value={emailAddress ? emailAddress : ""}
-                        onChange={(e) => {
-                          //   setEmailAddress(e.target.value);
-                        }}
+                        value={emailAddress && emailAddress}
                       />
                     }
 
@@ -190,7 +188,7 @@ const UserProfile = () => {
                     {nameError && <p className="text-danger">{nameError}</p>}
                   </CCol>
 
-                  <CCol md={6}>
+                  <CCol md={4}>
                     <CFormLabel
                       htmlFor="mobilenumber"
                       className="col-sm-6 col-form-label"
@@ -213,7 +211,7 @@ const UserProfile = () => {
                     )}
                   </CCol>
 
-                  <CCol md={6}>
+                  <CCol md={4}>
                     <CFormLabel
                       htmlFor="userrole"
                       className="col-sm-6 col-form-label"
@@ -239,6 +237,30 @@ const UserProfile = () => {
 
                     {genderError && (
                       <p className="text-danger">{genderError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="Role"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Role
+                    </CFormLabel>
+                    {
+                      <CFormInput
+                        type="Role"
+                        id="Role"
+                        placeholder="Role"
+                        autoComplete="Role"
+                        required
+                        disabled
+                        value={role && role}
+                      />
+                    }
+
+                    {emailAdressError && (
+                      <p className="text-danger">{emailAdressError}</p>
                     )}
                   </CCol>
 

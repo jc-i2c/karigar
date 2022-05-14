@@ -106,7 +106,6 @@ const AddServices = () => {
 
   // Get all sub services.
   useEffect(() => {
-    // console.log("allsubservices", servicesId);
 
     var data = new FormData();
     data.append("servicesid", servicesId);
@@ -122,9 +121,9 @@ const AddServices = () => {
       .then((data) => {
         const records = [];
         if (data.data.data) {
-          // console.log(data.data.data, "data.data.data");
+
           data.data.data.map((record) => {
-            // console.log(record, "record");
+
             records.push({
               subserviceid: record._id,
               subservicename: record.subservicename,
@@ -142,7 +141,6 @@ const AddServices = () => {
 
   // Get all service provider
   useEffect(() => {
-    // console.log("serviceprovider", subServicesId);
 
     var data = new FormData();
     data.append("subserviceid", subServicesId);
@@ -158,9 +156,9 @@ const AddServices = () => {
       .then((data) => {
         const records = [];
         if (data.data.data) {
-          // console.log(data.data.data, "data.data.data");
+
           data.data.data.map((record) => {
-            // console.log(record, "record");
+
             records.push({
               serviceproviderid: record._id,
               serviceprovidername: record.name,

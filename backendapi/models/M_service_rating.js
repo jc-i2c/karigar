@@ -14,7 +14,7 @@ const ServiceRatingSchema = new mongoose.Schema(
     },
     serviceproviderid: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "serviceprovider",
       required: [true, "Service provider Id is required."],
     },
     rate: {

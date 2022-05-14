@@ -27,7 +27,6 @@ import {
   CModalBody,
   CModalFooter,
 } from "@coreui/react";
-import UserProfile from "../users/profile";
 
 const ViewSubServices = () => {
   const navigate = useNavigate();
@@ -55,7 +54,6 @@ const ViewSubServices = () => {
         },
       )
       .then((data) => {
-        // console.log(data.data.data.roletag, "roletag");
         setRoleName(data.data.data.roletag);
       })
       .catch((error) => {
@@ -66,50 +64,86 @@ const ViewSubServices = () => {
   useEffect(() => {}, [servicesId]);
 
   useEffect(() => {
+    let unmounted = false;
     if (location.state) {
       setServiceId(location.state.serviceid);
       if (servicesId) {
-        let unmounted = false;
+        if (roleName == "ADMIN") {
+          let data = new FormData();
+          data.append("servicesid", servicesId);
 
-        let data = new FormData();
-        data.append("servicesid", servicesId);
-
-        axios
-          .post(
-            `${process.env.REACT_APP_APIURL}/karigar/subservices/allsubservices`,
-            data,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          )
-          .then((data) => {
-            const records = [];
-            if (data.data.data) {
-              data.data.data.map((record) => {
-                records.push({
-                  subserviceid: record._id,
-                  servicename: record.servicesid.servicename,
-                  servicesid: record.servicesid._id,
-                  subservicename: record.subservicename,
-                  subserviceimage: record.subserviceimage,
-                  createdAt: record.createdAt,
-                  updatedAt: record.updatedAt,
+          axios
+            .post(
+              `${process.env.REACT_APP_APIURL}/karigar/subservices/allsubservices`,
+              data,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              },
+            )
+            .then((data) => {
+              const records = [];
+              if (data.data.data) {
+                data.data.data.map((record) => {
+                  records.push({
+                    subserviceid: record._id,
+                    servicename: record.servicesid.servicename,
+                    servicesid: record.servicesid._id,
+                    subservicename: record.subservicename,
+                    subserviceimage: record.subserviceimage,
+                    createdAt: record.createdAt,
+                    updatedAt: record.updatedAt,
+                  });
                 });
-              });
-              setSubServices(records);
-            }
-          })
-          .catch((error) => {
-            console.log(error, "error");
-          });
+                setSubServices(records);
+              }
+            })
+            .catch((error) => {
+              console.log(error, "error");
+            });
+        } else {
+          let data = new FormData();
+          data.append("servicesid", servicesId);
 
-        return () => {
-          unmounted = true;
-        };
+          axios
+            .post(
+              `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/subserviceslist`,
+              data,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              },
+            )
+            .then((data) => {
+              const records = [];
+              if (data.data.data) {
+                data.data.data.map((record) => {
+                  console.log(record, "record");
+                  records.push({
+                    subserviceid: record._id,
+                    servicename: record.servicesid.servicename,
+                    servicesid: record.servicesid._id,
+                    subservicename: record.subservicename,
+                    subserviceimage: record.subserviceimage,
+                    createdAt: record.createdAt,
+                    updatedAt: record.updatedAt,
+                  });
+                });
+                setSubServices(records);
+              }
+            })
+            .catch((error) => {
+              console.log(error, "error");
+            });
+        }
       }
+      // else {
+      //   navigate("/services");
+      // }
     } else {
       navigate("/services");
     }
+    return () => {
+      unmounted = true;
+    };
   }, [roleName]);
 
   function deleteSubServices(subServiceId) {

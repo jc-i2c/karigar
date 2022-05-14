@@ -24,7 +24,6 @@ const Dashboard = () => {
         },
       )
       .then((data) => {
-        // console.log(data.data.data.roletag, "roletag");
         setRoleName(data.data.data.roletag);
       })
       .catch((error) => {
@@ -33,8 +32,8 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (roleName !== "ADMIN") {
-      navigate("/services");
+    if (roleName == "ADMIN") {
+      navigate("/dashboard");
     }
   }, [roleName]);
 

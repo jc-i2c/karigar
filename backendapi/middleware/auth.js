@@ -16,7 +16,10 @@ const verifyToken = async (req, res, next) => {
       // Find user.
       req.userid = decoded.id;
 
-      const findUser = await User.findById(req.userid);
+      const findUser = await User.findById(req.userid).populate({
+        path: "userroll",
+        select: "rolename",
+      });
 
       if (findUser) {
         if (findUser.status) res.user = findUser;

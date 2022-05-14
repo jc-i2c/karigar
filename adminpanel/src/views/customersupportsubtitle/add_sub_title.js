@@ -52,7 +52,6 @@ const AddCustomerSubTitle = () => {
       )
       .then((data) => {
         const records = [];
-        // console.log(data.data.data, "data");
         if (data.data.data) {
           data.data.data.map((record) => {
             records.push({

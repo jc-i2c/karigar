@@ -38,7 +38,6 @@ const ViewSystemModules = () => {
       )
       .then((data) => {
         const records = [];
-        // console.log(data.data.data, "data");
         data.data.data.map((record) => {
           records.push({
             systemmodulesid: record._id,

@@ -105,7 +105,7 @@ const AddUserroles = () => {
     prevPermissions.map((module) => {
       if (module.systemmodulesid === currentModule.systemmodulesid) {
         if (module.access.length === 1 && module.access[0] === permissionId) {
-          // console.log("meet the condition");
+          
         } else {
           if (module.access.includes(permissionId)) {
             latestPermission.push({
@@ -127,7 +127,7 @@ const AddUserroles = () => {
   };
 
   function arrayInSetPer(systemModulesId, permissionId) {
-    console.log(systemModulesId, permissionId);
+    
     setTempPermission((prevPermissions) => {
       if (prevPermissions.length === 0) {
         return [
@@ -141,7 +141,7 @@ const AddUserroles = () => {
           prevPermissions,
           systemModulesId,
         );
-        // console.log(currentModule, "module");
+        
         if (Object.keys(currentModule).length > 0) {
           return updateIfserviceAlreadyExist(
             prevPermissions,

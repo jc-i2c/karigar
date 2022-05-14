@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const Serviceprovider = require("../models/M_serviceprovider");
-const Services = require("../models/M_services");
+const Subservices = require("../models/M_subservices");
 const Offer = require("../models/M_offer");
+var moment = require("moment");
 
 const { createSerProVal, editSerProVal } = require("../helper/joivalidation");
 const { removeFile } = require("../helper/removefile");
@@ -574,42 +575,133 @@ const changeStatus = async (req, res, next) => {
   }
 };
 
-// Get all services based on userId.
+// Get all services based on TOKEN API.
 const getServiceList = async (req, res, next) => {
   try {
     let userId = req.userid;
+    var ObjectId = require("mongoose").Types.ObjectId;
 
     if (userId) {
       let getQry = await Serviceprovider.find()
-        .where({ userid: userId })
-        .populate({
-          path: "userid",
-          select: "name",
-        })
+        .where({ userid: ObjectId(userId) })
+        .select("subserviceid")
         .populate({
           path: "subserviceid",
-          select: "subservicename",
+          select: "_id",
           populate: {
             path: "servicesid",
+            select: "servicename serviceimage createdAt updatedAt",
           },
         });
 
+      let findData = [];
       if (getQry.length > 0) {
+        let resData = {};
+        getQry.map((list) => {
+          resData = list.toObject();
+
+          // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          createDate = resData.subserviceid.servicesid.createdAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          resData.subserviceid.servicesid.createdAt = moment(createDate).format(
+            "DD-MM-YYYY SS:MM:HH"
+          );
+
+          // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          updateDate = resData.subserviceid.servicesid.updatedAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          resData.subserviceid.servicesid.updatedAt = moment(updateDate).format(
+            "DD-MM-YYYY SS:MM:HH"
+          );
+
+          findData.push(resData);
+        });
+
         return res.send({
           status: true,
-          message: `${getQry.length} Service provider found into system.`,
-          data: getQry,
+          message: `${findData.length} Service provider found into system.`,
+          data: findData,
         });
       } else {
         return res.send({
           status: false,
-          message: `${getQry.length} Service provider list not found into system.`,
+          message: `Service provider list not found into system.`,
         });
       }
     } else {
       return res.send({
         status: false,
         message: `User Id is required.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
+// Get all sub services based on TOKEN API.
+const getSubServiceList = async (req, res, next) => {
+  try {
+    let userId = req.userid;
+    var ObjectId = require("mongoose").Types.ObjectId;
+
+    let serviceId = req.body.servicesid;
+
+    if (serviceId) {
+      let findSubService = await Subservices.find({
+        servicesid: ObjectId(serviceId),
+      }).populate({ path: "servicesid", select: "servicename" });
+
+      let finalResult = [];
+      if (findSubService.length > 0) {
+        let getQry = await Serviceprovider.find()
+          .where({ userid: ObjectId(userId) })
+          .select("subserviceid");
+
+        finalResult = findSubService.filter((o1) =>
+          getQry.some((o2) => o1.id === o2.subserviceid.toString())
+        );
+
+        finalResult = finalResult.map((chnageDate) => {
+          let newObj = chnageDate.toObject();
+
+          // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          createDate = newObj.createdAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          newObj.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+
+          // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          updateDate = newObj.updatedAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          newObj.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+          delete newObj["__v"];
+
+          return newObj;
+        });
+      }
+
+      return res.send({
+        status: true,
+        message: `${finalResult.length} Sub service found into system.`,
+        data: finalResult,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `Service Id is required.`,
       });
     }
   } catch (error) {
@@ -629,4 +721,5 @@ module.exports = {
   getAllServiceProvider,
   changeStatus,
   getServiceList,
+  getSubServiceList,
 };

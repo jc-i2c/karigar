@@ -21,9 +21,7 @@ const WidgetsDropdown = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then((data) => {
-        // console.log(data.data.widgetsdata, "data");
         setUsers(data.data.widgetsdata[0]["users"]);
-        // setCustomers(data.data.widgetsdata[0]["customers"]);
         setServicesProvider(data.data.widgetsdata[0]["servicesprovider"]);
         setServices(data.data.widgetsdata[0]["services"]);
         setOffers(data.data.widgetsdata[0]["offers"]);

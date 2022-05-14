@@ -49,7 +49,6 @@ const ViewCustomerSupport = () => {
       )
       .then((data) => {
         const records = [];
-        // console.log(data.data.data, "data");
         data.data.data.map((record) => {
           records.push({
             custsuptitleid: record._id,

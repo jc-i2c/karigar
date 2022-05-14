@@ -7,7 +7,7 @@ import { PermissionContext } from "src/context/PermissionContext";
 
 export const AppSidebarNav = ({ items }) => {
   const { permissions, fetchPermission } = useContext(PermissionContext);
-  // console.log(permissions, "permissions");
+  
   const token = localStorage.getItem("karigar_token");
 
   useEffect(() => {

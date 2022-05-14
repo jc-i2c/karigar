@@ -51,7 +51,6 @@ const ViewServiceRating = () => {
         },
       )
       .then((data) => {
-        // console.log(data.data.data.roletag, "roletag");
         setRoleName(data.data.data.roletag);
       })
       .catch((error) => {
@@ -69,7 +68,6 @@ const ViewServiceRating = () => {
         )
         .then((data) => {
           const records = [];
-          console.log(data.data.data, "data");
           data.data.data.map((record) => {
             records.push({
               ratingid: record._id,
@@ -86,7 +84,8 @@ const ViewServiceRating = () => {
         .catch((error) => {
           console.log(error, "error");
         });
-    } else {
+    }
+    if (roleName == "SERVICEPROVIDER") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/servicerating/getservicerating`,
@@ -94,22 +93,20 @@ const ViewServiceRating = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          if (data.data.data.length > 0) {
-            const records = [];
+          const records = [];
 
-            data.data.data.map((record) => {
-              records.push({
-                ratingid: record._id,
-                customername: record.customerid.name,
-                serviceprovideridname: record.serviceproviderid.name,
-                rate: record.rate,
-                description: record.description,
-                createdAt: record.createdAt,
-                updatedAt: record.updatedAt,
-              });
+          data.data.data.map((record) => {
+            records.push({
+              ratingid: record._id,
+              customername: record.customerid.name,
+              serviceprovideridname: record.serviceproviderid.name,
+              rate: record.rate,
+              description: record.description,
+              createdAt: record.createdAt,
+              updatedAt: record.updatedAt,
             });
-            setServiceRating(records);
-          }
+          });
+          setServiceRating(records);
         })
         .catch((error) => {
           console.log(error, "error");

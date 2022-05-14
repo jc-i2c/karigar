@@ -52,7 +52,6 @@ const ViewServices = () => {
         },
       )
       .then((data) => {
-        // console.log(data.data.data.roletag, "roletag");
         setRoleName(data.data.data.roletag);
       })
       .catch((error) => {
@@ -71,7 +70,6 @@ const ViewServices = () => {
         )
         .then((data) => {
           const records = [];
-          // console.log(data.data.data, "data");
           data.data.data.map((record) => {
             records.push({
               serviceid: record._id,
@@ -231,9 +229,12 @@ const ViewServices = () => {
                         variant="contained"
                         color="inherit"
                         onClick={() => {
-                          navigate("/subservices", {
-                            state: { serviceid: item.serviceid },
-                          });
+                          navigate(
+                            "/subservices",
+                            {
+                              state: { serviceid: item.serviceid },
+                            },
+                          );
                         }}
                       />
                     </CTableDataCell>

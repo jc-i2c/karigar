@@ -38,7 +38,6 @@ const ViewServices = () => {
         },
       )
       .then((data) => {
-        // console.log(data.data.data.roletag, "roletag");
         setRoleName(data.data.data.roletag);
       })
       .catch((error) => {
@@ -57,9 +56,9 @@ const ViewServices = () => {
         )
         .then((data) => {
           const records = [];
-          console.log(data.data.data, "data");
+          
           data.data.data.map((record) => {
-            console.log(record, "record");
+          
             records.push({
               servicehistoryid: record._id,
               name: record.name,
@@ -89,9 +88,9 @@ const ViewServices = () => {
         )
         .then((data) => {
           const records = [];
-          // console.log(data.data.data, "data");
+          
           data.data.data.map((record) => {
-            console.log(record, "record");
+            
             records.push({
               servicehistoryid: record._id,
               name: record.name,
@@ -120,7 +119,7 @@ const ViewServices = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
-            <div>Service historys</div>
+            <div>Service Historys</div>
           </CCardHeader>
 
           <CCardBody>
