@@ -22,6 +22,7 @@ const {
   getAllCustomer,
   getAllServiceProvider,
   adminEditUserData,
+  verifyUser,
 } = require("../controller/C_user");
 
 // UserLoginSignUp user api
@@ -80,5 +81,7 @@ router.post(
   multipartMiddleware,
   adminEditUserData
 );
+
+router.post("/verify", auth, userrollauth, multipartMiddleware, verifyUser);
 
 module.exports = router;

@@ -21,6 +21,8 @@ const verifyToken = async (req, res, next) => {
         select: "rolename",
       });
 
+      console.log(findUser, "findUser");
+
       if (findUser) {
         if (findUser.status) res.user = findUser;
         else {

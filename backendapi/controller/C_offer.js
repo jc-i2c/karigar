@@ -2,7 +2,6 @@ const Offer = require("../models/M_offer");
 const SubServices = require("../models/M_subservices");
 const ServiceProvider = require("../models/M_serviceprovider");
 const Services = require("../models/M_services");
-var moment = require("moment");
 
 const { updateOfferVal } = require("../helper/joivalidation");
 
@@ -341,7 +340,7 @@ const userOffer = async (req, res, next) => {
 
     if (userId) {
       let findQry = await Offer.find()
-        .select("currentprice actualprice")
+        .select("currentprice actualprice isactive")
         .populate({
           path: "subserviceid",
           select: "subservicename",

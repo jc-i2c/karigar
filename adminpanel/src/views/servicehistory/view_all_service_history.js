@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import {
@@ -17,6 +17,7 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CFormSelect,
 } from "@coreui/react";
 
 const ViewServices = () => {
@@ -56,9 +57,8 @@ const ViewServices = () => {
         )
         .then((data) => {
           const records = [];
-          
+
           data.data.data.map((record) => {
-          
             records.push({
               servicehistoryid: record._id,
               name: record.name,
@@ -88,9 +88,8 @@ const ViewServices = () => {
         )
         .then((data) => {
           const records = [];
-          
+
           data.data.data.map((record) => {
-            
             records.push({
               servicehistoryid: record._id,
               name: record.name,
@@ -113,6 +112,41 @@ const ViewServices = () => {
         });
     }
   }, [roleName]);
+
+  // Service history status changed.
+  function changeStatus(Id, status) {
+    var data = new FormData();
+    data.append("servicehistoryid", Id);
+    data.append("servicestatus", status);
+
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/servicehistory/statuschange`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        if (data.data.status) {
+          toast.success(data.data.message);
+          let newOffers = offers.map((allOffer) => {
+            if (allOffer.servicehistoryid == Id) {
+              return { ...allOffer, servicestatus: status };
+            } else {
+              return allOffer;
+            }
+          });
+
+          setOffers(newOffers);
+        } else {
+          toast.warning(data.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }
 
   return (
     <CRow>
@@ -148,7 +182,6 @@ const ViewServices = () => {
                   <CTableHeaderCell>Payment Status</CTableHeaderCell>
                   <CTableHeaderCell>CreatedAt</CTableHeaderCell>
                   <CTableHeaderCell>UpdatedAt</CTableHeaderCell>
-                  {/* <CTableHeaderCell>Action</CTableHeaderCell> */}
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -157,6 +190,7 @@ const ViewServices = () => {
                     <CTableDataCell>
                       <div>{item.name}</div>
                     </CTableDataCell>
+
                     {roleName == "ADMIN" && (
                       <CTableDataCell>
                         <div>
@@ -168,24 +202,72 @@ const ViewServices = () => {
                     <CTableDataCell>
                       <div>{item.customername}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
-                      <div>{item.addresstype}</div>
+                      <div>
+                        {item.addresstype == 1
+                          ? "OFFICE"
+                          : item.addresstype == 2
+                          ? "HOME"
+                          : ""}
+                      </div>
                     </CTableDataCell>
+
                     <CTableDataCell>
-                      <div>{item.sessiontype + " " + item.sessiontime}</div>
+                      <div>
+                        {item.sessiontype == 1
+                          ? "Morning"
+                          : item.sessiontype == 2
+                          ? "Afternoon"
+                          : ""}
+                        <br />
+                        {item.sessiontime}
+                      </div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>{item.servicedate}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
-                      <div>{item.servicestatus}</div>
+                      <CFormSelect
+                        required
+                        id="services"
+                        name="services"
+                        value={item.servicestatus}
+                        onChange={(e) => {
+                          changeStatus(item.servicehistoryid, e.target.value);
+                        }}
+                      >
+                        <option key={0} value={0}>
+                          Booking_request_sent
+                        </option>
+                        <option key={1} value={1}>
+                          Accept
+                        </option>
+                        <option key={2} value={2}>
+                          Confirmed
+                        </option>
+                        <option key={3} value={3}>
+                          Job_started
+                        </option>
+                        <option key={4} value={4}>
+                          Job_Completed
+                        </option>
+                        <option key={5} value={5}>
+                          Reject
+                        </option>
+                      </CFormSelect>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>{item.paymentstatus}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>{item.createdAt}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>{item.updatedAt}</div>
                     </CTableDataCell>

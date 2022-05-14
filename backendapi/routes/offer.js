@@ -22,13 +22,7 @@ router.post("/getall", auth, multipartMiddleware, getAllOffer);
 
 router.post("/delete", auth, userrollauth, multipartMiddleware, deleteOffer);
 
-router.post(
-  "/changestatus",
-  auth,
-  userrollauth,
-  multipartMiddleware,
-  changeOfferStatus
-);
+router.post("/changestatus", auth, multipartMiddleware, changeOfferStatus);
 
 router.post("/getalloffer", auth, multipartMiddleware, getAllOfferAdmin);
 

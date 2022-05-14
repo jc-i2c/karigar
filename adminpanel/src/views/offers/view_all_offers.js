@@ -108,6 +108,7 @@ const ViewServices = () => {
                 serviceprovidername: record.serviceproviderid.name,
                 currentprice: record.currentprice,
                 actualprice: record.actualprice,
+                isactive: record.isactive,
               });
             });
             setOffers(records);
@@ -120,6 +121,7 @@ const ViewServices = () => {
   }, [roleName]);
 
   function changeOfferStatus(offerId) {
+    // if (checkAdmin()) {
     let data = new FormData();
     data.append("offerid", offerId);
     axios
@@ -149,6 +151,7 @@ const ViewServices = () => {
       .catch((error) => {
         console.log(error, "error");
       });
+    // }
   }
 
   function deleteOffers(offerId) {
@@ -218,11 +221,9 @@ const ViewServices = () => {
                   <CTableHeaderCell>Service Provider Name</CTableHeaderCell>
                   <CTableHeaderCell>Current Price</CTableHeaderCell>
                   <CTableHeaderCell>Actual Price</CTableHeaderCell>
+                  <CTableHeaderCell>is_Active</CTableHeaderCell>
                   {roleName == "ADMIN" && (
-                    <>
-                      <CTableHeaderCell>is_Active</CTableHeaderCell>
-                      <CTableHeaderCell>Action</CTableHeaderCell>
-                    </>
+                    <CTableHeaderCell>Action</CTableHeaderCell>
                   )}
                 </CTableRow>
               </CTableHead>
@@ -245,21 +246,21 @@ const ViewServices = () => {
                     <CTableDataCell>
                       <div>{item.actualprice}</div>
                     </CTableDataCell>
+                    <CTableDataCell>
+                      <CFormSwitch
+                        key={index}
+                        type="checkbox"
+                        color="success"
+                        checked={item.isactive}
+                        size="xl"
+                        onChange={() => {
+                          changeOfferStatus(item.offerid);
+                        }}
+                      />
+                    </CTableDataCell>
+
                     {roleName == "ADMIN" && (
                       <>
-                        <CTableDataCell>
-                          <CFormSwitch
-                            key={index}
-                            type="checkbox"
-                            color="success"
-                            checked={item.isactive}
-                            size="xl"
-                            onChange={() => {
-                              changeOfferStatus(item.offerid);
-                            }}
-                          />
-                        </CTableDataCell>
-
                         <CTableDataCell>
                           <EditIcon
                             variant="contained"

@@ -151,7 +151,7 @@ const AddServices = () => {
                   <h3>Services</h3>
                   <hr />
 
-                  <CCol md={6}>
+                  <CCol md={5}>
                     <CFormLabel
                       htmlFor="email"
                       className="col-sm-4 col-form-label"
@@ -174,7 +174,7 @@ const AddServices = () => {
                     )}
                   </CCol>
 
-                  <CCol md={6}>
+                  <CCol md={5}>
                     <CFormLabel
                       htmlFor="email"
                       className="col-sm-4 col-form-label"

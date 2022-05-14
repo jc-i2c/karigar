@@ -95,35 +95,6 @@ const getAllServicehistory = async (req, res, next) => {
 
         delete resData.__v; // delete person["__v"]
 
-        // Set time morning or afternoon.
-        if (resData.servicetime.sessiontype == 1) {
-          resData.servicetime.sessiontype = "Morning";
-        } else if (resData.servicetime.sessiontype == 2) {
-          resData.servicetime.sessiontype = "Afternoon";
-        }
-
-        // Set address type.
-        if (resData.addresstype == 1) {
-          resData.addresstype = "Office";
-        } else if (resData.addresstype == 2) {
-          resData.addresstype = "Home";
-        }
-
-        // Set service status.
-        if (resData.servicestatus == 0) {
-          resData.servicestatus = "Booking_request_sent";
-        } else if (resData.servicestatus == 1) {
-          resData.servicestatus = "accept";
-        } else if (resData.servicestatus == 2) {
-          resData.servicestatus = "Booking_confirmed";
-        } else if (resData.servicestatus == 3) {
-          resData.servicestatus = "Job_started";
-        } else if (resData.servicestatus == 4) {
-          resData.servicestatus = "Job_Completed";
-        } else if (resData.servicestatus == 5) {
-          resData.servicestatus = "Reject";
-        }
-
         // Set payment status.
         if (resData.paymentstatus) {
           resData.paymentstatus = "Completed";
@@ -540,7 +511,7 @@ const changeServiceStatus = async (req, res, next) => {
           if (updateQry) {
             return res.send({
               status: true,
-              message: `Service history status changed.`,
+              message: `Service history status changed`,
             });
           } else {
             return res.send({
@@ -869,35 +840,6 @@ const getSerProHistoty = async (req, res, next) => {
           if (userId == serProviderId) {
             delete resData.__v; // delete person["__v"]
 
-            // Set time morning or afternoon.
-            if (resData.servicetime.sessiontype == 1) {
-              resData.servicetime.sessiontype = "Morning";
-            } else if (resData.servicetime.sessiontype == 2) {
-              resData.servicetime.sessiontype = "Afternoon";
-            }
-
-            // Set address type.
-            if (resData.addresstype == 1) {
-              resData.addresstype = "Office";
-            } else if (resData.addresstype == 2) {
-              resData.addresstype = "Home";
-            }
-
-            // Set service status.
-            if (resData.servicestatus == 0) {
-              resData.servicestatus = "Booking_request_sent";
-            } else if (resData.servicestatus == 1) {
-              resData.servicestatus = "accept";
-            } else if (resData.servicestatus == 2) {
-              resData.servicestatus = "Booking_confirmed";
-            } else if (resData.servicestatus == 3) {
-              resData.servicestatus = "Job_started";
-            } else if (resData.servicestatus == 4) {
-              resData.servicestatus = "Job_Completed";
-            } else if (resData.servicestatus == 5) {
-              resData.servicestatus = "Reject";
-            }
-
             // Set payment status.
             if (resData.paymentstatus) {
               resData.paymentstatus = "Completed";
@@ -905,14 +847,9 @@ const getSerProHistoty = async (req, res, next) => {
               resData.paymentstatus = "Pending";
             }
 
-            // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
-            var serviceDate = resData.servicedate
-              .toISOString()
-              .replace(/T/, " ")
-              .replace(/\..+/, "");
-            resData.servicedate = moment(serviceDate).format(
-              "DD-MM-YYYY SS:MM:HH"
-            );
+            // Servicedate date convert into date and time (DD/MM/YYYY) format
+            var serviceDate = resData.servicedate.toISOString().slice(0, 10);
+            resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
 
             // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
             createDate = resData.createdAt

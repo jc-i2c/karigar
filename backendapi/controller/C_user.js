@@ -1016,6 +1016,73 @@ const adminEditUserData = async (req, res, next) => {
   }
 };
 
+// User verify ADMIN API.
+const verifyUser = async (req, res, next) => {
+  try {
+    const userId = req.body.userid;
+
+    if (
+      !userId ||
+      userId == null ||
+      userId == undefined ||
+      userId == "null" ||
+      userId == "undefined"
+    ) {
+      return res.send({
+        status: false,
+        message: `User Id is required.`,
+      });
+    } else {
+      const findQry = await User.findById(userId);
+
+      if (findQry) {
+        if (findQry.status == true) {
+          let userVerify = { status: false };
+
+          let updateQry = await User.findByIdAndUpdate(findQry._id, {
+            $set: userVerify,
+          });
+          if (updateQry) {
+            return res.send({
+              status: true,
+              message: `User Unverify.`,
+            });
+          } else {
+            return res.send({
+              status: false,
+              message: `Data not updated.`,
+            });
+          }
+        } else if (findQry.status == false) {
+          let userVerify = { status: true };
+          let updateQry = await User.findByIdAndUpdate(findQry._id, {
+            $set: userVerify,
+          });
+          if (updateQry) {
+            return res.send({
+              status: true,
+              message: `User Verified.`,
+            });
+          } else {
+            return res.send({
+              status: false,
+              message: `Data not updated.`,
+            });
+          }
+        }
+      } else {
+        return res.send({
+          status: false,
+          message: `User not found into system.`,
+        });
+      }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   userSignUp,
   userLogin,
@@ -1033,4 +1100,5 @@ module.exports = {
   getAllCustomer,
   getAllServiceProvider,
   adminEditUserData,
+  verifyUser,
 };
