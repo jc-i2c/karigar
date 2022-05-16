@@ -72,6 +72,7 @@ function Login() {
         .post(`${process.env.REACT_APP_APIURL}/karigar/user/signin`, logiData)
         .then((data) => {
           if (data.data.token) {
+            console.log(data.data.userdata._id, "JAY ID MALI GYU");
             localStorage.setItem("karigar_token", data.data.token);
 
             toast.success(data.data.message, {

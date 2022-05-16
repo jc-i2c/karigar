@@ -90,7 +90,7 @@ _nav = [
   },
   {
     component: CNavItem,
-    name: "Service Provider",
+    name: "Service Provider Info.",
     to: "/providerlist",
     id: "627b567c2edb1ae3b9be98e9",
     icon: <CIcon icon={cilApps} customClassName="nav-icon" />,

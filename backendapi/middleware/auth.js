@@ -18,10 +18,8 @@ const verifyToken = async (req, res, next) => {
 
       const findUser = await User.findById(req.userid).populate({
         path: "userroll",
-        select: "rolename",
+        select: "rolename roletag",
       });
-
-      console.log(findUser, "findUser");
 
       if (findUser) {
         if (findUser.status) res.user = findUser;

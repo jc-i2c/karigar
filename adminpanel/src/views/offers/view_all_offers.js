@@ -29,7 +29,7 @@ import {
   CModalFooter,
 } from "@coreui/react";
 
-const ViewServices = () => {
+const ViewOffers = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("karigar_token");
@@ -103,11 +103,14 @@ const ViewServices = () => {
             data.data.data.map((record) => {
               records.push({
                 offerid: record._id,
+                servicesid: record.subserviceid.servicesid._id,
                 servicename: record.subserviceid.servicesid.servicename,
+                subserviceid: record.subserviceid._id,
                 subservicename: record.subserviceid.subservicename,
+                serviceproviderid: record.serviceproviderid._id,
                 serviceprovidername: record.serviceproviderid.name,
-                currentprice: record.currentprice,
                 actualprice: record.actualprice,
+                currentprice: record.currentprice,
                 isactive: record.isactive,
               });
             });
@@ -186,20 +189,18 @@ const ViewServices = () => {
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
             <div>Offers List</div>
-            {roleName == "ADMIN" && (
-              <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <CButton
-                  color="primary"
-                  type="button"
-                  className="btn btn-success"
-                  onClick={() => {
-                    navigate("/addoffers");
-                  }}
-                >
-                  Add Offers
-                </CButton>
-              </div>
-            )}
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+              <CButton
+                color="primary"
+                type="button"
+                className="btn btn-success"
+                onClick={() => {
+                  navigate("/addoffers");
+                }}
+              >
+                Add Offers
+              </CButton>
+            </div>
           </CCardHeader>
 
           <CCardBody>
@@ -222,9 +223,7 @@ const ViewServices = () => {
                   <CTableHeaderCell>Current Price</CTableHeaderCell>
                   <CTableHeaderCell>Actual Price</CTableHeaderCell>
                   <CTableHeaderCell>is_Active</CTableHeaderCell>
-                  {roleName == "ADMIN" && (
-                    <CTableHeaderCell>Action</CTableHeaderCell>
-                  )}
+                  <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -259,37 +258,33 @@ const ViewServices = () => {
                       />
                     </CTableDataCell>
 
-                    {roleName == "ADMIN" && (
-                      <>
-                        <CTableDataCell>
-                          <EditIcon
-                            variant="contained"
-                            color="inherit"
-                            onClick={() => {
-                              navigate("/addoffers", {
-                                state: {
-                                  offerid: item.offerid,
-                                  servicesid: item.servicesid,
-                                  subserviceid: item.subserviceid,
-                                  serviceproviderid: item.serviceproviderid,
-                                  currentprice: item.currentprice,
-                                  actualprice: item.actualprice,
-                                },
-                              });
-                            }}
-                          />
-                          <DeleteIcon
-                            variant="contained"
-                            color="inherit"
-                            onClick={() => {
-                              setOpenAlertBox(true);
-                              setDeleteTitle(item.serviceprovidername);
-                              setDeleteItemId(item.offerid);
-                            }}
-                          />
-                        </CTableDataCell>
-                      </>
-                    )}
+                    <CTableDataCell>
+                      <EditIcon
+                        variant="contained"
+                        color="inherit"
+                        onClick={() => {
+                          navigate("/addoffers", {
+                            state: {
+                              offerid: item.offerid,
+                              servicesid: item.servicesid,
+                              subserviceid: item.subserviceid,
+                              serviceproviderid: item.serviceproviderid,
+                              currentprice: item.currentprice,
+                              actualprice: item.actualprice,
+                            },
+                          });
+                        }}
+                      />
+                      <DeleteIcon
+                        variant="contained"
+                        color="inherit"
+                        onClick={() => {
+                          setOpenAlertBox(true);
+                          setDeleteTitle(item.serviceprovidername);
+                          setDeleteItemId(item.offerid);
+                        }}
+                      />
+                    </CTableDataCell>
                   </CTableRow>
                 ))}
               </CTableBody>
@@ -339,4 +334,4 @@ const ViewServices = () => {
   );
 };
 
-export default ViewServices;
+export default ViewOffers;

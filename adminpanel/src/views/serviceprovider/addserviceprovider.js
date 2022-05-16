@@ -59,10 +59,32 @@ const ServiceProvider = () => {
   const [imageError, setImageError] = useState("");
   const [nameError, setNameError] = useState("");
 
-  // Gel all service provider API.
-  useEffect(() => {
-    let unmounted = false;
+  const [roleName, setRoleName] = useState("");
 
+  useEffect(() => {
+    if (location.state) {
+      setServiceProviderId(location.state.userid);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Identify user type.
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        setRoleName(data.data.data.roletag);
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+
+    // Gel all service provider API.
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/user/allserviceprovider`,
@@ -86,12 +108,8 @@ const ServiceProvider = () => {
       .catch((error) => {
         console.log(error, "error");
       });
-  }, []);
 
-  // Gel all services.
-  useEffect(() => {
-    let unmounted = false;
-
+    // Gel all services.
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/services/all`,
@@ -200,7 +218,7 @@ const ServiceProvider = () => {
     uploadImage,
   ]);
 
-  // Service provider create edit.
+  // Service provider create & edit.
   function serviceProvider() {
     if (!servicesProviderId) {
       setValidated(true);
@@ -323,7 +341,6 @@ const ServiceProvider = () => {
 
   const updateValue = (id, fieldName, value) => {
     const updatedState = textBox.map((item, index) => {
-      
       if (item.id === id) {
         return {
           ...item,
@@ -364,7 +381,8 @@ const ServiceProvider = () => {
                       required
                       id="serviceprovider"
                       name="serviceprovider"
-                      value={servicesProviderId ? servicesProviderId : ""}
+                      value={servicesProviderId}
+                      disabled={roleName !== "ADMIN"}
                       onChange={(e) => {
                         setServiceProviderId(e.target.value);
                       }}

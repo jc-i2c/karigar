@@ -131,6 +131,40 @@ const ViewCustomer = () => {
       });
   }
 
+  function verifyCustomer(userId, status) {
+    if (status == false) {
+      let data = new FormData();
+      data.append("userid", userId);
+
+      axios
+        .post(`${process.env.REACT_APP_APIURL}/karigar/user/verify`, data, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((data) => {
+          if (data.data.status) {
+            toast.success(data.data.message);
+            // console.log(data.data.message, "data.data.message");
+            let customerStatus = customers.map((listOfCustomer) => {
+              if (listOfCustomer.customerid == userId) {
+                if (listOfCustomer.status) {
+                  return { ...listOfCustomer, status: false };
+                } else {
+                  return { ...listOfCustomer, status: true };
+                }
+              }
+              return listOfCustomer;
+            });
+            setCustomers(customerStatus);
+          } else {
+            toast.error(data.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    }
+  }
+
   return (
     <CRow>
       <CCol xs>
@@ -203,7 +237,7 @@ const ViewCustomer = () => {
                         checked={item.status}
                         size="xl"
                         onChange={(e) => {
-                          // changeUserStatus(item.customerid);
+                          verifyCustomer(item.customerid, item.status);
                         }}
                       />
                     </CTableDataCell>
@@ -215,7 +249,7 @@ const ViewCustomer = () => {
                         checked={item.isactive}
                         size="xl"
                         onChange={(e) => {
-                          changeUserStatus(item.customerid);
+                          // changeUserStatus(item.customerid);
                         }}
                       />
                     </CTableDataCell>

@@ -211,7 +211,7 @@ const getAllProvider = async (req, res, next) => {
 
         return res.send({
           status: true,
-          message: `${getQry.length} Service provider found into system.`,
+          message: `${serviceProvider.length} Service provider found into system.`,
           data: serviceProvider,
         });
       } else {
@@ -710,6 +710,46 @@ const getSubServiceList = async (req, res, next) => {
   }
 };
 
+// Get all service provide list based on service provider ID API.
+const getSerProOwnList = async (req, res, next) => {
+  try {
+    let userId = req.userid;
+    var ObjectId = require("mongoose").Types.ObjectId;
+
+    userId = ObjectId(userId);
+    if (userId) {
+      let getQry = await Serviceprovider.find()
+        .where({ userid: userId })
+        .populate({
+          path: "userid",
+          select: "name",
+        })
+        .populate({
+          path: "subserviceid",
+          select: "subservicename",
+          populate: {
+            path: "servicesid",
+            select: "servicename",
+          },
+        });
+
+      return res.send({
+        status: true,
+        message: `${getQry.length} Service provider found into system.`,
+        data: getQry,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `Service provider Id is required.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createProvider,
   editProvider,
@@ -722,4 +762,5 @@ module.exports = {
   changeStatus,
   getServiceList,
   getSubServiceList,
+  getSerProOwnList,
 };

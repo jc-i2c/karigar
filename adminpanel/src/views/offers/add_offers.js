@@ -18,7 +18,7 @@ import {
   CFormSelect,
 } from "@coreui/react";
 
-const AddServices = () => {
+const Offers = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -45,6 +45,143 @@ const AddServices = () => {
   const [ServicesProviderError, setServicesProviderError] = useState("");
   const [currentPriceError, setCurrentPriceError] = useState("");
   const [actualPriceError, setActualPriceError] = useState("");
+
+  const [roleName, setRoleName] = useState("");
+
+  // Identify user type.
+  useEffect(() => {
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        setRoleName(data.data.data.roletag);
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }, []);
+
+  useEffect(() => {
+    // Gel all services.
+    if (roleName == "ADMIN") {
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/services/all`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+        .then((data) => {
+          const records = [];
+          if (data.data.data) {
+            data.data.data.map((record) => {
+              records.push({
+                serviceid: record._id,
+                servicename: record.servicename,
+              });
+            });
+            setAllServices(records);
+          }
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    } else {
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/serviceslist`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+        .then((data) => {
+          const records = [];
+          if (data.data.data) {
+            data.data.data.map((record) => {
+              records.push({
+                serviceid: record.subserviceid.servicesid._id,
+                servicename: record.subserviceid.servicesid.servicename,
+              });
+            });
+            setAllServices(records);
+          }
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    }
+  }, [roleName]);
+
+  // Get all sub services.
+  useEffect(() => {
+    var data = new FormData();
+    data.append("servicesid", servicesId);
+
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/subservices/allsubservices`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        const records = [];
+        if (data.data.data) {
+          data.data.data.map((record) => {
+            records.push({
+              subserviceid: record._id,
+              subservicename: record.subservicename,
+            });
+          });
+          setAllSubServices(records);
+        } else {
+          // toast.error(data.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }, [servicesId]);
+
+  // Get all service provider
+  useEffect(() => {
+    var data = new FormData();
+    data.append("subserviceid", subServicesId);
+
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/all`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        const records = [];
+        if (data.data.data) {
+          data.data.data.map((record) => {
+            records.push({
+              serviceproviderid: record._id,
+              serviceprovidername: record.name,
+            });
+          });
+          setAllServiceProvider(records);
+        } else {
+          // toast.error(data.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }, [subServicesId]);
 
   // Error state empty.
   useEffect(() => {
@@ -73,106 +210,7 @@ const AddServices = () => {
       setCurrentPrice(location.state.currentprice);
       setActualPrice(location.state.actualprice);
     }
-  }, []);
-
-  // Gel all services.
-  useEffect(() => {
-    let unmounted = false;
-
-    axios
-      .post(
-        `${process.env.REACT_APP_APIURL}/karigar/services/all`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      )
-      .then((data) => {
-        const records = [];
-        if (data.data.data) {
-          data.data.data.map((record) => {
-            records.push({
-              serviceid: record._id,
-              servicename: record.servicename,
-            });
-          });
-          setAllServices(records);
-        }
-      })
-      .catch((error) => {
-        console.log(error, "error");
-      });
-  }, []);
-
-  // Get all sub services.
-  useEffect(() => {
-
-    var data = new FormData();
-    data.append("servicesid", servicesId);
-
-    axios
-      .post(
-        `${process.env.REACT_APP_APIURL}/karigar/subservices/allsubservices`,
-        data,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      )
-      .then((data) => {
-        const records = [];
-        if (data.data.data) {
-
-          data.data.data.map((record) => {
-
-            records.push({
-              subserviceid: record._id,
-              subservicename: record.subservicename,
-            });
-          });
-          setAllSubServices(records);
-        } else {
-          // toast.error(data.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error, "error");
-      });
-  }, [servicesId]);
-
-  // Get all service provider
-  useEffect(() => {
-
-    var data = new FormData();
-    data.append("subserviceid", subServicesId);
-
-    axios
-      .post(
-        `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/all`,
-        data,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      )
-      .then((data) => {
-        const records = [];
-        if (data.data.data) {
-
-          data.data.data.map((record) => {
-
-            records.push({
-              serviceproviderid: record._id,
-              serviceprovidername: record.name,
-            });
-          });
-          setAllServiceProvider(records);
-        } else {
-          // toast.error(data.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error, "error");
-      });
-  }, [subServicesId]);
+  }, [location.state]);
 
   // Add and edit offers.
   function addOffers() {
@@ -256,6 +294,8 @@ const AddServices = () => {
       }
     }
   }
+
+  // console.log(allServiceProvider, "allServiceProvider");
 
   return (
     <div>
@@ -461,4 +501,4 @@ const AddServices = () => {
   );
 };
 
-export default AddServices;
+export default Offers;

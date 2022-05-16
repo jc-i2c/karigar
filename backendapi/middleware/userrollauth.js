@@ -18,8 +18,6 @@ const userRoleAuth = async (req, res, next) => {
       req.roletag = decoded.roletag;
 
       const findUser = await User.findById(req.userid).select("userroll");
-      // let adminUser = findUser.userroll.toString();
-      // console.log(decoded.roletag, "decoded.roletag");
 
       if (findUser) {
         if (decoded.roletag === "ADMIN") {

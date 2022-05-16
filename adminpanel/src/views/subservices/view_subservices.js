@@ -61,7 +61,7 @@ const ViewSubServices = () => {
       });
   }, []);
 
-  useEffect(() => {}, [servicesId]);
+  useEffect(() => { }, [servicesId]);
 
   useEffect(() => {
     let unmounted = false;
@@ -116,7 +116,6 @@ const ViewSubServices = () => {
               const records = [];
               if (data.data.data) {
                 data.data.data.map((record) => {
-                  console.log(record, "record");
                   records.push({
                     subserviceid: record._id,
                     servicename: record.servicesid.servicename,
@@ -135,9 +134,6 @@ const ViewSubServices = () => {
             });
         }
       }
-      // else {
-      //   navigate("/services");
-      // }
     } else {
       navigate("/services");
     }

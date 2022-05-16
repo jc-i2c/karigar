@@ -69,7 +69,6 @@ router.post(
 router.post(
   "/allserviceprovider",
   auth,
-  userrollauth,
   multipartMiddleware,
   getAllServiceProvider
 );
@@ -82,6 +81,6 @@ router.post(
   adminEditUserData
 );
 
-router.post("/verify", auth, userrollauth, multipartMiddleware, verifyUser);
+router.post("/verify", userrollauth, multipartMiddleware, verifyUser);
 
 module.exports = router;

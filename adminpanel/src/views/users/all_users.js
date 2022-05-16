@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -132,6 +132,39 @@ const AllUsers = () => {
       });
   }
 
+  function verifyUser(userId, status) {
+    if (status == false) {
+      let data = new FormData();
+      data.append("userid", userId);
+
+      axios
+        .post(`${process.env.REACT_APP_APIURL}/karigar/user/verify`, data, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((data) => {
+          if (data.data.status) {
+            toast.success(data.data.message);
+            let newCustomerData = allUsers.map((listOfCustomer) => {
+              if (listOfCustomer.userid == userId) {
+                if (listOfCustomer.status) {
+                  return { ...listOfCustomer, status: false };
+                } else {
+                  return { ...listOfCustomer, status: true };
+                }
+              }
+              return listOfCustomer;
+            });
+            setAllUsers(newCustomerData);
+          } else {
+            toast.error(data.data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    }
+  }
+
   return (
     <CRow>
       <CCol xs>
@@ -184,30 +217,37 @@ const AllUsers = () => {
                     <CTableDataCell>
                       <div>{item.emailaddress}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>{item.name ? item.name : "-"}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>
                         {item.gender == 1
                           ? "Male"
                           : item.gender == 2
-                            ? "Female"
-                            : "-"}
+                          ? "Female"
+                          : "-"}
                       </div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>{item.mobilenumber ? item.mobilenumber : "-"}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>{item.userroll.rolename}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>{item.createdAt}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       <div>{item.updatedAt}</div>
                     </CTableDataCell>
+
                     <CTableDataCell>
                       {item.userroll.rolename == "admin" ? (
                         <CFormCheck
@@ -229,11 +269,12 @@ const AllUsers = () => {
                           checked={item.status}
                           size="xl"
                           onChange={(e) => {
-                            // console.log(e);
+                            verifyUser(item.userid, item.status);
                           }}
                         />
                       )}
                     </CTableDataCell>
+
                     <CTableDataCell>
                       {item.userroll.rolename == "admin" ? (
                         <CFormSwitch

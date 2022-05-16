@@ -368,7 +368,7 @@ const userOffer = async (req, res, next) => {
 
         return res.send({
           status: true,
-          message: `${findData.length} service rating found into system.`,
+          message: `${findData.length} offer found into system.`,
           data: findData,
         });
       } else {

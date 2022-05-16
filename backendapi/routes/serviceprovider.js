@@ -17,15 +17,10 @@ const {
   changeStatus,
   getServiceList,
   getSubServiceList,
+  getSerProOwnList,
 } = require("../controller/C_serviceprovider");
 
-router.post(
-  "/create",
-  auth,
-  userrollauth,
-  upload.single("image"),
-  createProvider
-);
+router.post("/create", auth, upload.single("image"), createProvider);
 
 router.post("/all", auth, multipartMiddleware, getAllProvider);
 
@@ -33,7 +28,7 @@ router.post("/single", auth, multipartMiddleware, getSingleProvider);
 
 router.post("/delete", auth, userrollauth, multipartMiddleware, deleteProvider);
 
-router.post("/edit", auth, userrollauth, upload.single("image"), editProvider);
+router.post("/edit", auth, upload.single("image"), editProvider);
 
 router.post(
   "/getallproviderlist",
@@ -58,16 +53,12 @@ router.post(
   getAllServiceProvider
 );
 
-router.post(
-  "/changestatus",
-  auth,
-  userrollauth,
-  multipartMiddleware,
-  changeStatus
-);
+router.post("/changestatus", auth, multipartMiddleware, changeStatus);
 
 router.post("/serviceslist", auth, multipartMiddleware, getServiceList);
 
 router.post("/subserviceslist", auth, multipartMiddleware, getSubServiceList);
+
+router.post("/ownlist", auth, multipartMiddleware, getSerProOwnList);
 
 module.exports = router;

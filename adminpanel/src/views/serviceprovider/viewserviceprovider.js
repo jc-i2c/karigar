@@ -40,40 +40,91 @@ const ViewServiceProvider = () => {
   const [detailsData, setDetailsData] = useState([]);
   const [title, setTitle] = useState("");
 
+  const [serviceProviderId, setServiceProviderId] = useState("");
+
   const [openAlertBox, setOpenAlertBox] = useState(false);
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteItemId, setDeleteItemId] = useState("");
 
   const [openDesBox, setOpenDesBox] = useState(false);
+  const [roleName, setRoleName] = useState("");
 
+  // Identify user type.
   useEffect(() => {
     axios
       .post(
-        `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/getall`,
+        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
       )
       .then((data) => {
-        const records = [];
-        data.data.data.map((record) => {
-          records.push({
-            serviceproviderid: record._id,
-            name: record.name,
-            description: record.description,
-            image: record.image,
-            userid: record.userid,
-            subserviceid: record.subserviceid,
-            price: record.price,
-            isactive: record.isactive,
-            servicedetails: record.servicedetails,
-          });
-        });
-        setServiceProvider(records);
+        setRoleName(data.data.data.roletag);
       })
       .catch((error) => {
         console.log(error, "error");
       });
   }, []);
+
+  useEffect(() => {
+    if (roleName == "ADMIN") {
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/getall`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .then((data) => {
+          const records = [];
+          data.data.data.map((record) => {
+            records.push({
+              serviceproviderid: record._id,
+              name: record.name,
+              description: record.description,
+              image: record.image,
+              userid: record.userid,
+              subserviceid: record.subserviceid,
+              price: record.price,
+              isactive: record.isactive,
+              servicedetails: record.servicedetails,
+            });
+          });
+          setServiceProvider(records);
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    } else {
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/ownlist`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .then((data) => {
+          const records = [];
+          data.data.data.map((record) => {
+            setServiceProviderId(record.userid._id);
+            records.push({
+              serviceproviderid: record._id,
+              name: record.name,
+              description: record.description,
+              image: record.image,
+              userid: record.userid,
+              subserviceid: record.subserviceid,
+              price: record.price,
+              isactive: record.isactive,
+              servicedetails: record.servicedetails,
+            });
+          });
+          setServiceProvider(records);
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    }
+  }, [roleName]);
 
   function deleteServiceProvider(deleteItemId) {
     setOpenAlertBox(false);
@@ -145,14 +196,16 @@ const ViewServiceProvider = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
-            <div>Service Provider</div>
+            <div>Service Provider Info</div>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"
                 type="button"
                 className="btn btn-success"
                 onClick={() => {
-                  navigate("/addserviceprovider");
+                  navigate("/addserviceprovider", {
+                    state: { userid: serviceProviderId },
+                  });
                 }}
               >
                 Add Service Provider
