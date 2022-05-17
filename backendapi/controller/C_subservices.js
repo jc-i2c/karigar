@@ -77,7 +77,7 @@ const createSubServices = async (req, res, next) => {
   }
 };
 
-// Gel all sub services API.
+// Get all sub services API.
 const getAllSubServices = async (req, res, next) => {
   try {
     const getQry = await Subservices.find().populate({
@@ -128,7 +128,7 @@ const getAllSubServices = async (req, res, next) => {
   }
 };
 
-// Gel all sub services based on service Id API.
+// Get all sub services based on service Id API.
 const getSubServices = async (req, res, next) => {
   try {
     let servicesId = req.body.servicesid;
@@ -192,7 +192,7 @@ const getSubServices = async (req, res, next) => {
   }
 };
 
-// Gel single sub services API.
+// Get single sub services API.
 const getSingleSubServices = async (req, res, next) => {
   try {
     const subServicesId = req.body.subservicesid;

@@ -165,7 +165,7 @@ const editProvider = async (req, res, next) => {
   }
 };
 
-// Gel all services provider API.
+// Get all services provider API.
 const getAllProvider = async (req, res, next) => {
   try {
     const subServiceId = req.body.subserviceid;
@@ -232,7 +232,7 @@ const getAllProvider = async (req, res, next) => {
   }
 };
 
-// Gel single services provider API.
+// Get single services provider API.
 const getSingleProvider = async (req, res, next) => {
   try {
     const servicesProviderId = req.body.servicesproviderid;
@@ -750,6 +750,35 @@ const getSerProOwnList = async (req, res, next) => {
   }
 };
 
+// Get service provider name ONLY LOGIN service provider NAME API.
+const getProviderList = async (req, res, next) => {
+  try {
+    let subServiceId = new mongoose.Types.ObjectId(req.body.subserviceid);
+    let userId = new mongoose.Types.ObjectId(req.userid);
+
+    let findQry = await Serviceprovider.findOne({
+      subserviceid: subServiceId,
+      userid: userId,
+    }).select("name");
+
+    if (findQry) {
+      return res.send({
+        status: true,
+        message: `Service provider found into system.`,
+        data: findQry,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `Service provider not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createProvider,
   editProvider,
@@ -763,4 +792,5 @@ module.exports = {
   getServiceList,
   getSubServiceList,
   getSerProOwnList,
+  getProviderList,
 };

@@ -12,6 +12,7 @@ import {
   cilSync,
   cilStar,
   cilApps,
+  cilChatBubble,
 } from "@coreui/icons";
 
 import { CNavItem } from "@coreui/react";
@@ -94,6 +95,13 @@ _nav = [
     to: "/providerlist",
     id: "627b567c2edb1ae3b9be98e9",
     icon: <CIcon icon={cilApps} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: "Chats",
+    to: "/customerchat",
+    id: "62832fb7f8c4cbda2e6b6dcc",
+    icon: <CIcon icon={cilChatBubble} customClassName="nav-icon" />,
   },
 ];
 

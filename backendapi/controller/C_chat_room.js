@@ -3,7 +3,7 @@ const ChatRoom = require("../models/M_chat_room");
 // Create chat room API.
 const createChatRoom = async (req, res, next) => {
   try {
-    const { userid, otheruserid } = req.body;
+    const { userid, otheruserid, chatrequestid } = req.body;
 
     const getQry = await ChatRoom.find().where({
       userid: userid,
@@ -24,6 +24,7 @@ const createChatRoom = async (req, res, next) => {
       var chatRoom = new ChatRoom({
         userid: userid,
         otheruserid: otheruserid,
+        chatrequestid: chatrequestid,
       });
 
       const insertQry = await chatRoom.save();

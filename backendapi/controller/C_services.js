@@ -65,7 +65,7 @@ const createServices = async (req, res, next) => {
   }
 };
 
-// Gel all services API.
+// Get all services API.
 const getAllServices = async (req, res, next) => {
   try {
     let getQry = await Services.find();
@@ -113,7 +113,7 @@ const getAllServices = async (req, res, next) => {
   }
 };
 
-// Gel single services API.
+// Get single services API.
 const getSingleServices = async (req, res, next) => {
   try {
     const servicesId = req.body.servicesid;

@@ -18,6 +18,7 @@ const {
   getServiceList,
   getSubServiceList,
   getSerProOwnList,
+  getProviderList,
 } = require("../controller/C_serviceprovider");
 
 router.post("/create", auth, upload.single("image"), createProvider);
@@ -60,5 +61,7 @@ router.post("/serviceslist", auth, multipartMiddleware, getServiceList);
 router.post("/subserviceslist", auth, multipartMiddleware, getSubServiceList);
 
 router.post("/ownlist", auth, multipartMiddleware, getSerProOwnList);
+
+router.post("/getproviderlist", auth, multipartMiddleware, getProviderList);
 
 module.exports = router;

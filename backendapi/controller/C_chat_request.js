@@ -106,11 +106,14 @@ const changeStatus = async (req, res, next) => {
 // Get all chat Request based on service provider Id API.
 const getAllChatRequest = async (req, res, next) => {
   try {
-    const { serviceprovid } = req.body;
+    let serviceprovid = req.userid;
 
-    let getQry = await ChatRequest.find().where({
-      serviceprovid: serviceprovid,
-    });
+    let getQry = await ChatRequest.find()
+      .where({
+        serviceprovid: serviceprovid,
+      })
+      .populate({ path: "customerid", select: "name" })
+      .populate({ path: "serviceprovid", select: "name" });
 
     if (getQry.length > 0) {
       let findData = [];
@@ -122,22 +125,13 @@ const getAllChatRequest = async (req, res, next) => {
         delete resData.updatedAt; // delete person["updatedAt"]
         delete resData.__v; // delete person["__v"]
 
-        // Set chat request status.
-        if (resData.chatstatus == 1) {
-          resData.chatstatus = "Pending";
-        } else if (resData.chatstatus == 2) {
-          resData.chatstatus = "Accept";
-        } else if (resData.chatstatus == 3) {
-          resData.chatstatus = "Reject";
-        }
-
         // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH")
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
 
         findData.push(resData);
       });
@@ -193,7 +187,7 @@ const getAllCusChatRequest = async (req, res, next) => {
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH")
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
 
         findData.push(resData);
       });

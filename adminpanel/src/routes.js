@@ -54,6 +54,9 @@ const Addsystemmodules = React.lazy(() => import("./views/systemmodules/add_syst
 const Providerlist = React.lazy(() => import("./views/serviceprovider/viewserviceprovider"));
 const Addserviceprovider = React.lazy(() => import("./views/serviceprovider/addserviceprovider"));
 
+// Chat
+const Customerchat = React.lazy(() => import("./views/chats/view_customers"));
+
 let routes = [];
 routes = [
   // { path: "/", exact: true, name: "Home" },
@@ -113,6 +116,9 @@ routes = [
   // Service Provider
   { path: "/providerlist", name: "Provider List", element: Providerlist },
   { path: "/addserviceprovider", name: "Addserviceprovider", element: Addserviceprovider },
+
+  // Chats
+  { path: "/customerchat", name: "Customer Chat", element: Customerchat },
 ];
 
 export default routes;
