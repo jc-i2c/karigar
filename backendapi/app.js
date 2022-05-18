@@ -3,37 +3,13 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-
-// Socket io code
-const http = require("http").Server(app);
-const io = require("socket.io")(http);
-
-const { sendMessage } = require("./socket/chat.js");
-
-io.on("connection", (socket) => {
-  socket.on("ontest", async (msg) => {
-    try {
-      let data = {};
-      data.senderid = "62594136b3e716196a5d4c78";
-      data.receiverid = "62595ef9c2362694626aae6e";
-      data.message = msg;
-      await sendMessage(data);
-
-      io.emit("emittest", msg);
-    } catch (error) {
-      socket.emit("error", error.message);
-    }
-  });
-});
-
-app.use("/demo", express.static(path.join("./uploads/demo.html")));
-
-// ENV file include.
+const http = require("http");
+// .Server(app);
+// const io = require("socket.io")(http);
 require("dotenv").config();
 const port = process.env.API_PORT || 3031;
 
-// Create server and port number defined.
-http.listen(port, () => console.log(`Server app listening on port: ${port}`));
+app.use("/demo", express.static(path.join("./uploads/demo.html")));
 
 // Database file include.
 require("./server/database")
@@ -48,12 +24,6 @@ require("./server/database")
 
     app.use("/static", express.static("./assets/"));
 
-    var corsOptions = {
-      origin: "*",
-    };
-
-    app.use(cors(corsOptions));
-
     // Route file include.
     app.use(require("./routes/"));
 
@@ -64,3 +34,63 @@ require("./server/database")
   .catch((err) => {
     console.log(err, "Error");
   });
+
+// configuration of cors
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
+
+// Socket database file include.
+const { sendMessage, checkStatus, changeStatus } = require("./socket/chat.js");
+
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+io.on("connection", (socket) => {
+  // Save message.
+  socket.on("onChat", async (msg) => {
+    try {
+      let data = {};
+      data.senderid = "62595ef9c2362694626aae6e";
+      data.receiverid = "625940c8b3e716196a5d4c70";
+      data.message = msg;
+      await sendMessage(data);
+
+      io.emit("emittest", msg);
+    } catch (error) {
+      socket.emit("error", error.message);
+    }
+  });
+
+  // Check chat and find room into database.
+  try {
+    socket.on("checkstatus", async (chatReqId) => {
+      let resData = await checkStatus(chatReqId);
+      socket.emit("checkstatus", resData);
+    });
+  } catch (error) {
+    socket.emit("error", error.message);
+  }
+
+  // Change status accept or reject.
+  try {
+    socket.on("changestatus", async (data) => {
+      let resData = await changeStatus(data);
+      socket.emit("changestatus", resData);
+    });
+  } catch (error) {
+    socket.emit("error", error.message);
+  }
+});
+
+// Create server and port number defined.
+server.listen(port, () => console.log(`Server app listening on port: ${port}`));

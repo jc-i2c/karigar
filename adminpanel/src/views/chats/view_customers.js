@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { CCard, CCardHeader, CCol, CRow, CButton } from "@coreui/react";
 
-import { CCard, CCardHeader, CCol, CRow } from "@coreui/react";
+import io from "socket.io-client";
+const socket = io.connect(process.env.REACT_APP_APIURL);
 
-const ViewOffers = () => {
-  const navigate = useNavigate();
-
+const ViewCustomerChat = () => {
   const token = localStorage.getItem("karigar_token");
+  const [chatClick, setChatClick] = useState(false);
+
+  const [cutomerList, setCutomerList] = useState([]);
 
   const [roleName, setRoleName] = useState("");
-  const [cutomerList, setCutomerList] = useState([]);
-  const [chatReqId, setChatReqId] = useState("");
-  const [customerId, setCustomerId] = useState("");
-  const [serviceProviderId, setServiceProviderId] = useState("");
+  const [message, setMessage] = useState("");
 
-  // Identify user type.
+  const [customerDetails, setCustomerDetails] = useState("");
+
   useEffect(() => {
+    let unmounted = false;
+
+    // Identify user type.
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
@@ -45,53 +46,62 @@ const ViewOffers = () => {
         },
       )
       .then((data) => {
-        const records = [];
-        data.data.data.map((record) => {
-          records.push({
-            chatrequestid: record._id,
-            customerid: record.customerid._id,
-            customername: record.customerid.name,
-            serviceprovid: record.serviceprovid._id,
-            serviceprovidername: record.serviceprovid.name,
-            chatstatus: record.chatstatus,
+        if (data.data.data) {
+          const records = [];
+          data.data.data.map((record) => {
+            records.push({
+              chatrequestid: record._id,
+              customerid: record.customerid._id,
+              customername: record.customerid.name,
+              serviceprovid: record.serviceprovid._id,
+              serviceprovname: record.serviceprovid.name,
+              chatstatus: record.chatstatus,
+            });
           });
-        });
-        setCutomerList(records);
+          setCutomerList(records);
+        }
       })
       .catch((error) => {
         console.log(error, "error");
       });
+    return () => {
+      unmounted = true;
+    };
   }, []);
 
-  // Find chat room.
-  function findChatRoom(chatReqId, customerId, serviceProviderId) {
-    var data = new FormData();
-    data.append("userid", chatReqId);
-    data.append("otheruserid", customerId);
-    data.append("chatrequestid", serviceProviderId);
+  // Send message.
+  function sendMessage() {
+    socket.emit("onChat", message);
+  }
 
-    axios
-      .post(`${process.env.REACT_APP_APIURL}/karigar/chatroom/create`, data, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((data) => {
-        console.log(data.data.data, "Data");
-        // const records = [];
-        // data.data.data.map((record) => {
-        //   records.push({
-        //     chatrequestid: record._id,
-        //     customerid: record.customerid._id,
-        //     customername: record.customerid.name,
-        //     serviceprovid: record.serviceprovid._id,
-        //     serviceprovidername: record.serviceprovid.name,
-        //     chatstatus: record.chatstatus,
-        //   });
-        // });
-        // setCutomerList(records);
-      })
-      .catch((error) => {
-        console.log(error, "error");
-      });
+  // Change status accept or reject.
+  function changeStatus(chatreqid, status) {
+    let data = {};
+    data.chatreqid = chatreqid;
+    data.status = status;
+    socket.emit("changestatus", data);
+
+    socket.on("changestatus", function (data) {
+      if (status == "3") {
+        let filterData = cutomerList.filter(
+          (item) => item.chatrequestid !== chatreqid,
+        );
+        setCutomerList(filterData);
+        if (cutomerList.length == 0) {
+          setChatClick(false);
+        }
+      } else {
+        let updateData = cutomerList.map((list) => {
+          if (list.customerid == data.customerid) {
+            let newData = { ...list, chatstatus: data.chatstatus };
+            return newData;
+          } else {
+            return list;
+          }
+        });
+        setCutomerList(updateData);
+      }
+    });
   }
 
   return (
@@ -116,11 +126,8 @@ const ViewOffers = () => {
                                 className="p-1 border-bottom bg-light"
                                 key={index}
                                 onClick={() => {
-                                  findChatRoom(
-                                    item.chatrequestid,
-                                    item.customerid,
-                                    item.serviceprovid,
-                                  );
+                                  setCustomerDetails(item);
+                                  setChatClick(true);
                                 }}
                               >
                                 <div className="pt-1">
@@ -139,44 +146,95 @@ const ViewOffers = () => {
                   </div>
                 </div>
 
-                <div className="col-md-6 col-lg-7 col-xl-8">
-                  <ul className="list-unstyled">
-                    {/* Customer chat load */}
-                    {}
-                    <li className="d-flex justify-content-start mb-1">
-                      <div className="card">
-                        <div className="card-text">
-                          <p>Hi, Hello, How are you? Hi, Hello, How are you?</p>
-                        </div>
-                      </div>
-                    </li>
-                    <li className="d-flex justify-content-end mb-1">
-                      <div className="card bg-light">
-                        <div className="card-text">
-                          <p>Hi, I am fine you?</p>
-                        </div>
-                      </div>
-                    </li>
-                    {/* Customer chat load */}
+                {chatClick && (
+                  <div className="col-md-6 col-lg-7 col-xl-8">
+                    <div className="card">
+                      {cutomerList.map((item, index) => {
+                        return item.chatstatus == "2" ? (
+                          <ul className="list-unstyled" key={index}>
+                            {/* Customer chat load */}
+                            <li className="d-flex justify-content-start mb-1">
+                              <div className="card">
+                                <div className="d-flex p-1">
+                                  <div className="card-text">
+                                    <p>Hi, Hello, How are you?</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                            <li className="d-flex justify-content-end mb-1">
+                              <div className="card bg-light">
+                                <div className="d-flex p-1">
+                                  <div className="card-text">
+                                    <p>Hi, I am fine you?</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
 
-                    <li>
-                      <div className="form-outline">
-                        <textarea
-                          className="form-control"
-                          id="textAreaExample2"
-                          rows="2"
-                        ></textarea>
-                        Message
-                      </div>
-                      <button
-                        type="button"
-                        className="btn btn-info btn-rounded float-end"
-                      >
-                        Send
-                      </button>
-                    </li>
-                  </ul>
-                </div>
+                            <li>
+                              <div className="form-outline">
+                                <textarea
+                                  className="form-control"
+                                  id="textAreaExample2"
+                                  rows="2"
+                                  onChange={(e) => {
+                                    setMessage("");
+                                    setMessage(e.target.value);
+                                  }}
+                                ></textarea>
+                                Message
+                              </div>
+                              <button
+                                type="button"
+                                className="btn btn-info btn-rounded float-end"
+                                onClick={() => {
+                                  sendMessage();
+                                }}
+                              >
+                                Send
+                              </button>
+                            </li>
+                          </ul>
+                        ) : (
+                          <div className="card-body" key={index}>
+                            <h5 className="card-title">
+                              {customerDetails.customername}
+                            </h5>
+                            <p className="card-text">
+                              have been sent you request!
+                            </p>
+
+                            <button
+                              type="button"
+                              className="btn btn-outline-primary"
+                              onClick={() => {
+                                changeStatus(
+                                  customerDetails.chatrequestid,
+                                  "2",
+                                );
+                              }}
+                            >
+                              Accept
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-outline-danger"
+                              onClick={() => {
+                                changeStatus(
+                                  customerDetails.chatrequestid,
+                                  "3",
+                                );
+                              }}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </section>
@@ -186,4 +244,4 @@ const ViewOffers = () => {
   );
 };
 
-export default ViewOffers;
+export default ViewCustomerChat;

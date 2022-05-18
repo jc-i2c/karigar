@@ -5,12 +5,15 @@ const auth = require("../middleware/auth");
 
 const {
   createChatReq,
+  checkStatus,
   changeStatus,
   getAllChatRequest,
   getAllCusChatRequest,
 } = require("../controller/C_chat_request");
 
 router.post("/create", auth, multipartMiddleware, createChatReq);
+
+router.post("/checkstatus", auth, multipartMiddleware, checkStatus);
 
 router.post("/changestatus", auth, multipartMiddleware, changeStatus);
 

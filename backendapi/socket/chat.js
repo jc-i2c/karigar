@@ -19,10 +19,6 @@ const createChatReq = async (data, req, res, next) => {
 
     if (getQryChat.length > 0) {
       console.log(`Chat request is already created.`);
-      // return res.send({
-      //   status: true,
-      //   message: `Chat request is already created.`,
-      // });
     } else {
       var chatRequest = new ChatRequest({
         customerid: customerid,
@@ -45,50 +41,77 @@ const createChatReq = async (data, req, res, next) => {
 };
 
 // Change chat request status API.
-const changeStatus = async (msgData, req, res, next) => {
+const changeStatus = async (getData) => {
   try {
     let data = {
-      chatrequestid: msgData.chatrequestid,
-      chatstatus: msgData.chatstatus,
+      chatrequestid: getData.chatreqid,
+      chatstatus: getData.status,
     };
 
-    // Joi validation.
-    let { error } = chatReqStatusVal(data);
-
-    if (error) {
-      let errorMsg = {};
-      error.details.map(async (error) => {
-        errorMsg = { ...errorMsg, [`${error.path}`]: error.message };
-      });
-
-      console.log(errorMsg, "errorMsg");
-      // return res.send({
-      //   status: false,
-      //   message: errorMsg,
-      // });
+    if (data.chatstatus == "3" || data.chatstatus == 3) {
+      // Delete chat request.
+      await ChatRequest.findByIdAndDelete(data.chatrequestid);
     } else {
-      const getQry = await ChatRequest.findById(data.chatrequestid);
+      // Joi validation.
+      let { error } = chatReqStatusVal(data);
 
-      if (getQry) {
-        if (data.chatstatus == 2 || data.chatstatus == 3) {
-          const result = await ChatRequest.findByIdAndUpdate(getQry._id, {
-            $set: { chatstatus: data.chatstatus },
-          });
-          if (result) {
-            console.log(`Chat request status changed.`);
-          } else {
-            console.log(`Chat request status not changed.`);
+      if (error) {
+        let errorMsg = {};
+        error.details.map(async (error) => {
+          errorMsg = { ...errorMsg, [`${error.path}`]: error.message };
+        });
+
+        console.log("Error validation");
+      } else {
+        const getQry = await ChatRequest.findById(data.chatrequestid);
+
+        if (getQry) {
+          if (getQry) {
+            const result = await ChatRequest.findByIdAndUpdate(
+              getQry._id,
+              {
+                $set: { chatstatus: data.chatstatus },
+              },
+              { new: true }
+            );
+
+            if (result) {
+              console.log("Chat request status changed.");
+              return result;
+            } else {
+              console.log("Chat request status not changed.");
+            }
           }
         } else {
-          console.log(`Chat request status is not valid.`);
+          console.log("Chat request not found into system.");
         }
-      } else {
-        console.log(`Chat request not found into system.`);
       }
     }
   } catch (error) {
-    throw new Error(error.message);
-    // console.log(error, "ERROR");
+    console.log(error, "ERROR");
+    // next(error);
+  }
+};
+
+// Check chat status accept or reject API.
+const checkStatus = async (chatRequestId) => {
+  try {
+    if (chatRequestId) {
+      let findStatus = await ChatRequest.findById(chatRequestId).select(
+        "chatstatus"
+      );
+
+      if (findStatus) {
+        // console.log(findStatus, "findStatus");
+        return findStatus;
+      } else {
+        console.log("Chat request not find");
+      }
+    } else {
+      console.log("Chat request Id is required");
+    }
+  } catch (error) {
+    console.log(error, "ERROR");
     // next(error);
   }
 };
@@ -399,6 +422,7 @@ const sendMessage = async (data, req, res, next) => {
 module.exports = {
   createChatReq,
   changeStatus,
+  checkStatus,
   getAllChatRequest,
   getAllCusChatRequest,
   getAllMessage,

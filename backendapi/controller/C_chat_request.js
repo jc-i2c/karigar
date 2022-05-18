@@ -8,15 +8,23 @@ const createChatReq = async (req, res, next) => {
   try {
     const { customerid, serviceprovid } = req.body;
 
-    const getQry = await ChatRequest.find().where({
+    const getQry1 = await ChatRequest.findOne().where({
       customerid: customerid,
       serviceprovid: serviceprovid,
     });
 
-    if (getQry.length > 0) {
+    const getQry2 = await ChatRequest.findOne().where({
+      customerid: serviceprovid,
+      serviceprovid: customerid,
+    });
+
+    let findData = getQry1 ? getQry1 : getQry2;
+
+    if (getQry1 || getQry2) {
       return res.send({
         status: true,
         message: `Chat request is already created.`,
+        data: findData,
       });
     } else {
       var chatRequest = new ChatRequest({
@@ -30,6 +38,7 @@ const createChatReq = async (req, res, next) => {
         return res.send({
           status: true,
           message: `Chat request created.`,
+          data: insertQry,
         });
       } else {
         return res.send({
@@ -37,6 +46,37 @@ const createChatReq = async (req, res, next) => {
           message: `Chat request not created.`,
         });
       }
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
+// Check chat status accept or reject API.
+const checkStatus = async (req, res, next) => {
+  try {
+    let chatRequestId = req.body.chatrequestid;
+    // let chatRequestId = requestId;
+    if (chatRequestId) {
+      let findStatus = await ChatRequest.findById(chatRequestId).select(
+        "chatstatus"
+      );
+
+      if (findStatus) {
+        return res.send({
+          status: true,
+          message: `Chat request find.`,
+          data: findStatus,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `Chat request not find.`,
+        });
+      }
+    } else {
+      console.log("Chat request Id is required");
     }
   } catch (error) {
     // console.log(error, "ERROR");
@@ -69,10 +109,11 @@ const changeStatus = async (req, res, next) => {
       const getQry = await ChatRequest.findById(data.chatrequestid);
 
       if (getQry) {
-        if (data.chatstatus == 2 || data.chatstatus == 3) {
+        if (getQry) {
           const result = await ChatRequest.findByIdAndUpdate(getQry._id, {
             $set: { chatstatus: data.chatstatus },
           });
+
           if (result) {
             return res.send({
               status: true,
@@ -84,11 +125,6 @@ const changeStatus = async (req, res, next) => {
               message: `Chat request status not changed.`,
             });
           }
-        } else {
-          return res.send({
-            status: false,
-            message: `Chat request status is not valid.`,
-          });
         }
       } else {
         return res.send({
@@ -211,6 +247,7 @@ const getAllCusChatRequest = async (req, res, next) => {
 
 module.exports = {
   createChatReq,
+  checkStatus,
   changeStatus,
   getAllChatRequest,
   getAllCusChatRequest,

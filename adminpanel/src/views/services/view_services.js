@@ -229,12 +229,9 @@ const ViewServices = () => {
                         variant="contained"
                         color="inherit"
                         onClick={() => {
-                          navigate(
-                            "/subservices",
-                            {
-                              state: { serviceid: item.serviceid },
-                            },
-                          );
+                          navigate("/subservices", {
+                            state: { serviceid: item.serviceid },
+                          });
                         }}
                       />
                     </CTableDataCell>

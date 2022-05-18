@@ -1,24 +1,20 @@
 const ChatRoom = require("../models/M_chat_room");
+let mongoose = require("mongoose");
 
 // Create chat room API.
 const createChatRoom = async (req, res, next) => {
   try {
     const { userid, otheruserid, chatrequestid } = req.body;
 
-    const getQry = await ChatRoom.find().where({
-      userid: userid,
-      otheruserid: otheruserid,
+    const findRoom = await ChatRoom.findOne().where({
+      chatrequestid: new mongoose.Types.ObjectId(chatrequestid),
     });
 
-    const getSecQry = await ChatRoom.find().where({
-      userid: otheruserid,
-      otheruserid: userid,
-    });
-
-    if (getQry.length > 0 || getSecQry.length > 0) {
+    if (findRoom) {
       return res.send({
         status: true,
         message: `Chat room is already created.`,
+        data: findRoom,
       });
     } else {
       var chatRoom = new ChatRoom({
@@ -33,6 +29,7 @@ const createChatRoom = async (req, res, next) => {
         return res.send({
           status: true,
           message: `Chat room created.`,
+          data: insertQry,
         });
       } else {
         return res.send({
