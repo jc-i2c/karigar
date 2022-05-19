@@ -8,14 +8,12 @@ const socket = io.connect(process.env.REACT_APP_APIURL);
 
 const ViewCustomerChat = () => {
   const token = localStorage.getItem("karigar_token");
-  const [chatClick, setChatClick] = useState(false);
+  const [roleName, setRoleName] = useState("");
 
   const [cutomerList, setCutomerList] = useState([]);
-
-  const [roleName, setRoleName] = useState("");
-  const [message, setMessage] = useState("");
-
+  const [getAllMessage, setGetAllMessage] = useState([]);
   const [customerDetails, setCustomerDetails] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     let unmounted = false;
@@ -69,10 +67,20 @@ const ViewCustomerChat = () => {
     };
   }, []);
 
-  // Send message.
-  function sendMessage() {
-    socket.emit("onChat", message);
-  }
+  useEffect(() => {
+    if (customerDetails.chatstatus == "2") {
+      let data = {};
+      data.chatrequestid = customerDetails.chatrequestid;
+      data.customerid = customerDetails.customerid;
+      data.serviceprovid = customerDetails.serviceprovid;
+
+      socket.emit("getMessage", data);
+
+      socket.on("getMessage", function (data) {
+        setGetAllMessage(data);
+      });
+    }
+  }, [customerDetails]);
 
   // Change status accept or reject.
   function changeStatus(chatreqid, status) {
@@ -83,17 +91,16 @@ const ViewCustomerChat = () => {
 
     socket.on("changestatus", function (data) {
       if (status == "3") {
-        let filterData = cutomerList.filter(
+        let updateData = cutomerList.filter(
           (item) => item.chatrequestid !== chatreqid,
         );
-        setCutomerList(filterData);
-        if (cutomerList.length == 0) {
-          setChatClick(false);
-        }
+        setCustomerDetails();
+        setCutomerList(updateData);
       } else {
         let updateData = cutomerList.map((list) => {
-          if (list.customerid == data.customerid) {
+          if (list.chatrequestid == chatreqid) {
             let newData = { ...list, chatstatus: data.chatstatus };
+            setCustomerDetails(newData);
             return newData;
           } else {
             return list;
@@ -102,6 +109,11 @@ const ViewCustomerChat = () => {
         setCutomerList(updateData);
       }
     });
+  }
+
+  // Send message
+  function sendMessage() {
+    console.log(customerDetails, "Hello");
   }
 
   return (
@@ -127,7 +139,6 @@ const ViewCustomerChat = () => {
                                 key={index}
                                 onClick={() => {
                                   setCustomerDetails(item);
-                                  setChatClick(true);
                                 }}
                               >
                                 <div className="pt-1">
@@ -146,40 +157,64 @@ const ViewCustomerChat = () => {
                   </div>
                 </div>
 
-                {chatClick && (
+                {customerDetails && (
                   <div className="col-md-6 col-lg-7 col-xl-8">
                     <div className="card">
-                      {cutomerList.map((item, index) => {
-                        return item.chatstatus == "2" ? (
-                          <ul className="list-unstyled" key={index}>
-                            {/* Customer chat load */}
-                            <li className="d-flex justify-content-start mb-1">
-                              <div className="card">
-                                <div className="d-flex p-1">
-                                  <div className="card-text">
-                                    <p>Hi, Hello, How are you?</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </li>
-                            <li className="d-flex justify-content-end mb-1">
-                              <div className="card bg-light">
-                                <div className="d-flex p-1">
-                                  <div className="card-text">
-                                    <p>Hi, I am fine you?</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </li>
+                      <div className="card-body">
+                        <h5 className="card-title">
+                          {customerDetails.customername}
+                        </h5>
+                        {customerDetails.chatstatus == "2" ? (
+                          <ul className="list-unstyled">
+                            {getAllMessage &&
+                              getAllMessage.map((msg, index) => {
+                                if (
+                                  msg.receiverid == customerDetails.customerid
+                                ) {
+                                  return (
+                                    <li
+                                      className="d-flex justify-content-start mb-1"
+                                      key={index}
+                                    >
+                                      <div className="card">
+                                        <div className="d-flex p-1">
+                                          <div className="card-text">
+                                            <p>
+                                              {msg.message +
+                                                " " +
+                                                msg.createdAt}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  );
+                                } else {
+                                  return (
+                                    <li
+                                      className="d-flex justify-content-end mb-1"
+                                      key={index}
+                                    >
+                                      <div className="card bg-light">
+                                        <div className="d-flex p-1">
+                                          <div className="card-text">
+                                            {msg.message + " " + msg.createdAt}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  );
+                                }
+                              })}
 
                             <li>
+                              <br />
                               <div className="form-outline">
                                 <textarea
                                   className="form-control"
                                   id="textAreaExample2"
                                   rows="2"
                                   onChange={(e) => {
-                                    setMessage("");
                                     setMessage(e.target.value);
                                   }}
                                 ></textarea>
@@ -197,12 +232,10 @@ const ViewCustomerChat = () => {
                             </li>
                           </ul>
                         ) : (
-                          <div className="card-body" key={index}>
-                            <h5 className="card-title">
-                              {customerDetails.customername}
-                            </h5>
+                          <div className="card-body">
                             <p className="card-text">
-                              have been sent you request!
+                              {customerDetails.customername} have been sent you
+                              request!
                             </p>
 
                             <button
@@ -230,8 +263,8 @@ const ViewCustomerChat = () => {
                               Reject
                             </button>
                           </div>
-                        );
-                      })}
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}

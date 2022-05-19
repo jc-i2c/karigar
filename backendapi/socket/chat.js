@@ -4,6 +4,7 @@ const Chat = require("../models/M_chat");
 var moment = require("moment");
 
 const { chatReqStatusVal, loginDataVal } = require("../helper/joivalidation");
+const { default: mongoose } = require("mongoose");
 
 // Create chat request API.
 const createChatReq = async (data, req, res, next) => {
@@ -419,6 +420,61 @@ const sendMessage = async (data, req, res, next) => {
   }
 };
 
+// Create chat room and get all old chat API.
+const createChatRoom = async (data) => {
+  try {
+    const { customerid, serviceprovid, chatrequestid } = data;
+
+    const findRoom = await ChatRoom.findOne().where({
+      chatrequestid: new mongoose.Types.ObjectId(chatrequestid),
+    });
+
+    if (findRoom) {
+      // console.log(findRoom, "findRoom");
+
+      const getQry = await Chat.find().where({
+        chatroomid: findRoom._id,
+      });
+
+      let newArray = [];
+      getQry.map((list) => {
+        let newObj = {};
+        newObj = list.toObject();
+
+        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        createDate = newObj.createdAt
+          .toISOString()
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        newObj.createdAt = moment(createDate).format("HH:MM");
+
+        newArray.push(newObj);
+      });
+
+      return newArray;
+    } else {
+      var chatRoom = new ChatRoom({
+        userid: customerid,
+        otheruserid: serviceprovid,
+        chatrequestid: chatrequestid,
+      });
+
+      const insertQry = await chatRoom.save();
+
+      if (insertQry) {
+        console.log(insertQry, "insertQry");
+        console.log("Chat room created.");
+      } else {
+        console.log("Chat room not created.");
+      }
+    }
+  } catch (error) {
+    console.log(error, "ERROR");
+    // next(error);
+  }
+};
+
 module.exports = {
   createChatReq,
   changeStatus,
@@ -427,4 +483,5 @@ module.exports = {
   getAllCusChatRequest,
   getAllMessage,
   sendMessage,
+  createChatRoom,
 };

@@ -4,8 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 const http = require("http");
-// .Server(app);
-// const io = require("socket.io")(http);
+
 require("dotenv").config();
 const port = process.env.API_PORT || 3031;
 
@@ -44,7 +43,11 @@ app.use(
 );
 
 // Socket database file include.
-const { sendMessage, checkStatus, changeStatus } = require("./socket/chat.js");
+const {
+  sendMessage,
+  changeStatus,
+  createChatRoom,
+} = require("./socket/chat.js");
 
 const server = http.createServer(app);
 const { Server } = require("socket.io");
@@ -71,11 +74,11 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Check chat and find room into database.
   try {
-    socket.on("checkstatus", async (chatReqId) => {
-      let resData = await checkStatus(chatReqId);
-      socket.emit("checkstatus", resData);
+    socket.on("getMessage", async (data) => {
+      let resData = await createChatRoom(data);
+
+      io.emit("getMessage", resData);
     });
   } catch (error) {
     socket.emit("error", error.message);

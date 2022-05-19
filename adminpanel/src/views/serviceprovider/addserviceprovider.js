@@ -181,7 +181,7 @@ const ServiceProvider = () => {
       setSubServicesId(location.state.subserviceid);
       setServicesId(location.state.servicesid);
       setPrice(location.state.price);
-      setTextBox(location.state.servicedetails);
+      setTextBox(location.state.servicedetails || []);
     }
   }, [location.state]);
 
