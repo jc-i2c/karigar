@@ -60,15 +60,16 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   // Save message.
-  socket.on("onChat", async (msg) => {
+  socket.on("onChat", async (getData) => {
     try {
       let data = {};
-      data.senderid = "62595ef9c2362694626aae6e";
-      data.receiverid = "625940c8b3e716196a5d4c70";
-      data.message = msg;
-      await sendMessage(data);
+      data.senderid = getData.senderid;
+      data.receiverid = getData.receiverid;
+      data.message = getData.message;
 
-      io.emit("emittest", msg);
+      let resData = await sendMessage(data);
+
+      io.emit("onChat", resData);
     } catch (error) {
       socket.emit("error", error.message);
     }
@@ -77,7 +78,6 @@ io.on("connection", (socket) => {
   try {
     socket.on("getMessage", async (data) => {
       let resData = await createChatRoom(data);
-
       io.emit("getMessage", resData);
     });
   } catch (error) {

@@ -255,7 +255,7 @@ const getAllMessage = async (data, req, res, next) => {
 };
 
 // Get all message based on room Id API.
-const sendMessage = async (data, req, res, next) => {
+const sendMessage = async (data) => {
   try {
     // Chat request code.
     let senderid = data.senderid;
@@ -295,23 +295,23 @@ const sendMessage = async (data, req, res, next) => {
 
             if (chatCraeteQry) {
               console.log(`New chat created.`);
-              // return res.send({
-              //   status: true,
-              //   message: `New chat created.`,
-              // });
+
+              let newObj = chatCraeteQry.toObject();
+
+              // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+              createDate = newObj.createdAt
+                .toISOString()
+                .replace(/T/, " ")
+                .replace(/\..+/, "");
+
+              newObj.createdAt = moment(createDate).format("HH:MM");
+
+              return newObj;
             } else {
               console.log(`Chat not created.`);
-              // return res.send({
-              //   status: false,
-              //   message: `New chat not created.`,
-              // });
             }
           } else {
             console.log(`Chat room is block.`);
-            // return res.send({
-            //   status: false,
-            //   message: `Chat room is block.`,
-            // });
           }
         } else {
           // Room code.
@@ -336,16 +336,20 @@ const sendMessage = async (data, req, res, next) => {
 
             if (chatCraeteQry) {
               console.log(`New chat created.`);
-              // return res.send({
-              //   status: true,
-              //   message: `New chat created.`,
-              // });
+
+              let newObj = chatCraeteQry.toObject();
+
+              // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+              createDate = newObj.createdAt
+                .toISOString()
+                .replace(/T/, " ")
+                .replace(/\..+/, "");
+
+              newObj.createdAt = moment(createDate).format("HH:MM");
+
+              return newObj;
             } else {
               console.log(`Chat not created.`);
-              // return res.send({
-              //   status: false,
-              //   message: `New chat not created.`,
-              // });
             }
           }
         }
@@ -353,19 +357,11 @@ const sendMessage = async (data, req, res, next) => {
         // Pending or reject status only show.
         if (chatReqData.chatstatus === 1 || chatReqData.chatstatus == 1) {
           console.log(`Your request is pending.`);
-          // return res.send({
-          //   status: true,
-          //   message: `Your request is pending.`,
-          // });
         } else if (
           chatReqData.chatstatus === 3 ||
           chatReqData.chatstatus == 3
         ) {
           console.log(`Your request is reject.`);
-          // return res.send({
-          //   status: true,
-          //   message: `Your request is reject.`,
-          // });
         }
       }
     } else {
@@ -399,23 +395,26 @@ const sendMessage = async (data, req, res, next) => {
 
           if (chatCraeteQry) {
             console.log(`New chat created.`);
-            // return res.send({
-            //   status: true,
-            //   message: `New chat created.`,
-            // });
+
+            let newObj = chatCraeteQry.toObject();
+
+            // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+            createDate = newObj.createdAt
+              .toISOString()
+              .replace(/T/, " ")
+              .replace(/\..+/, "");
+
+            newObj.createdAt = moment(createDate).format("HH:MM");
+
+            return newObj;
           } else {
             console.log(`Chat not created.`);
-            // return res.send({
-            //   status: false,
-            //   message: `New chat not created.`,
-            // });
           }
         }
       }
     }
   } catch (error) {
-    throw new Error(error.message);
-    // console.log(error, "ERROR");
+    console.log(error, "ERROR");
     // next(error);
   }
 };

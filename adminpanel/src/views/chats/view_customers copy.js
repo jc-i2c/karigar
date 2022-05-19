@@ -68,19 +68,18 @@ const ViewCustomerChat = () => {
   }, []);
 
   useEffect(() => {
-    if (customerDetails) {
-      if (customerDetails.chatstatus == "2") {
-        let data = {};
-        data.chatrequestid = customerDetails.chatrequestid;
-        data.customerid = customerDetails.customerid;
-        data.serviceprovid = customerDetails.serviceprovid;
+    if (customerDetails.chatstatus == "2") {
+      let data = {};
+      data.chatrequestid = customerDetails.chatrequestid;
+      data.customerid = customerDetails.customerid;
+      data.serviceprovid = customerDetails.serviceprovid;
 
-        socket.emit("getMessage", data);
+      socket.emit("getMessage", data);
 
-        socket.on("getMessage", function (data) {
-          setGetAllMessage(data);
-        });
-      }
+      socket.on("getMessage", function (data) {
+        console.log(data, "getMessage");
+        setGetAllMessage(data);
+      });
     }
   }, [customerDetails]);
 
@@ -148,15 +147,9 @@ const ViewCustomerChat = () => {
                           cutomerList.map((item, index) => {
                             return (
                               <li
-                                className={
-                                  item.customerid ===
-                                    customerDetails.customerid &&
-                                  "p-1 border-bottom bg-light"
-                                }
+                                className="p-1 border-bottom bg-light"
                                 key={index}
                                 onClick={() => {
-                                  setGetAllMessage("");
-                                  setCustomerDetails("");
                                   setCustomerDetails(item);
                                 }}
                               >
@@ -179,106 +172,112 @@ const ViewCustomerChat = () => {
                 {customerDetails && (
                   <div className="col-md-6 col-lg-7 col-xl-8">
                     <div className="card">
-                      <div className="card-header bg-light">
+                      <div className="card-body">
                         <h5 className="card-title">
                           {customerDetails.customername}
                         </h5>
-                      </div>
-                      {customerDetails.chatstatus == "2" ? (
-                        <ul className="list-unstyled">
-                          {getAllMessage &&
-                            getAllMessage.map((msg, index) => {
-                              if (
-                                msg.receiverid == customerDetails.customerid
-                              ) {
-                                return (
-                                  <li
-                                    className="d-flex justify-content-end mb-1"
-                                    key={index}
-                                  >
-                                    <div className="card bg-light">
-                                      <div className="d-flex p-1">
-                                        <div className="card-text">
-                                          <p>
+                        {customerDetails.chatstatus == "2" ? (
+                          <ul className="list-unstyled">
+                            {getAllMessage &&
+                              getAllMessage.map((msg, index) => {
+                                if (
+                                  msg.receiverid == customerDetails.customerid
+                                ) {
+                                  return (
+                                    <li
+                                      className="d-flex justify-content-end mb-1"
+                                      key={index}
+                                    >
+                                      <div className="card bg-light">
+                                        <div className="d-flex p-1">
+                                          <div className="card-text">
+                                            <p>
+                                              {msg.message +
+                                                " " +
+                                                msg.createdAt}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </li>
+                                  );
+                                } else {
+                                  return (
+                                    <li
+                                      className="d-flex justify-content-start mb-1"
+                                      key={index}
+                                    >
+                                      <div className="card">
+                                        <div className="d-flex p-1">
+                                          <div className="card-text">
                                             {msg.message + " " + msg.createdAt}
-                                          </p>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </li>
-                                );
-                              } else {
-                                return (
-                                  <li
-                                    className="d-flex justify-content-start mb-1"
-                                    key={index}
-                                  >
-                                    <div className="card">
-                                      <div className="d-flex p-1">
-                                        <div className="card-text">
-                                          {msg.message + " " + msg.createdAt}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </li>
-                                );
-                              }
-                            })}
+                                    </li>
+                                  );
+                                }
+                              })}
 
-                          <li>
-                            <br />
-                            <div className="form-outline">
-                              <textarea
-                                placeholder="Type message"
-                                className="form-control"
-                                id="textAreaExample2"
-                                rows="2"
-                                value={typeMessage ? typeMessage : ""}
-                                onChange={(e) => {
-                                  setTypeMessage(e.target.value);
+                            <li>
+                              <br />
+                              <div className="form-outline">
+                                <textarea
+                                  placeholder="Type message"
+                                  className="form-control"
+                                  id="textAreaExample2"
+                                  rows="2"
+                                  onChange={(e) => {
+                                    setTypeMessage(e.target.value);
+                                  }}
+                                />
+                              </div>
+                              <br />
+                              <button
+                                type="button"
+                                className="btn btn-info btn-rounded float-end"
+                                onClick={() => {
+                                  sendMessage();
                                 }}
-                              />
-                            </div>
-                            <br />
+                              >
+                                Send
+                              </button>
+                            </li>
+                          </ul>
+                        ) : (
+                          <div className="card-body">
+                            <p className="card-text">
+                              {customerDetails.customername} have been sent you
+                              request!
+                            </p>
+
                             <button
                               type="button"
-                              className="btn btn-info btn-rounded float-end"
+                              className="btn btn-outline-primary"
                               onClick={() => {
-                                setTypeMessage("");
-                                sendMessage();
+                                changeStatus(
+                                  customerDetails.chatrequestid,
+                                  "2",
+                                );
                               }}
                             >
-                              Send
+                              Accept
                             </button>
-                          </li>
-                        </ul>
-                      ) : (
-                        <div className="card-body">
-                          <p className="card-text">
-                            {customerDetails.customername} have been sent you
-                            request!
-                          </p>
-
-                          <button
-                            type="button"
-                            className="btn btn-outline-primary"
-                            onClick={() => {
-                              changeStatus(customerDetails.chatrequestid, "2");
-                            }}
-                          >
-                            Accept
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-outline-danger"
-                            onClick={() => {
-                              changeStatus(customerDetails.chatrequestid, "3");
-                            }}
-                          >
-                            Reject
-                          </button>
-                        </div>
-                      )}
+                            <button
+                              type="button"
+                              className="btn btn-outline-danger"
+                              onClick={() => {
+                                changeStatus(
+                                  customerDetails.chatrequestid,
+                                  "3",
+                                );
+                              }}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
