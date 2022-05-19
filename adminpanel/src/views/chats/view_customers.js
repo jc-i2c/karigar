@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import { CCard, CCardHeader, CCol, CRow, CButton } from "@coreui/react";
+import {
+  CCard,
+  CCardHeader,
+  CCol,
+  CRow,
+  CButton,
+  CDropdown,
+  CDropdownToggle,
+  CDropdownMenu,
+  CDropdownItem,
+} from "@coreui/react";
+
+import { cilMenu } from "@coreui/icons";
+import CIcon from "@coreui/icons-react";
 
 import io from "socket.io-client";
 const socket = io.connect(process.env.REACT_APP_APIURL);
@@ -140,7 +153,7 @@ const ViewCustomerChat = () => {
           <section>
             <div className="container py-1">
               <div className="row">
-                <div className="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
+                <div className="col-md-6 col-lg-5 col-xl-4 mb-md-0">
                   <div className="card">
                     <div className="card-body">
                       <ul className="list-unstyled mb-0">
@@ -148,11 +161,11 @@ const ViewCustomerChat = () => {
                           cutomerList.map((item, index) => {
                             return (
                               <li
-                                className={
-                                  item.customerid ===
-                                    customerDetails.customerid &&
-                                  "p-1 border-bottom bg-light"
-                                }
+                                className={`${
+                                  item.customerid === customerDetails.customerid
+                                    ? "p-1 border-bottom bg-light"
+                                    : "p-1 border-bottom"
+                                }`}
                                 key={index}
                                 onClick={() => {
                                   setGetAllMessage("");
@@ -160,14 +173,12 @@ const ViewCustomerChat = () => {
                                   setCustomerDetails(item);
                                 }}
                               >
-                                <div className="pt-1">
-                                  <p className="fw-bold mb-2">
-                                    {item.customername}
-                                  </p>
-                                  <p className="small text">
-                                    Hello, Are you there?
-                                  </p>
-                                </div>
+                                <p className="fw-bold mb-0">
+                                  {item.customername}
+                                </p>
+                                <p className="small text mb-1">
+                                  Hello, Are you there?
+                                </p>
                               </li>
                             );
                           })}
@@ -179,10 +190,10 @@ const ViewCustomerChat = () => {
                 {customerDetails && (
                   <div className="col-md-6 col-lg-7 col-xl-8">
                     <div className="card">
-                      <div className="card-header bg-light">
-                        <h5 className="card-title">
-                          {customerDetails.customername}
-                        </h5>
+                      <div className="card-title">
+                        <div className="card-header bg-light d-flex justify-content-between align-items-center">
+                          <h5>{customerDetails.customername}</h5>
+                        </div>
                       </div>
                       {customerDetails.chatstatus == "2" ? (
                         <ul className="list-unstyled">
@@ -197,9 +208,9 @@ const ViewCustomerChat = () => {
                                     key={index}
                                   >
                                     <div className="card bg-light">
-                                      <div className="d-flex p-1">
+                                      <div className="d-flex">
                                         <div className="card-text">
-                                          <p>
+                                          <p className="p-1 mb-0">
                                             {msg.message + " " + msg.createdAt}
                                           </p>
                                         </div>
@@ -214,9 +225,11 @@ const ViewCustomerChat = () => {
                                     key={index}
                                   >
                                     <div className="card">
-                                      <div className="d-flex p-1">
+                                      <div className="d-flex">
                                         <div className="card-text">
-                                          {msg.message + " " + msg.createdAt}
+                                          <p className="p-1 mb-0">
+                                            {msg.message + " " + msg.createdAt}
+                                          </p>
                                         </div>
                                       </div>
                                     </div>
@@ -240,16 +253,19 @@ const ViewCustomerChat = () => {
                               />
                             </div>
                             <br />
-                            <button
-                              type="button"
-                              className="btn btn-info btn-rounded float-end"
-                              onClick={() => {
-                                setTypeMessage("");
-                                sendMessage();
-                              }}
-                            >
-                              Send
-                            </button>
+                            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                              <button
+                                type="button"
+                                className="btn btn-outline-primary"
+                                disabled={!typeMessage}
+                                onClick={() => {
+                                  setTypeMessage("");
+                                  sendMessage();
+                                }}
+                              >
+                                Send
+                              </button>
+                            </div>
                           </li>
                         </ul>
                       ) : (
