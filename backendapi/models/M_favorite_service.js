@@ -17,10 +17,9 @@ const favoriteServiceSchema = new mongoose.Schema(
       enum: [true, false],
       default: false, // true-favorite, false-Unfavorite
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 favoriteServiceSchema.methods.toJSON = function () {

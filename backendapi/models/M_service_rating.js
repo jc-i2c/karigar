@@ -26,10 +26,9 @@ const ServiceRatingSchema = new mongoose.Schema(
       type: String,
       required: [true, "Rate description is required."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 ServiceRatingSchema.methods.toJSON = function () {

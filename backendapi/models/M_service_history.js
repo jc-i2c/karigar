@@ -46,10 +46,9 @@ const ServiceHistorySchema = new mongoose.Schema(
       default: false, // true-Completed, false-Pending
       required: [true, "Payment status is required."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 ServiceHistorySchema.servicedate;

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,8 +20,6 @@ import {
 } from "@coreui/react";
 
 const ViewServices = () => {
-  const navigate = useNavigate();
-
   const token = localStorage.getItem("karigar_token");
   const [offers, setOffers] = useState([]);
 
@@ -66,8 +63,7 @@ const ViewServices = () => {
               customername: record.customerid.name,
               addresstype: record.addresstype,
               servicedate: record.servicedate,
-              sessiontype: record.servicetime.sessiontype,
-              sessiontime: record.servicetime.sessiontime,
+              sessiontime: record.sessiontime,
               servicestatus: record.servicestatus,
               paymentstatus: record.paymentstatus,
               createdAt: record.createdAt,
@@ -90,6 +86,7 @@ const ViewServices = () => {
           const records = [];
 
           data.data.data.map((record) => {
+            console.log(record, "record");
             records.push({
               servicehistoryid: record._id,
               name: record.name,
@@ -97,8 +94,7 @@ const ViewServices = () => {
               customername: record.customerid.name,
               addresstype: record.addresstype,
               servicedate: record.servicedate,
-              sessiontype: record.servicetime.sessiontype,
-              sessiontime: record.servicetime.sessiontime,
+              sessiontime: record.sessiontime,
               servicestatus: record.servicestatus,
               paymentstatus: record.paymentstatus,
               createdAt: record.createdAt,
@@ -214,20 +210,10 @@ const ViewServices = () => {
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>
-                        {item.sessiontype == 1
-                          ? "Morning"
-                          : item.sessiontype == 2
-                          ? "Afternoon"
-                          : ""}
-                        <br />
-                        {item.sessiontime}
-                      </div>
-                    </CTableDataCell>
-
-                    <CTableDataCell>
                       <div>{item.servicedate}</div>
                     </CTableDataCell>
+
+                    <CTableDataCell>{item.sessiontime}</CTableDataCell>
 
                     <CTableDataCell>
                       <CFormSelect

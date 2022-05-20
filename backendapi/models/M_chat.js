@@ -27,10 +27,9 @@ const chatSchema = new mongoose.Schema(
       default: false, // true-Seen, false-Unseen
       required: [true, "Message read status is required."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 chatSchema.methods.toJSON = function () {

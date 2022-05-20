@@ -12,10 +12,9 @@ const termsConditionSchema = new mongoose.Schema(
       required: [true, "Terms condition description is required."],
       unique: [true, "Terms condition description is must be unique."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 termsConditionSchema.methods.toJSON = function () {

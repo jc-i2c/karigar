@@ -185,24 +185,24 @@ const userLogin = async (req, res, next) => {
                 userData.gender = "female";
               }
 
-              // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+              // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
               createDate = userData.createdAt
                 .toISOString()
                 .replace(/T/, " ")
                 .replace(/\..+/, "");
 
               userData.createdAt = moment(createDate).format(
-                "DD-MM-YYYY SS:MM:HH"
+                "DD-MM-YYYY HH:MM:SS"
               );
 
-              // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+              // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
               updateDate = userData.updatedAt
                 .toISOString()
                 .replace(/T/, " ")
                 .replace(/\..+/, "");
 
               userData.updatedAt = moment(updateDate).format(
-                "DD-MM-YYYY SS:MM:HH"
+                "DD-MM-YYYY HH:MM:SS"
               );
 
               delete userData.status;
@@ -646,21 +646,21 @@ const profileDetails = async (req, res, next) => {
         data.isactive = "no";
       }
 
-      // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+      // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
       createDate = data.createdAt
         .toISOString()
         .replace(/T/, " ")
         .replace(/\..+/, "");
 
-      data.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+      data.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-      // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+      // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
       updateDate = data.updatedAt
         .toISOString()
         .replace(/T/, " ")
         .replace(/\..+/, "");
 
-      data.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+      data.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
 
       delete data.password; // delete data["password"]
       delete data.otp; // delete data["otp"]
@@ -701,21 +701,21 @@ const getAllUsers = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = resData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
 
         delete resData.password; // delete resData["password"]
         delete resData.otp; // delete resData["otp"]
@@ -873,21 +873,21 @@ const getAllCustomer = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = resData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
 
         delete resData.password; // delete resData["password"]
         delete resData.otp; // delete resData["otp"]
@@ -926,21 +926,21 @@ const getAllServiceProvider = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = resData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
 
         delete resData.password; // delete resData["password"]
         delete resData.otp; // delete resData["otp"]

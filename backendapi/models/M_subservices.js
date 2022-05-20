@@ -14,10 +14,9 @@ const SubServicesSchema = new mongoose.Schema(
       ref: "services",
       required: [true, "Service Id is required."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 SubServicesSchema.methods.toJSON = function () {

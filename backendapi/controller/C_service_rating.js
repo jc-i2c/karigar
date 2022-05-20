@@ -207,8 +207,6 @@ const countRate = async (req, res, next) => {
 
       averageRate = averageRate / totalCnt;
 
-      console.log(averageRate, "averageRate");
-
       if (countRate > 0 && countRate > -1) {
         return res.send({
           status: true,
@@ -257,21 +255,21 @@ const getAll = async (req, res, next) => {
 
         delete resData.__v; // delete person["__v"]
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = resData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
 
         findData.push(resData);
       });
@@ -320,21 +318,21 @@ const getServiceRating = async (req, res, next) => {
         if (checkId === serviceProviderId) {
           delete resData.__v; // delete person["__v"]
 
-          // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           createDate = resData.createdAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-          // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           updateDate = resData.updatedAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+          resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
 
           findData.push(resData);
         }

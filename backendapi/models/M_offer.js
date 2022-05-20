@@ -25,10 +25,9 @@ const OfferSchema = new mongoose.Schema(
       enum: [true, false],
       default: true, // true-Offer_Active, false-Offer_Deactive
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 OfferSchema.methods.toJSON = function () {

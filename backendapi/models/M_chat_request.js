@@ -18,10 +18,9 @@ const chatRequestSchema = new mongoose.Schema(
       default: 1, // 1-Pending, 2-Accept, 3-Reject
       required: [true, "Chat status is required."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 chatRequestSchema.methods.toJSON = function () {

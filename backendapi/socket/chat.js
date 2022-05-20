@@ -145,13 +145,13 @@ const getAllChatRequest = async (data) => {
           resData.chatstatus = "Reject";
         }
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
         findData.push(resData);
       });
@@ -203,13 +203,13 @@ const getAllCusChatRequest = async (data) => {
           resData.chatstatus = "Reject";
         }
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
         findData.push(resData);
       });
@@ -298,7 +298,7 @@ const sendMessage = async (data) => {
 
               let newObj = chatCraeteQry.toObject();
 
-              // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+              // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
               createDate = newObj.createdAt
                 .toISOString()
                 .replace(/T/, " ")
@@ -339,7 +339,7 @@ const sendMessage = async (data) => {
 
               let newObj = chatCraeteQry.toObject();
 
-              // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+              // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
               createDate = newObj.createdAt
                 .toISOString()
                 .replace(/T/, " ")
@@ -398,7 +398,7 @@ const sendMessage = async (data) => {
 
             let newObj = chatCraeteQry.toObject();
 
-            // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+            // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
             createDate = newObj.createdAt
               .toISOString()
               .replace(/T/, " ")
@@ -440,7 +440,7 @@ const createChatRoom = async (data) => {
         let newObj = {};
         newObj = list.toObject();
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = newObj.createdAt
           .toISOString()
           .replace(/T/, " ")

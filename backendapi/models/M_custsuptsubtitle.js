@@ -17,10 +17,9 @@ const custSupSubTitleSchema = new mongoose.Schema(
       required: [true, "Customer support description is required."],
       unique: [true, "Customer support description is must be unique."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 custSupSubTitleSchema.methods.toJSON = function () {

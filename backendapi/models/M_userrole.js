@@ -20,10 +20,9 @@ const UserroleSchema = new mongoose.Schema(
         required: [true, "System modules Id is required."],
       },
     ],
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 UserroleSchema.methods.toJSON = function () {

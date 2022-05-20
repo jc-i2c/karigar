@@ -7,10 +7,9 @@ const privacyPolicySchema = new mongoose.Schema(
       required: [true, "Privacy policy description is required."],
       unique: [true, "Privacy policy description is must be unique."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 privacyPolicySchema.methods.toJSON = function () {

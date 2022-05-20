@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Serviceprovider = require("../models/M_serviceprovider");
 const Subservices = require("../models/M_subservices");
 const Offer = require("../models/M_offer");
+const ServiceHistory = require("../models/M_service_history");
+const ServiceRating = require("../models/M_service_rating");
 var moment = require("moment");
 
 const { createSerProVal, editSerProVal } = require("../helper/joivalidation");
@@ -250,6 +252,7 @@ const getSingleProvider = async (req, res, next) => {
       if (getQry) {
         getQry = getQry.toJSON();
 
+        // Find offers API.
         let findOffer = await Offer.findOne()
           .where({
             serviceproviderid: getQry._id,
@@ -264,6 +267,43 @@ const getSingleProvider = async (req, res, next) => {
         } else {
           getQry.currentprice = getQry.price;
           delete getQry.price;
+        }
+
+        // Count jobs based on service provider API.
+        let countjob = await ServiceHistory.find()
+          .where({ serviceproviderid: servicesProviderId })
+          .count();
+
+        if (countjob.length > 0) {
+          getQry.countjob = countjob;
+        } else {
+          getQry.countjob = 0;
+        }
+
+        // Count service provider rate count and average find API.
+        const countRate = await ServiceRating.find()
+          .where({
+            serviceproviderid: servicesProviderId,
+          })
+          .select("rate");
+
+        if (countRate.length > 0) {
+          let averageRate = 0;
+          let totalCnt = countRate.length;
+
+          countRate.forEach((rate) => {
+            averageRate = averageRate + rate.rate;
+          });
+
+          averageRate = averageRate / totalCnt;
+
+          if (countRate > 0 && countRate > -1) {
+            getQry.totalrate = countRate.length;
+            getQry.averagerate = countRate.averageRate;
+          } else {
+            getQry.length = 0;
+            getQry.averageRate = 0;
+          }
         }
 
         return res.send({
@@ -600,24 +640,24 @@ const getServiceList = async (req, res, next) => {
         getQry.map((list) => {
           resData = list.toObject();
 
-          // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           createDate = resData.subserviceid.servicesid.createdAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
           resData.subserviceid.servicesid.createdAt = moment(createDate).format(
-            "DD-MM-YYYY SS:MM:HH"
+            "DD-MM-YYYY HH:MM:SS"
           );
 
-          // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           updateDate = resData.subserviceid.servicesid.updatedAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
           resData.subserviceid.servicesid.updatedAt = moment(updateDate).format(
-            "DD-MM-YYYY SS:MM:HH"
+            "DD-MM-YYYY HH:MM:SS"
           );
 
           findData.push(resData);
@@ -672,21 +712,21 @@ const getSubServiceList = async (req, res, next) => {
         finalResult = finalResult.map((chnageDate) => {
           let newObj = chnageDate.toObject();
 
-          // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           createDate = newObj.createdAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          newObj.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+          newObj.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-          // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           updateDate = newObj.updatedAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          newObj.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+          newObj.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
           delete newObj["__v"];
 
           return newObj;

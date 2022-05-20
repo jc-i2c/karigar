@@ -23,10 +23,9 @@ const chatRoomSchema = new mongoose.Schema(
       default: true, // true-Active, false-Deactive
       required: [true, "Chat active or deactive status is required."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 chatRoomSchema.methods.toJSON = function () {

@@ -76,21 +76,21 @@ const getAllServices = async (req, res, next) => {
       getQry.forEach((data) => {
         resData = data.toObject();
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = resData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
 
         delete resData.__v;
 
@@ -224,6 +224,7 @@ const deleteServices = async (req, res, next) => {
 // Edit services API.
 const editServices = async (req, res, next) => {
   try {
+    console.log(moment(new Date()).format("DD-MM-YYYY HH:MM:SS"), "SECOND");
     let data = {
       servicesid: req.body.servicesid,
       servicename: req.body.servicename,
@@ -317,21 +318,21 @@ const topFiveServices = async (req, res, next) => {
 
         delete resData.__v; // delete person["__v"]
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = resData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
 
         findData.push(resData);
       });

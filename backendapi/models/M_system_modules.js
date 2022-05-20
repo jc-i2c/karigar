@@ -9,10 +9,9 @@ const systemModulesSchema = new mongoose.Schema(
       required: [true, "Modules name is required."],
       lowercase: [true, "Lower case only accept."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 systemModulesSchema.methods.toJSON = function () {

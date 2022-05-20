@@ -16,10 +16,9 @@ const BannerSchema = new mongoose.Schema(
       type: String,
       required: [true, "Banner image is required."],
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 BannerSchema.methods.toJSON = function () {

@@ -35,10 +35,9 @@ const ServiceProviderSchema = new mongoose.Schema(
       enum: [true, false],
       default: true, // true-Active, false-Deactive
     },
+    createdAt: { type: Date, default: Date.now() },
+    updatedAt: { type: Date, default: Date.now() },
   },
-  {
-    timestamps: true,
-  }
 );
 
 ServiceProviderSchema.methods.toJSON = function () {

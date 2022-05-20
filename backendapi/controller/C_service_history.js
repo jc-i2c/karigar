@@ -99,21 +99,21 @@ const getAllServiceHistory = async (req, res, next) => {
         var serviceDate = resData.servicedate.toISOString().slice(0, 10);
         resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = resData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
 
         findData.push(resData);
       });
@@ -179,20 +179,20 @@ const getSingleServiceHistory = async (req, res, next) => {
           resData.paymentstatus = "Pending";
         }
 
-        // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // Servicedate date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         var serviceDate = resData.servicedate
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
-        resData.servicedate = moment(serviceDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.servicedate = moment(serviceDate).format("DD-MM-YYYY HH:MM:SS");
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
         return res.send({
           status: true,
@@ -397,22 +397,22 @@ const getServiceSerProvider = async (req, res, next) => {
             resData.paymentstatus = "Pending";
           }
 
-          // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // Servicedate date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           var serviceDate = resData.servicedate
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
           resData.servicedate = moment(serviceDate).format(
-            "DD-MM-YYYY SS:MM:HH"
+            "DD-MM-YYYY HH:MM:SS"
           );
 
-          // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           createDate = resData.createdAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
           findData.push(resData);
         });
@@ -545,22 +545,22 @@ const customerBookService = async (req, res, next) => {
             resData.paymentstatus = "Pending";
           }
 
-          // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // Servicedate date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           var serviceDate = resData.servicedate
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
           resData.servicedate = moment(serviceDate).format(
-            "DD-MM-YYYY SS:MM:HH"
+            "DD-MM-YYYY HH:MM:SS"
           );
 
-          // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           createDate = resData.createdAt
             .toISOString()
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          resData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
           findData.push(resData);
         });
@@ -766,11 +766,9 @@ const countJob = async (req, res, next) => {
 // Get service history based on service provider TOKEN API.
 const getSerProHistoty = async (req, res, next) => {
   try {
-    let serProviderId = req.userid;
+    let serProviderId = new mongoose.Types.ObjectId(req.userid);
 
-    serProviderId = mongoose.Types.ObjectId(serProviderId);
-
-    if (mongoose.isValidObjectId(serProviderId)) {
+    if (serProviderId) {
       const getQry = await ServiceHistory.find()
         .populate({
           path: "serviceproviderid",
@@ -802,24 +800,24 @@ const getSerProHistoty = async (req, res, next) => {
             var serviceDate = resData.servicedate.toISOString().slice(0, 10);
             resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
 
-            // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+            // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
             createDate = resData.createdAt
               .toISOString()
               .replace(/T/, " ")
               .replace(/\..+/, "");
 
             resData.createdAt = moment(createDate).format(
-              "DD-MM-YYYY SS:MM:HH"
+              "DD-MM-YYYY HH:MM:SS"
             );
 
-            // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+            // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
             updateDate = resData.updatedAt
               .toISOString()
               .replace(/T/, " ")
               .replace(/\..+/, "");
 
             resData.updatedAt = moment(updateDate).format(
-              "DD-MM-YYYY SS:MM:HH"
+              "DD-MM-YYYY HH:MM:SS"
             );
 
             findData.push(resData);
@@ -840,7 +838,7 @@ const getSerProHistoty = async (req, res, next) => {
     } else {
       return res.send({
         status: false,
-        message: `Service history ID is not valid.`,
+        message: `ID is required.`,
       });
     }
   } catch (error) {
@@ -860,7 +858,7 @@ const Upcoming = async (req, res, next) => {
         .select("servicedate sessiontime")
         .where({
           customerid: customerId,
-          servicestatus: { $in: [0, 1, 2] },
+          servicestatus: { $in: [0, 1, 2, 3] },
         })
         .populate({
           path: "serviceproviderid",
@@ -877,7 +875,7 @@ const Upcoming = async (req, res, next) => {
         getQry.forEach((data) => {
           resData = data.toObject();
 
-          // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // Servicedate date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           var serviceDate = resData.servicedate
             .toISOString()
             .replace(/T/, " ")
@@ -939,7 +937,7 @@ const History = async (req, res, next) => {
         getQry.forEach((data) => {
           resData = data.toObject();
 
-          // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          // Servicedate date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           var serviceDate = resData.servicedate
             .toISOString()
             .replace(/T/, " ")

@@ -44,21 +44,21 @@ const getModules = async (req, res, next) => {
         let objectData = {};
         objectData = item.toObject();
 
-        // createdAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = objectData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        objectData.createdAt = moment(createDate).format("DD-MM-YYYY SS:MM:HH");
+        objectData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-        // updatedAt date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+        // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = objectData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        objectData.updatedAt = moment(updateDate).format("DD-MM-YYYY SS:MM:HH");
+        objectData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
 
         delete objectData.__v; // delete objectData["__v"]
 
