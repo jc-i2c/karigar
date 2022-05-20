@@ -301,8 +301,8 @@ const getSingleProvider = async (req, res, next) => {
             getQry.totalrate = countRate.length;
             getQry.averagerate = countRate.averageRate;
           } else {
-            getQry.length = 0;
-            getQry.averageRate = 0;
+            getQry.totalrate = 0;
+            getQry.averagerate = 0;
           }
         }
 
