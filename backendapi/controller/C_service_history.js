@@ -1,7 +1,6 @@
 var moment = require("moment");
 const mongoose = require("mongoose");
 const ServiceHistory = require("../models/M_service_history");
-const Serviceprovider = require("../models/M_serviceprovider");
 
 const {
   createServiceHisVal,
@@ -10,7 +9,7 @@ const {
 } = require("../helper/joivalidation");
 
 // Create new service history API.
-const createServicehistory = async (req, res, next) => {
+const createServiceHistory = async (req, res, next) => {
   try {
     let data = {
       serviceproviderid: req.body.serviceproviderid,
@@ -19,7 +18,6 @@ const createServicehistory = async (req, res, next) => {
       address: req.body.address,
       name: req.body.name,
       servicedate: req.body.servicedate,
-      sessiontype: req.body.sessiontype,
       sessiontime: req.body.sessiontime,
       servicestatus: req.body.servicestatus,
     };
@@ -38,11 +36,6 @@ const createServicehistory = async (req, res, next) => {
         message: errorMsg,
       });
     } else {
-      let servicetime = {
-        sessiontype: data.sessiontype,
-        sessiontime: data.sessiontime,
-      };
-
       let createServiceHistory = new ServiceHistory({
         serviceproviderid: data.serviceproviderid,
         customerid: data.customerid,
@@ -50,7 +43,7 @@ const createServicehistory = async (req, res, next) => {
         address: data.address,
         name: data.name,
         servicedate: data.servicedate,
-        servicetime: servicetime,
+        sessiontime: data.sessiontime,
         servicestatus: data.servicestatus,
       });
 
@@ -75,7 +68,7 @@ const createServicehistory = async (req, res, next) => {
 };
 
 // Get all service history API.
-const getAllServicehistory = async (req, res, next) => {
+const getAllServiceHistory = async (req, res, next) => {
   try {
     let getQry = await ServiceHistory.find()
       .populate({
@@ -143,7 +136,7 @@ const getAllServicehistory = async (req, res, next) => {
 };
 
 // Get single service history API.
-const getSingleServicehistory = async (req, res, next) => {
+const getSingleServiceHistory = async (req, res, next) => {
   try {
     const serviceHistoryId = req.body.servicehistoryid;
 
@@ -156,13 +149,6 @@ const getSingleServicehistory = async (req, res, next) => {
 
         delete resData.updatedAt; // delete person["updatedAt"]
         delete resData.__v; // delete person["__v"]
-
-        // Set time morning or afternoon.
-        if (resData.servicetime.sessiontype == 1) {
-          resData.servicetime.sessiontype = "Morning";
-        } else if (resData.servicetime.sessiontype == 2) {
-          resData.servicetime.sessiontype = "Afternoon";
-        }
 
         // Set address type.
         if (resData.addresstype == 1) {
@@ -232,7 +218,7 @@ const getSingleServicehistory = async (req, res, next) => {
 };
 
 // Delete single service history API.
-const deleteServicehistory = async (req, res, next) => {
+const deleteServiceHistory = async (req, res, next) => {
   try {
     const serviceHistoryId = req.body.servicehistoryid;
 
@@ -290,7 +276,7 @@ const deleteServicehistory = async (req, res, next) => {
 };
 
 // Edit service history API.
-const editServicehistory = async (req, res, next) => {
+const editServiceHistory = async (req, res, next) => {
   try {
     let data = {
       servicehistoryid: req.body.servicehistoryid,
@@ -299,13 +285,7 @@ const editServicehistory = async (req, res, next) => {
       address: req.body.address,
       name: req.body.name,
       servicedate: req.body.servicedate,
-      sessiontype: req.body.sessiontype,
       sessiontime: req.body.sessiontime,
-    };
-
-    let servicetime = {
-      sessiontype: data.sessiontype,
-      sessiontime: data.sessiontime,
     };
 
     if (!data.servicehistoryid) {
@@ -337,7 +317,7 @@ const editServicehistory = async (req, res, next) => {
           address: data.address,
           name: data.name,
           servicedate: data.servicedate,
-          servicetime: servicetime,
+          sessiontime: data.sessiontime,
         };
 
         let updateQry = await ServiceHistory.findByIdAndUpdate(findQry._id, {
@@ -387,13 +367,6 @@ const getServiceSerProvider = async (req, res, next) => {
           resData = data.toObject();
 
           delete resData.__v; // delete person["__v"]
-
-          // Set time morning or afternoon.
-          if (resData.servicetime.sessiontype == 1) {
-            resData.servicetime.sessiontype = "Morning";
-          } else if (resData.servicetime.sessiontype == 2) {
-            resData.servicetime.sessiontype = "Afternoon";
-          }
 
           // Set address type.
           if (resData.addresstype == 1) {
@@ -558,33 +531,11 @@ const customerBookService = async (req, res, next) => {
           delete resData.updatedAt; // delete person["updatedAt"]
           delete resData.__v; // delete person["__v"]
 
-          // Set time morning or afternoon.
-          if (resData.servicetime.sessiontype == 1) {
-            resData.servicetime.sessiontype = "Morning";
-          } else if (resData.servicetime.sessiontype == 2) {
-            resData.servicetime.sessiontype = "Afternoon";
-          }
-
           // Set address type.
           if (resData.addresstype == 1) {
             resData.addresstype = "Office";
           } else if (resData.addresstype == 2) {
             resData.addresstype = "Home";
-          }
-
-          // Set service status.
-          if (resData.servicestatus == 0) {
-            resData.servicestatus = "Booking_request_sent";
-          } else if (resData.servicestatus == 1) {
-            resData.servicestatus = "accept";
-          } else if (resData.servicestatus == 2) {
-            resData.servicestatus = "Booking_confirmed";
-          } else if (resData.servicestatus == 3) {
-            resData.servicestatus = "Job_started";
-          } else if (resData.servicestatus == 4) {
-            resData.servicestatus = "Job_Completed";
-          } else if (resData.servicestatus == 5) {
-            resData.servicestatus = "Reject";
           }
 
           // Set payment status.
@@ -898,12 +849,136 @@ const getSerProHistoty = async (req, res, next) => {
   }
 };
 
+// Get upcoming customer history API.
+const Upcoming = async (req, res, next) => {
+  try {
+    let customerId = req.body.customerid;
+    customerId = mongoose.Types.ObjectId(customerId);
+
+    if (mongoose.isValidObjectId(customerId)) {
+      let getQry = await ServiceHistory.find({})
+        .select("servicedate sessiontime")
+        .where({
+          customerid: customerId,
+          servicestatus: { $in: [0, 1, 2] },
+        })
+        .populate({
+          path: "serviceproviderid",
+          select: "name",
+          populate: {
+            path: "subserviceid",
+            select: "subservicename",
+          },
+        });
+
+      let findData = [];
+      if (getQry.length > 0) {
+        let resData = {};
+        getQry.forEach((data) => {
+          resData = data.toObject();
+
+          // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          var serviceDate = resData.servicedate
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
+
+          findData.push(resData);
+        });
+
+        return res.send({
+          status: true,
+          message: `${findData.length} customer service history found into system.`,
+          data: findData,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `Customer service history not found into system.`,
+        });
+      }
+    } else {
+      return res.send({
+        status: false,
+        message: `Customer service history ID is not valid.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
+// Get History customer history API.
+const History = async (req, res, next) => {
+  try {
+    let customerId = req.body.customerid;
+    customerId = mongoose.Types.ObjectId(customerId);
+
+    if (mongoose.isValidObjectId(customerId)) {
+      let getQry = await ServiceHistory.find({})
+        .select("servicedate sessiontime")
+        .where({
+          customerid: customerId,
+          servicestatus: { $in: [4] },
+        })
+        .populate({
+          path: "serviceproviderid",
+          select: "name",
+          populate: {
+            path: "subserviceid",
+            select: "subservicename",
+          },
+        });
+
+      let findData = [];
+      if (getQry.length > 0) {
+        let resData = {};
+        getQry.forEach((data) => {
+          resData = data.toObject();
+
+          // Servicedate date convert into date and time ("DD-MM-YYYY SS:MM:HH") format
+          var serviceDate = resData.servicedate
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
+
+          findData.push(resData);
+        });
+
+        return res.send({
+          status: true,
+          message: `${findData.length} customer service history found into system.`,
+          data: findData,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `Customer service history not found into system.`,
+        });
+      }
+    } else {
+      return res.send({
+        status: false,
+        message: `Customer service history ID is not valid.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
-  createServicehistory,
-  getAllServicehistory,
-  getSingleServicehistory,
-  deleteServicehistory,
-  editServicehistory,
+  createServiceHistory,
+  getAllServiceHistory,
+  getSingleServiceHistory,
+  deleteServiceHistory,
+  editServiceHistory,
   getServiceSerProvider,
   changeServiceStatus,
   customerBookService,
@@ -911,4 +986,6 @@ module.exports = {
   getPaymentStatus,
   countJob,
   getSerProHistoty,
+  Upcoming,
+  History,
 };

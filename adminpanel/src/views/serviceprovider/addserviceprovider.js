@@ -171,7 +171,7 @@ const ServiceProvider = () => {
 
   // Edit data.
   useEffect(() => {
-    if (location.state) {
+    if (location.state.serviceproviderid) {
       setIsEdit(true);
       setSerProEditId(location.state.serviceproviderid);
       setServiceProviderId(location.state.userid);

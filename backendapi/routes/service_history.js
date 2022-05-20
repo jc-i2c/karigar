@@ -5,11 +5,11 @@ const auth = require("../middleware/auth");
 const userrollauth = require("../middleware/userrollauth");
 
 const {
-  createServicehistory,
-  getAllServicehistory,
-  getSingleServicehistory,
-  deleteServicehistory,
-  editServicehistory,
+  createServiceHistory,
+  getAllServiceHistory,
+  getSingleServiceHistory,
+  deleteServiceHistory,
+  editServiceHistory,
   getServiceSerProvider,
   changeServiceStatus,
   customerBookService,
@@ -17,26 +17,28 @@ const {
   getPaymentStatus,
   countJob,
   getSerProHistoty,
+  Upcoming,
+  History,
 } = require("../controller/C_service_history");
 
-router.post("/create", auth, multipartMiddleware, createServicehistory);
+router.post("/create", auth, multipartMiddleware, createServiceHistory);
 
 router.post(
   "/all",
   auth,
   userrollauth,
   multipartMiddleware,
-  getAllServicehistory
+  getAllServiceHistory
 );
 
-router.post("/single", auth, multipartMiddleware, getSingleServicehistory);
+router.post("/single", auth, multipartMiddleware, getSingleServiceHistory);
 
 router.post(
   "/delete",
   auth,
   userrollauth,
   multipartMiddleware,
-  deleteServicehistory
+  deleteServiceHistory
 );
 
 router.post(
@@ -44,7 +46,7 @@ router.post(
   auth,
   userrollauth,
   multipartMiddleware,
-  editServicehistory
+  editServiceHistory
 );
 
 router.post(
@@ -70,5 +72,9 @@ router.post("/getpaymentstatus", auth, multipartMiddleware, getPaymentStatus);
 router.post("/countjob", auth, multipartMiddleware, countJob);
 
 router.post("/getserprohistoty", auth, multipartMiddleware, getSerProHistoty);
+
+router.post("/upcoming", auth, multipartMiddleware, Upcoming);
+
+router.post("/history", auth, multipartMiddleware, History);
 
 module.exports = router;

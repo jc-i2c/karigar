@@ -168,7 +168,6 @@ const ViewCustomerChat = () => {
                                 }`}
                                 key={index}
                                 onClick={() => {
-                                  setGetAllMessage("");
                                   setCustomerDetails("");
                                   setCustomerDetails(item);
                                 }}

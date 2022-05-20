@@ -27,7 +27,7 @@ router.post("/all", auth, multipartMiddleware, getAllProvider);
 
 router.post("/single", auth, multipartMiddleware, getSingleProvider);
 
-router.post("/delete", auth, userrollauth, multipartMiddleware, deleteProvider);
+router.post("/delete", auth, multipartMiddleware, deleteProvider);
 
 router.post("/edit", auth, upload.single("image"), editProvider);
 

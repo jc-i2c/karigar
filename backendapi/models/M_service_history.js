@@ -30,22 +30,14 @@ const ServiceHistorySchema = new mongoose.Schema(
       type: Date,
       required: [true, "Service date is required."], // 14-03-2022
     },
-    servicetime: {
-      sessiontype: {
-        type: String,
-        enum: [1, 2],
-        default: 1,
-        required: [true, "Session type is required."], // 1-Morning, 2-Afternooon
-      },
-      sessiontime: {
-        type: String,
-        required: [true, "Session time is required"], // 10:00, 07:45 etc.
-      },
+    sessiontime: {
+      type: String,
+      required: [true, "Session time is required"], // 10:00 AM, 07:45 PM etc.
     },
     servicestatus: {
-      type: String,
-      enum: ["0", "1", "2", "3", "4", "5"],
-      default: "0", // 0-Booking_request_sent(Pending), 1-accept, 2-Booking_confirmed 3-Job_started 4-Job_Completed 5-Reject
+      type: Number,
+      enum: [0, 1, 2, 3, 4, 5],
+      default: 0, // 0-Booking_request_sent(Pending), 1-accept, 2-Booking_confirmed 3-Job_started 4-Job_Completed 5-Reject
       required: [true, "Service status is required."],
     },
     paymentstatus: {

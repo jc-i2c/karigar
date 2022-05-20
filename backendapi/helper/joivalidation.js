@@ -279,11 +279,10 @@ const createServiceHisVal = (data) => {
     address: Joi.string().required().label("Address"),
     name: Joi.string().required().label("Service provider name"),
     servicedate: Joi.string().required().label("service date"),
-    sessiontype: Joi.string().required().valid("1", "2").label("Session type"),
     sessiontime: Joi.string().required().label("Session time"),
-    servicestatus: Joi.string()
+    servicestatus: Joi.number()
       .required()
-      .valid("0", "1", "2", "3", "4", "5")
+      .valid(0, 1, 2, 3, 4, 5)
       .label("Service status type"),
   });
   return createServiceHisVal.validate(data, {
@@ -305,7 +304,6 @@ const editServiceHisVal = (data) => {
     address: Joi.string().required().label("Address"),
     name: Joi.string().required().label("Service provider name"),
     servicedate: Joi.string().required().label("Service date"),
-    sessiontype: Joi.string().required().valid("1", "2").label("Session type"),
     sessiontime: Joi.string().required().label("Session time"),
   });
   return editServiceHisVal.validate(data, {
@@ -322,9 +320,9 @@ const editServiceHisVal = (data) => {
 const changeServiceStatusVal = (data) => {
   const changeServiceStatusVal = Joi.object().keys({
     servicehistoryid: Joi.string().required().label("Service history Id"),
-    servicestatus: Joi.string()
+    servicestatus: Joi.number()
       .required()
-      .valid("0", "1", "2", "3", "4", "5")
+      .valid(0, 1, 2, 3, 4, 5)
       .label("Service status type"),
   });
   return changeServiceStatusVal.validate(data, {
