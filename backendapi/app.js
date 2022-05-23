@@ -10,6 +10,9 @@ const port = process.env.API_PORT || 3031;
 
 app.use("/demo", express.static(path.join("./uploads/demo.html")));
 
+// serving index.html file to client
+app.use(express.static("./../adminpanel/build"));
+
 // Database file include.
 require("./server/database")
   .connect()

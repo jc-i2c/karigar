@@ -76,7 +76,7 @@ function Login() {
 
             toast.success(data.data.message, {
               onClose: () => {
-                navigate("/dashboard");
+                navigate("/");
               },
             });
           } else {
