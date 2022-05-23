@@ -274,7 +274,7 @@ const getSingleProvider = async (req, res, next) => {
           .where({ serviceproviderid: servicesProviderId })
           .count();
 
-        if (countjob.length > 0) {
+        if (countjob) {
           getQry.countjob = countjob;
         } else {
           getQry.countjob = 0;
@@ -297,13 +297,11 @@ const getSingleProvider = async (req, res, next) => {
 
           averageRate = averageRate / totalCnt;
 
-          if (countRate > 0 && countRate > -1) {
-            getQry.totalrate = countRate.length;
-            getQry.averagerate = countRate.averageRate;
-          } else {
-            getQry.totalrate = 0;
-            getQry.averagerate = 0;
-          }
+          getQry.totalrate = countRate.length;
+          getQry.averagerate = averageRate;
+        } else {
+          getQry.totalrate = 0;
+          getQry.averagerate = 0;
         }
 
         return res.send({
