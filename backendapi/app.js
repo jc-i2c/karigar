@@ -8,10 +8,13 @@ const http = require("http");
 require("dotenv").config();
 const port = process.env.API_PORT || 3031;
 
-app.use("/demo", express.static(path.join("./uploads/demo.html")));
+// app.use("/demo", path.join("./uploads/demo.html"));
 
-// serving index.html file to client
-app.use(express.static("./../adminpanel/build"));
+// app.use(express.static(path.join(__dirname, "/build")));
+// // serving index.html file to client
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "/build", "index.html"));
+// });
 
 // Database file include.
 require("./server/database")

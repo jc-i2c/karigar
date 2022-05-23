@@ -6,6 +6,8 @@ backendapi/.env
 backendapi/uploads
 backendapi/package-lock.json
 backendapi/A Karigar.postman_collection.json
+backendapi/build
+backendapi/build.zip
 
 
 # adminpanel admin panel ignore files here
@@ -14,6 +16,7 @@ adminpanel/.env
 adminpanel/uploads
 adminpanel/package-lock.json
 adminpanel/build
+adminpanel/build.zip
 
 adminpanel/coverage
 
