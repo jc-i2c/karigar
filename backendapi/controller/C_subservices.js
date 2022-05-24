@@ -80,35 +80,28 @@ const createSubServices = async (req, res, next) => {
 // Get all sub services API.
 const getAllSubServices = async (req, res, next) => {
   try {
-    const getQry = await Subservices.find().populate({
+    const getQry = await Subservices.find({ deleted: false }).populate({
       path: "servicesid",
       select: "servicename serviceimage",
     });
-
     let findData = [];
     if (getQry.length > 0) {
       let resData = {};
       getQry.forEach((data) => {
         resData = data.toObject();
-
         // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
-
         resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
-
         // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = resData.updatedAt
           .toISOString()
           .replace(/T/, " ")
           .replace(/\..+/, "");
-
         resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
-
         delete resData.__v; // delete resData["__v"]
-
         findData.push(resData);
       });
       return res.send({
@@ -134,7 +127,7 @@ const getSubServices = async (req, res, next) => {
     let servicesId = req.body.servicesid;
 
     if (mongoose.isValidObjectId(servicesId)) {
-      const getQry = await Subservices.find()
+      const getQry = await Subservices.find({ deleted: false })
         .where({
           servicesid: servicesId,
         })
@@ -249,7 +242,7 @@ const deleteSubServices = async (req, res, next) => {
         _id: {
           $in: subServicesId,
         },
-      });
+      }).where({ deleted: false });
 
       var totalSubServices = findQry.length;
       var cntSubServices = 0;
@@ -264,8 +257,11 @@ const deleteSubServices = async (req, res, next) => {
         await Promise.all(
           findQry.map(async (allServices) => {
             cntSubServices = cntSubServices + 1;
-            await Subservices.findByIdAndDelete(allServices._id);
-            removeFile(allServices.subserviceimage);
+            await Subservices.findByIdAndUpdate(allServices._id, {
+              $set: { deleted: true },
+            });
+            // await Subservices.findByIdAndDelete(allServices._id);
+            // removeFile(allServices.subserviceimage);
           })
         );
 
@@ -390,7 +386,10 @@ const searchSubServices = async (req, res, next) => {
     let subServiceName = req.body.subservicename;
 
     if (servicesId) {
-      const getQry = await Subservices.find({})
+      const getQry = await Subservices.find({
+        $text: { $search: subServiceName },
+        deleted: false
+      })
         .populate({
           path: "servicesid",
           select: "servicename serviceimage",

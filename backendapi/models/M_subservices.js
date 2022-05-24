@@ -13,6 +13,10 @@ const SubServicesSchema = new mongoose.Schema({
     ref: "services",
     required: [true, "Service Id is required."],
   },
+  deleted: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
 });

@@ -68,7 +68,7 @@ const createServices = async (req, res, next) => {
 // Get all services API.
 const getAllServices = async (req, res, next) => {
   try {
-    let getQry = await Services.find();
+    let getQry = await Services.find({ deleted: false });
 
     if (getQry.length > 0) {
       let findData = [];
@@ -104,7 +104,7 @@ const getAllServices = async (req, res, next) => {
     } else {
       return res.send({
         status: false,
-        message: `${findData.length} Service not found into system.`,
+        message: `Service not found into system.`,
       });
     }
   } catch (error) {
@@ -156,11 +156,14 @@ const deleteServices = async (req, res, next) => {
         message: `Service ID is not allowed to be empty.`,
       });
     } else {
-      const findQry = await Services.find({
-        _id: {
-          $in: servicesId,
+      const findQry = await Services.find(
+        {
+          _id: {
+            $in: servicesId,
+          },
         },
-      });
+        { deleted: false }
+      );
 
       var totalServices = findQry.length;
       var cntServices = 0;
@@ -176,20 +179,27 @@ const deleteServices = async (req, res, next) => {
           findQry.map(async (allServices) => {
             cntServices = cntServices + 1;
 
-            await Subservices.find()
+            await Subservices.find({ deleted: false })
               .where({ servicesid: mongoose.Types.ObjectId(allServices._id) })
               .then(async (data) => {
                 data.map(async (item) => {
-                  await Subservices.findByIdAndDelete(item._id)
-                    .then(async (data) => {
-                      removeFile(item.subserviceimage);
-                    })
-                    .catch((error) => {
-                      console.log(error.message);
-                    });
+                  await Subservices.findByIdAndUpdate(item._id, {
+                    $set: { deleted: true },
+                  });
+                  // await Subservices.findByIdAndDelete(item._id)
+                  //   .then(async (data) => {
+                  //     removeFile(item.subserviceimage);
+                  //   })
+                  //   .catch((error) => {
+                  //     console.log(error.message);
+                  //   });
                 });
-                await Services.findByIdAndDelete(allServices._id);
-                removeFile(allServices.serviceimage);
+                await Services.findByIdAndUpdate(servicesId, {
+                  $set: { deleted: true },
+                });
+
+                // await Services.findByIdAndDelete(allServices._id);
+                // removeFile(allServices.serviceimage);
               })
               .catch((error) => {
                 console.log(error.message);
@@ -306,8 +316,9 @@ const editServices = async (req, res, next) => {
 // Top five services API.
 const topFiveServices = async (req, res, next) => {
   try {
-    console.log("Hello");
-    let getQry = await Services.find({}).sort({ _id: -1 }).limit(5);
+    let getQry = await Services.find({ deleted: false })
+      .sort({ _id: -1 })
+      .limit(5);
     console.log(getQry.length);
 
     if (getQry.length > 0) {

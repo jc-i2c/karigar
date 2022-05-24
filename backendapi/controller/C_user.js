@@ -168,14 +168,17 @@ const userLogin = async (req, res, next) => {
       });
     } else {
       const findUser = await User.findOne({ emailaddress: emailaddress });
-      if (findUser) {
-        // Check verification status.
+      if (findUser.deleted == false) {
+        // Check user is verify.
         if (findUser.status == 1) {
-          // Compare password with database.
-          const passVerify = await bcrypt.compare(password, findUser.password);
-
-          if (passVerify) {
-            if (findUser.isactive === true) {
+          // Check user is active or not.
+          if (findUser.isactive == true) {
+            // Compare password with database.
+            const passVerify = await bcrypt.compare(
+              password,
+              findUser.password
+            );
+            if (passVerify) {
               let getRoleData = await Userrole.findById(findUser.userroll);
 
               // Create token
@@ -217,6 +220,8 @@ const userLogin = async (req, res, next) => {
                 "DD-MM-YYYY HH:MM:SS"
               );
 
+              userData.userrole = getRoleData.roletag;
+
               delete userData.status;
               delete userData.isactive;
               delete userData.password;
@@ -235,13 +240,13 @@ const userLogin = async (req, res, next) => {
             } else {
               return res.send({
                 status: false,
-                message: `You are not activated. Please contact to admin`,
+                message: `Wrong credentials`,
               });
             }
           } else {
             return res.send({
               status: false,
-              message: `Wrong credentials`,
+              message: `You are not activated. Please contact to admin`,
             });
           }
         } else {
@@ -571,7 +576,7 @@ const createNewPassword = async (req, res, next) => {
 };
 
 // User active or deactive API.
-const isActive = async (req, res, next) => {
+const activeDeactive = async (req, res, next) => {
   try {
     const userId = req.body.userid;
 
@@ -637,7 +642,7 @@ const isActive = async (req, res, next) => {
 };
 
 // Get customer profile details API.
-const profileDetails = async (req, res, next) => {
+const customerProfile = async (req, res, next) => {
   try {
     let userprofiledetails = res.user;
 
@@ -702,7 +707,7 @@ const profileDetails = async (req, res, next) => {
 // Get all users API.
 const getAllUsers = async (req, res, next) => {
   try {
-    let getQry = await User.find().populate({
+    let getQry = await User.find({ deleted: false }).populate({
       path: "userroll",
       select: "rolename",
     });
@@ -844,6 +849,9 @@ const deleteUser = async (req, res, next) => {
         await Promise.all(
           findQry.map(async (usersList) => {
             cntUsers = cntUsers + 1;
+            await User.findByIdAndUpdate(usersList._id, {
+              $set: { deleted: true },
+            });
             // await User.findByIdAndDelete(usersList._id);
           })
         );
@@ -875,8 +883,10 @@ const deleteUser = async (req, res, next) => {
 // Get all customer API.
 const getAllCustomer = async (req, res, next) => {
   try {
+    let getRoleTag = await Userrole.findOne({ roletag: "CUSTOMER" });
+
     let getQry = await User.find().where({
-      userroll: "627a2409c43d69171deaa3ba",
+      userroll: getRoleTag._id,
     });
 
     if (getQry.length > 0 && getQry.length > -1) {
@@ -928,8 +938,10 @@ const getAllCustomer = async (req, res, next) => {
 // Get all service provider API.
 const getAllServiceProvider = async (req, res, next) => {
   try {
-    let getQry = await User.find().where({
-      userroll: "627a23fbc43d69171deaa3b7",
+    let getRoleTag = await Userrole.findOne({ roletag: "SERVICEPROVIDER" });
+
+    let getQry = await User.find({ deleted: false }).where({
+      userroll: getRoleTag._id,
     });
 
     if (getQry.length > 0 && getQry.length > -1) {
@@ -1102,9 +1114,9 @@ module.exports = {
   updateProfile,
   changePassword,
   resetPassword,
-  isActive,
+  activeDeactive,
   createNewPassword,
-  profileDetails,
+  customerProfile,
   getAllUsers,
   saveLocation,
   getUserLocation,

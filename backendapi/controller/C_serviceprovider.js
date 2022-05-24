@@ -176,6 +176,7 @@ const getAllProvider = async (req, res, next) => {
       const getQry = await Serviceprovider.find({
         subserviceid: subServiceId,
         isactive: true,
+        deleted: false,
       })
         .populate({ path: "userid", select: "name" })
         .populate({
@@ -241,7 +242,7 @@ const getSingleProvider = async (req, res, next) => {
 
     if (mongoose.isValidObjectId(servicesProviderId)) {
       let getQry = await Serviceprovider.findById(servicesProviderId)
-        .where({ isactive: true })
+        .where({ $and: [{ isactive: true }, { deleted: false }] })
         .populate({ path: "userid", select: "name" })
         .populate({
           path: "subserviceid",
@@ -353,12 +354,15 @@ const deleteProvider = async (req, res, next) => {
           message: `${cntServices} service provider found into system.!`,
         });
       } else {
-        // Array of all services.
+        // Array of all service provider.
         await Promise.all(
-          findQry.map(async (allServiceProvider) => {
+          findQry.map(async (allProvider) => {
             cntServices = cntServices + 1;
-            await Serviceprovider.findByIdAndDelete(allServiceProvider._id);
-            removeFile(allServiceProvider.image);
+            await Serviceprovider.findByIdAndUpdate(allProvider._id, {
+              $set: { deleted: true },
+            });
+            // await Serviceprovider.findByIdAndDelete(allProvider._id);
+            // removeFile(allProvider.image);
           })
         );
 
@@ -395,6 +399,7 @@ const getAllProviderList = async (req, res, next) => {
       const getQry = await Serviceprovider.find({
         subserviceid: subServiceId,
         isactive: true,
+        deleted: false,
       })
         .select("description price image name")
         .populate({
@@ -515,7 +520,7 @@ const addServiceProviderDetails = async (req, res, next) => {
 // Get all service provider list API.
 const getAllServiceProvider = async (req, res, next) => {
   try {
-    let getQry = await Serviceprovider.find()
+    let getQry = await Serviceprovider.find({ deleted: false })
       .populate({
         path: "userid",
         select: "name",
@@ -620,7 +625,7 @@ const getServiceList = async (req, res, next) => {
     var ObjectId = require("mongoose").Types.ObjectId;
 
     if (userId) {
-      let getQry = await Serviceprovider.find()
+      let getQry = await Serviceprovider.find({ deleted: false })
         .where({ userid: ObjectId(userId) })
         .select("subserviceid")
         .populate({
@@ -695,6 +700,7 @@ const getSubServiceList = async (req, res, next) => {
     if (serviceId) {
       let findSubService = await Subservices.find({
         servicesid: ObjectId(serviceId),
+        deleted: false,
       }).populate({ path: "servicesid", select: "servicename" });
 
       let finalResult = [];
@@ -756,7 +762,7 @@ const getSerProOwnList = async (req, res, next) => {
 
     userId = ObjectId(userId);
     if (userId) {
-      let getQry = await Serviceprovider.find()
+      let getQry = await Serviceprovider.find({ deleted: false })
         .where({ userid: userId })
         .populate({
           path: "userid",
@@ -797,6 +803,7 @@ const getProviderList = async (req, res, next) => {
     let findQry = await Serviceprovider.findOne({
       subserviceid: subServiceId,
       userid: userId,
+      deleted: false,
     }).select("name");
 
     if (findQry) {

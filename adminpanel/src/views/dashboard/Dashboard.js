@@ -15,6 +15,8 @@ const Dashboard = () => {
 
   // Identify user type.
   useEffect(() => {
+    let unmounted = false;
+
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
@@ -29,15 +31,24 @@ const Dashboard = () => {
       .catch((error) => {
         console.log(error, "error");
       });
+    return () => {
+      unmounted = true;
+    };
   }, []);
 
   useEffect(() => {
+    let unmounted = false;
+
     if (roleName == "ADMIN") {
       navigate("/dashboard");
     }
     if (roleName == "SERVICEPROVIDER") {
       navigate("/services");
     }
+
+    return () => {
+      unmounted = true;
+    };
   }, [roleName]);
 
   return (

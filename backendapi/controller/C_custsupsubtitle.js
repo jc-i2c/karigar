@@ -35,7 +35,7 @@ const createCustSupSubTitle = async (req, res, next) => {
 // Get customer support subtitle API.
 const getAllCusSupSubTitle = async (req, res, next) => {
   try {
-    const findQry = await Custsuptsubtitle.find()
+    const findQry = await Custsuptsubtitle.find({ deleted: false })
       .where({
         custsuptitleid: req.body.custsuptitleid,
       })
@@ -151,7 +151,10 @@ const deleteCusSupSubTitle = async (req, res, next) => {
         Promise.all([
           findQry.map(async (allCustSup) => {
             count = count + 1;
-            await Custsuptsubtitle.findByIdAndDelete(allCustSup._id);
+            await Custsuptsubtitle.findByIdAndUpdate(allCustSup._id, {
+              $set: { deleted: true },
+            });
+            // await Custsuptsubtitle.findByIdAndDelete(allCustSup._id);
           }),
         ]);
 

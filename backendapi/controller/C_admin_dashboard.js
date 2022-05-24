@@ -1,6 +1,7 @@
 const Users = require("../models/M_user");
 const Services = require("../models/M_services");
 const Offer = require("../models/M_offer");
+const Userrole = require("../models/M_userrole");
 
 // Get admin dashboard widget data API.
 const getWidgetData = async (req, res, next) => {
@@ -8,32 +9,31 @@ const getWidgetData = async (req, res, next) => {
     let widgetsdata = [];
 
     // Get total users.
-    let getTotalUsers = await Users.find().count();
-    // console.log(getTotalUsers, "getTotalUsers");
+    let totalUsers = await Users.find({ deleted: false }).count();
 
     // Get total services provider.
-    let getServicesProviderTotal = await Users.find()
+    let getRoleTag = await Userrole.findOne({ roletag: "SERVICEPROVIDER" });
+
+    let totalServProvis = await Users.find({ deleted: false })
       .where({
-        userroll: "627a23fbc43d69171deaa3b7",
+        userroll: getRoleTag._id,
         isactive: true,
       })
       .count();
-    // console.log(getServicesProviderTotal, "getServicesProviderTotal");
 
     // Get total services.
-    let getServicesTotal = await Services.find().count();
+    let getServicesTotal = await Services.find({ deleted: false }).count();
 
     // Get total offers.
-    let getOffersTotal = await Offer.find()
+    let getOffersTotal = await Offer.find({ deleted: false })
       .where({
         isactive: true,
       })
       .count();
 
     widgetsdata.push({
-      users: getTotalUsers,
-      // customers: getCustomerTotal,
-      servicesprovider: getServicesProviderTotal,
+      users: totalUsers,
+      servicesprovider: totalServProvis,
       services: getServicesTotal,
       offers: getOffersTotal,
     });

@@ -196,7 +196,7 @@ const ViewServices = () => {
                     )}
 
                     <CTableDataCell>
-                      <div>{item.customername}</div>
+                      <div>{item.customername ? item.customername : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
@@ -210,40 +210,50 @@ const ViewServices = () => {
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>{item.servicedate}</div>
+                      <div>{item.servicedate ? item.servicedate : ""}</div>
                     </CTableDataCell>
 
-                    <CTableDataCell>{item.sessiontime}</CTableDataCell>
+                    <CTableDataCell>
+                      {item.sessiontime ? item.sessiontime : ""}
+                    </CTableDataCell>
 
                     <CTableDataCell>
-                      <CFormSelect
-                        required
-                        id="services"
-                        name="services"
-                        value={item.servicestatus}
-                        onChange={(e) => {
-                          changeStatus(item.servicehistoryid, e.target.value);
-                        }}
-                      >
-                        <option key={0} value={0}>
-                          Booking_request_sent
-                        </option>
-                        <option key={1} value={1}>
-                          Accept
-                        </option>
-                        <option key={2} value={2}>
-                          Confirmed
-                        </option>
-                        <option key={3} value={3}>
-                          Job_started
-                        </option>
-                        <option key={4} value={4}>
-                          Job_Completed
-                        </option>
-                        <option key={5} value={5}>
-                          Reject
-                        </option>
-                      </CFormSelect>
+                      {item.servicestatus == 5 ? (
+                        <CFormSelect required id="services" name="services">
+                          <option key={5} value={5}>
+                            Reject
+                          </option>
+                        </CFormSelect>
+                      ) : (
+                        <CFormSelect
+                          required
+                          id="services"
+                          name="services"
+                          value={item.servicestatus}
+                          onChange={(e) => {
+                            changeStatus(item.servicehistoryid, e.target.value);
+                          }}
+                        >
+                          <option key={0} value={0}>
+                            Booking_request_sent
+                          </option>
+                          <option key={1} value={1}>
+                            Accept
+                          </option>
+                          <option key={2} value={2}>
+                            Confirmed
+                          </option>
+                          <option key={3} value={3}>
+                            Job_started
+                          </option>
+                          <option key={4} value={4}>
+                            Job_Completed
+                          </option>
+                          <option key={5} value={5}>
+                            Reject
+                          </option>
+                        </CFormSelect>
+                      )}
                     </CTableDataCell>
 
                     <CTableDataCell>

@@ -41,33 +41,58 @@ const ViewCustomer = () => {
   const [deleteTitle, setDeleteTitle] = useState("");
   const [deleteItemId, setDeleteItemId] = useState("");
 
+  const [roleName, setRoleName] = useState("");
+
+  // Identify user type.
   useEffect(() => {
     axios
       .post(
-        `${process.env.REACT_APP_APIURL}/karigar/user/allcustomer`,
+        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
       )
       .then((data) => {
-        const records = [];
-        data.data.data.map((record) => {
-          records.push({
-            customerid: record._id,
-            emailaddress: record.emailaddress,
-            name: record.name,
-            gender: record.gender,
-            status: record.status,
-            isactive: record.isactive,
-            mobilenumber: record.mobilenumber,
-            userroll: record.userroll,
-          });
-        });
-        setCustomers(records);
+        setRoleName(data.data.data.roletag);
       })
       .catch((error) => {
         console.log(error, "error");
       });
   }, []);
+
+  // Get all customer list
+  useEffect(() => {
+    if (roleName == "ADMIN") {
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/user/allcustomer`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .then((data) => {
+          const records = [];
+          if (data.data.data) {
+            data.data.data.map((record) => {
+              records.push({
+                customerid: record._id,
+                emailaddress: record.emailaddress,
+                name: record.name,
+                gender: record.gender,
+                status: record.status,
+                isactive: record.isactive,
+                mobilenumber: record.mobilenumber,
+                userroll: record.userroll,
+              });
+            });
+            setCustomers(records);
+          }
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    }
+  }, [roleName]);
 
   function changeUserStatus(customerId) {
     let data = new FormData();

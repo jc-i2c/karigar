@@ -34,7 +34,10 @@ const createCustSupTitle = async (req, res, next) => {
 // Get customer support title API.
 const getAllCusSupTitle = async (req, res, next) => {
   try {
-    const findQry = await Custsupttitle.find();
+    // let updateData = await Custsupttitle.updateMany({
+    //   $set: { deleted: false },
+    // });
+    const findQry = await Custsupttitle.find({ deleted: false });
 
     let findData = [];
 
@@ -170,7 +173,10 @@ const deleteCusSupTitle = async (req, res, next) => {
         Promise.all([
           findQry.map(async (allCustSup) => {
             count = count + 1;
-            await Custsupttitle.findByIdAndDelete(allCustSup._id);
+            await Custsupttitle.findByIdAndUpdate(allCustSup._id, {
+              $set: { deleted: true },
+            });
+            // await Custsupttitle.findByIdAndDelete(allCustSup._id);
           }),
         ]);
 

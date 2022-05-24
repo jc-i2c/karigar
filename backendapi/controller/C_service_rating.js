@@ -82,7 +82,10 @@ const deleteServiceRate = async (req, res, next) => {
         Promise.all([
           findQry.map(async (allCustSup) => {
             count = count + 1;
-            await ServiceRating.findByIdAndDelete(allCustSup._id);
+            await ServiceRating.findByIdAndUpdate(allCustSup._id, {
+              $set: { deleted: true },
+            });
+            // await ServiceRating.findByIdAndDelete(allCustSup._id);
           }),
         ]);
 
@@ -131,6 +134,7 @@ const getCusOwnedRate = async (req, res, next) => {
     } else {
       const findQry = await ServiceRating.find({
         customerid: data.customerid,
+        deleted: false,
       })
         .select("rate description")
         .populate({ path: "serviceproviderid", select: "name" });
@@ -161,7 +165,7 @@ const getServiceRate = async (req, res, next) => {
   try {
     const serviceProviderId = req.body.serviceproviderid;
 
-    const findQry = await ServiceRating.find()
+    const findQry = await ServiceRating.find({ deleted: false })
       .where({
         serviceproviderid: serviceProviderId,
       })
@@ -237,7 +241,7 @@ const countRate = async (req, res, next) => {
 // Get all service rating API.
 const getAll = async (req, res, next) => {
   try {
-    const findQry = await ServiceRating.find()
+    const findQry = await ServiceRating.find({ deleted: false })
       .populate({
         path: "customerid",
         select: "name",
@@ -296,7 +300,7 @@ const getServiceRating = async (req, res, next) => {
   try {
     const serviceProviderId = req.userid;
 
-    const findQry = await ServiceRating.find()
+    const findQry = await ServiceRating.find({ deleted: false })
       .select("rate description createdAt updatedAt")
       .populate({
         path: "customerid",

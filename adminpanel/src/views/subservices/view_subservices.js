@@ -61,8 +61,6 @@ const ViewSubServices = () => {
       });
   }, []);
 
-  useEffect(() => { }, [servicesId]);
-
   useEffect(() => {
     let unmounted = false;
     if (location.state) {

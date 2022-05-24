@@ -469,29 +469,22 @@ const changeServiceStatus = async (req, res, next) => {
       const getQry = await ServiceHistory.findById(serviceHistoryId);
 
       if (getQry) {
-        if (req.body.servicestatus == "") {
+        let updateQry = await ServiceHistory.findByIdAndUpdate(
+          serviceHistoryId,
+          {
+            $set: { servicestatus: data.servicestatus },
+          }
+        );
+        if (updateQry) {
           return res.send({
-            status: false,
-            message: `Service history status is required.`,
+            status: true,
+            message: `Service history status changed`,
           });
         } else {
-          let updateQry = await ServiceHistory.findByIdAndUpdate(
-            serviceHistoryId,
-            {
-              $set: { servicestatus: data.servicestatus },
-            }
-          );
-          if (updateQry) {
-            return res.send({
-              status: true,
-              message: `Service history status changed`,
-            });
-          } else {
-            return res.send({
-              status: false,
-              message: `Service history status  not updated.`,
-            });
-          }
+          return res.send({
+            status: false,
+            message: `Service history status  not updated.`,
+          });
         }
       } else {
         return res.send({

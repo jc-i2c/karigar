@@ -12,8 +12,8 @@ const {
   updateProfile,
   changePassword,
   resetPassword,
-  isActive,
-  profileDetails,
+  activeDeactive,
+  customerProfile,
   getAllUsers,
   saveLocation,
   getUserLocation,
@@ -45,10 +45,10 @@ router.post(
   auth,
   userrollauth,
   multipartMiddleware,
-  isActive
+  activeDeactive
 );
 
-router.post("/profiledetails", auth, multipartMiddleware, profileDetails);
+router.post("/profiledetails", auth, multipartMiddleware, customerProfile);
 
 router.post("/alluser", auth, userrollauth, multipartMiddleware, getAllUsers);
 

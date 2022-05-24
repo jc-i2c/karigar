@@ -21,6 +21,7 @@ const createOffer = async (req, res, next) => {
           subserviceid: subserviceid,
           serviceproviderid: serviceproviderid,
           isactive: true,
+          deleted: true,
         });
 
         if (getQry) {
@@ -53,7 +54,7 @@ const createOffer = async (req, res, next) => {
       } else {
         return res.send({
           status: false,
-          message: `Sub service provider not found into system.`,
+          message: `Service provider not found into system.`,
         });
       }
     } else {
@@ -133,7 +134,7 @@ const updateOffer = async (req, res, next) => {
 // Get offer API.
 const getAllOffer = async (req, res, next) => {
   try {
-    let findQry = await Offer.find()
+    let findQry = await Offer.find({ deleted: false })
       .populate({
         path: "subserviceid",
         select: "subservicename subserviceimage",
@@ -142,7 +143,6 @@ const getAllOffer = async (req, res, next) => {
         path: "serviceproviderid",
         select: "name",
       });
-
     if (findQry.length > 0) {
       return res.send({
         status: true,
@@ -191,7 +191,10 @@ const deleteOffer = async (req, res, next) => {
         Promise.all([
           findQry.map(async (allOffer) => {
             count = count + 1;
-            await Offer.findByIdAndDelete(allOffer._id);
+            await Offer.findByIdAndUpdate(allOffer._id, {
+              $set: { deleted: true },
+            });
+            // await Offer.findByIdAndDelete(allOffer._id);
           }),
         ]);
 
@@ -291,7 +294,8 @@ const getAllOfferAdmin = async (req, res, next) => {
       .populate({
         path: "serviceproviderid",
         select: "name",
-      });
+      })
+      .where({ deleted: false });
 
     let data = [];
     if (findQry.length > 0) {
@@ -339,7 +343,7 @@ const userOffer = async (req, res, next) => {
     let userId = req.userid;
 
     if (userId) {
-      let findQry = await Offer.find()
+      let findQry = await Offer.find({ deleted: false })
         .select("currentprice actualprice isactive")
         .populate({
           path: "subserviceid",

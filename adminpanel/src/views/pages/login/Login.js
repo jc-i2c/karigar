@@ -76,7 +76,11 @@ function Login() {
 
             toast.success(data.data.message, {
               onClose: () => {
-                navigate("/");
+                if (data.data.userdata.userrole == "ADMIN")
+                  navigate("/dashboard");
+                else {
+                  navigate("/services");
+                }
               },
             });
           } else {

@@ -51,21 +51,23 @@ const AllUsers = () => {
       )
       .then((data) => {
         const records = [];
-        data.data.data.map((record) => {
-          records.push({
-            userid: record._id,
-            emailaddress: record.emailaddress,
-            name: record.name,
-            gender: record.gender,
-            status: record.status,
-            isactive: record.isactive,
-            mobilenumber: record.mobilenumber,
-            userroll: record.userroll,
-            createdAt: record.createdAt,
-            updatedAt: record.updatedAt,
+        if (data.data.data) {
+          data.data.data.map((record) => {
+            records.push({
+              userid: record._id,
+              emailaddress: record.emailaddress,
+              name: record.name,
+              gender: record.gender,
+              status: record.status,
+              isactive: record.isactive,
+              mobilenumber: record.mobilenumber,
+              userroll: record.userroll,
+              createdAt: record.createdAt,
+              updatedAt: record.updatedAt,
+            });
           });
-        });
-        setAllUsers(records);
+          setAllUsers(records);
+        }
       })
       .catch((error) => {
         console.log(error, "error");
@@ -215,7 +217,7 @@ const AllUsers = () => {
                 {allUsers.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
                     <CTableDataCell>
-                      <div>{item.emailaddress}</div>
+                      <div>{item.emailaddress ? item.emailaddress : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
@@ -237,15 +239,17 @@ const AllUsers = () => {
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>{item.userroll.rolename}</div>
+                      <div>
+                        {item.userroll.rolename ? item.userroll.rolename : ""}
+                      </div>
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>{item.createdAt}</div>
+                      <div>{item.createdAt ? item.createdAt : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>{item.updatedAt}</div>
+                      <div>{item.updatedAt ? item.updatedAt : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>

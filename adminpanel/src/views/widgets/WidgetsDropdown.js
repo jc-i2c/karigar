@@ -13,23 +13,47 @@ const WidgetsDropdown = () => {
   const [services, setServices] = useState("");
   const [offers, setOffers] = useState("");
 
+  const [roleName, setRoleName] = useState("");
+
+  // Identify user type.
   useEffect(() => {
     axios
       .post(
-        `${process.env.REACT_APP_APIURL}/karigar/admindashboard/widgetdata`,
+        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
       )
       .then((data) => {
-        setUsers(data.data.widgetsdata[0]["users"]);
-        setServicesProvider(data.data.widgetsdata[0]["servicesprovider"]);
-        setServices(data.data.widgetsdata[0]["services"]);
-        setOffers(data.data.widgetsdata[0]["offers"]);
+        setRoleName(data.data.data.roletag);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error, "error");
       });
-  });
+  }, []);
+
+  useEffect(() => {
+    if (roleName == "ADMIN") {
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/admindashboard/widgetdata`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+        .then((data) => {
+          if (data.data.widgetsdata) {
+            setUsers(data.data.widgetsdata[0]["users"]);
+            setServicesProvider(data.data.widgetsdata[0]["servicesprovider"]);
+            setServices(data.data.widgetsdata[0]["services"]);
+            setOffers(data.data.widgetsdata[0]["offers"]);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [roleName]);
 
   return (
     <CRow>

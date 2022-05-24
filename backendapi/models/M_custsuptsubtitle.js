@@ -17,6 +17,10 @@ const custSupSubTitleSchema = new mongoose.Schema(
       required: [true, "Customer support description is required."],
       unique: [true, "Customer support description is must be unique."],
     },
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
     createdAt: { type: Date, default: Date.now() },
     updatedAt: { type: Date, default: Date.now() },
   },

@@ -227,7 +227,9 @@ const ViewServiceProvider = () => {
             >
               <CTableHead color="dark">
                 <CTableRow>
-                  <CTableHeaderCell>Person Name</CTableHeaderCell>
+                  {roleName == "ADMIN" && (
+                    <CTableHeaderCell>Person Name</CTableHeaderCell>
+                  )}
                   <CTableHeaderCell>Service Name</CTableHeaderCell>
                   <CTableHeaderCell>Sub Service Name</CTableHeaderCell>
                   <CTableHeaderCell>Price</CTableHeaderCell>
@@ -247,20 +249,26 @@ const ViewServiceProvider = () => {
               <CTableBody>
                 {serviceProvider.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
+                    {roleName == "ADMIN" && (
+                      <CTableDataCell>
+                        <div>{item.userid.name ? item.userid.name : ""}</div>
+                      </CTableDataCell>
+                    )}
+
                     <CTableDataCell>
-                      <div>{item.userid.name}</div>
+                      <div>{item.name ? item.name : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>{item.name}</div>
+                      <div>
+                        {item.subserviceid.subservicename
+                          ? item.subserviceid.subservicename
+                          : ""}
+                      </div>
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>{item.subserviceid.subservicename}</div>
-                    </CTableDataCell>
-
-                    <CTableDataCell>
-                      <div>{item.price}</div>
+                      <div>{item.price ? item.price : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
@@ -360,15 +368,17 @@ const ViewServiceProvider = () => {
                         }}
                       />
 
-                      <DeleteIcon
-                        variant="contained"
-                        color="inherit"
-                        onClick={() => {
-                          setOpenAlertBox(true);
-                          setDeleteTitle(item.name);
-                          setDeleteItemId(item.serviceproviderid);
-                        }}
-                      />
+                      {roleName == "ADMIN" && (
+                        <DeleteIcon
+                          variant="contained"
+                          color="inherit"
+                          onClick={() => {
+                            setOpenAlertBox(true);
+                            setDeleteTitle(item.name);
+                            setDeleteItemId(item.serviceproviderid);
+                          }}
+                        />
+                      )}
                     </CTableDataCell>
                   </CTableRow>
                 ))}
