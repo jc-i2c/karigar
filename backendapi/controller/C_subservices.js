@@ -390,13 +390,7 @@ const searchSubServices = async (req, res, next) => {
     let subServiceName = req.body.subservicename;
 
     if (servicesId) {
-      const getQry = await Subservices.find({
-        $or: [
-          {
-            subservicename: { $regex: ".*" + subServiceName + ".*" },
-          },
-        ],
-      })
+      const getQry = await Subservices.find({})
         .populate({
           path: "servicesid",
           select: "servicename serviceimage",
