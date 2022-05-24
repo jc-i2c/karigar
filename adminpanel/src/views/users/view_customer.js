@@ -28,8 +28,6 @@ import {
   CModalHeader,
   CModalBody,
   CModalFooter,
-  CPagination,
-  CPaginationItem,
 } from "@coreui/react";
 
 const ViewCustomer = () => {
@@ -249,7 +247,7 @@ const ViewCustomer = () => {
                         checked={item.isactive}
                         size="xl"
                         onChange={(e) => {
-                          // changeUserStatus(item.customerid);
+                          changeUserStatus(item.customerid);
                         }}
                       />
                     </CTableDataCell>
@@ -323,11 +321,12 @@ const ViewCustomer = () => {
             {/* ---------------------Close Delete Dialog Box---------------------------------- */}
             <br />
           </CCardBody>
-          <ToastContainer />
         </CCard>
       </CCol>
     </CRow>
   );
 };
+
+<ToastContainer />;
 
 export default ViewCustomer;

@@ -394,7 +394,7 @@ const Offers = () => {
                         setServicesId(e.target.value);
                       }}
                     >
-                      <option value="" selected>
+                      <option value="selecet services" selected>
                         Selecet Services
                       </option>
 

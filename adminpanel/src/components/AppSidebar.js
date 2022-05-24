@@ -31,10 +31,10 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
-        <a className="nav-link" href="/">
+        <a className="nav-link" href="/karigar/dashboard">
           <img
             className="sidebar-brand-full"
-            src="/images/logo.svg"
+            src="./images/logo.svg"
             alt="logo"
           />
         </a>

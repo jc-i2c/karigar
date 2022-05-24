@@ -18,13 +18,14 @@ const PermissionContextProvider = ({ children }) => {
         },
       )
       .then((res) => {
-        
         const records = [];
-        res.data.data.systemmodulesid.map((item) => {
-          records.push(item._id);
-        });
-
-        setPermissions(records);
+        if (res.data.data.systemmodulesid) {
+          res.data.data.systemmodulesid.map((item) => {
+            records.push(item._id);
+          });
+          setPermissions(records);
+          // console.log(records, "records");
+        }
       })
       .catch((error) => {
         console.log(error, "error");

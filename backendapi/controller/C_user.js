@@ -83,49 +83,61 @@ const userSignUp = async (req, res, next) => {
           }
         });
       } else {
-        // Customer side signup user.
-        var genOtp = Math.floor(100000 + Math.random() * 900000);
+        // Find userrole as CUSTOMER
+        let getRole = await Userrole.findOne({ roletag: "CUSTOMER" }).select(
+          "roletag"
+        );
 
-        let data = {
-          emailaddress: emailaddress,
-          otp: genOtp,
-          verification: true,
-        };
+        if (getRole) {
+          // Customer side signup user.
+          var genOtp = Math.floor(100000 + Math.random() * 900000);
 
-        if (Object.keys(data).length >= 0) {
-          var user = new User({
-            name: name,
+          let data = {
             emailaddress: emailaddress,
-            password: password,
             otp: genOtp,
-            userroll: "626113fadf6c093c730a54fa", // default customer
-          });
+            verification: true,
+          };
 
-          user.save(async (error, doc) => {
-            if (!error) {
-              // send mail.
-              await sendOtp(data);
+          if (Object.keys(data).length >= 0) {
+            var user = new User({
+              name: name,
+              emailaddress: emailaddress,
+              password: password,
+              otp: genOtp,
+              userroll: getRole._id, // default customer
+            });
 
-              return res.send({
-                status: true,
-                message: `OTP sending on your email address ${emailaddress}`,
-              });
-            } else {
-              let errorMsg = {};
+            user.save(async (error, doc) => {
+              if (!error) {
+                // send mail.
+                await sendOtp(data);
 
-              errorMsg.keys = Object.keys(error.keyPattern)[0];
-              errorMsg = `${error.keyValue.emailaddress} is already exists into system`;
+                return res.send({
+                  status: true,
+                  message: `OTP sending on your email address ${emailaddress}`,
+                });
+              } else {
+                let errorMsg = {};
 
-              return res.send({
-                status: false,
-                message: errorMsg,
-              });
-            }
-          });
+                errorMsg.keys = Object.keys(error.keyPattern)[0];
+                errorMsg = `${error.keyValue.emailaddress} is already exists into system`;
+
+                return res.send({
+                  status: false,
+                  message: errorMsg,
+                });
+              }
+            });
+          } else {
+            return res.send({
+              status: false,
+              message: `Data is required for send mail.!`,
+            });
+          }
         } else {
           return res.send({
             status: false,
-            message: `Data is required for send mail.!`,
+            message: `Customer role not found into system.`,
           });
         }
       }

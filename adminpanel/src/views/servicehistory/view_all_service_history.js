@@ -86,7 +86,7 @@ const ViewServices = () => {
           const records = [];
 
           data.data.data.map((record) => {
-            console.log(record, "record");
+            // console.log(record, "record");
             records.push({
               servicehistoryid: record._id,
               name: record.name,
