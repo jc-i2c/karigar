@@ -253,8 +253,8 @@ const AddServices = () => {
                     </CFormLabel>
                     {isEdit ? (
                       <CFormInput
-                        type="emailaddress"
-                        id="emailaddress"
+                        type="email"
+                        id="validationServer01"
                         placeholder="Email address"
                         autoComplete="emailaddress"
                         required
@@ -266,8 +266,8 @@ const AddServices = () => {
                       />
                     ) : (
                       <CFormInput
-                        type="emailaddress"
-                        id="emailaddress"
+                        type="email"
+                        id="validationServer01"
                         placeholder="Email address"
                         autoComplete="emailaddress"
                         required
@@ -286,7 +286,7 @@ const AddServices = () => {
                   <CCol md={6}>
                     <CFormLabel
                       htmlFor="name"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-6 col-form-label"
                     >
                       Name
                     </CFormLabel>
@@ -308,7 +308,7 @@ const AddServices = () => {
                     <CCol md={6}>
                       <CFormLabel
                         htmlFor="password"
-                        className="col-sm-4 col-form-label"
+                        className="col-sm-6 col-form-label"
                       >
                         Password
                       </CFormLabel>
@@ -332,7 +332,7 @@ const AddServices = () => {
                     <CCol md={6}>
                       <CFormLabel
                         htmlFor="password"
-                        className="col-sm-4 col-form-label"
+                        className="col-sm-6 col-form-label"
                       >
                         Confirm Password
                       </CFormLabel>
@@ -358,7 +358,7 @@ const AddServices = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="userrole"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-6 col-form-label"
                     >
                       Userrole
                     </CFormLabel>
@@ -394,7 +394,7 @@ const AddServices = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="mobilenumber"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-6 col-form-label"
                     >
                       Mobile Number
                     </CFormLabel>
@@ -417,9 +417,9 @@ const AddServices = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="userrole"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-6 col-form-label"
                     >
-                      Userrole
+                      Select Gender
                     </CFormLabel>
 
                     <CFormSelect
