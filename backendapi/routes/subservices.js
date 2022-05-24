@@ -12,6 +12,7 @@ const {
   getSingleSubServices,
   deleteSubServices,
   editSubServices,
+  searchSubServices,
 } = require("../controller/C_subservices");
 
 router.post(
@@ -42,5 +43,7 @@ router.post(
   upload.single("subserviceimage"),
   editSubServices
 );
+
+router.post("/search", auth, multipartMiddleware, searchSubServices);
 
 module.exports = router;

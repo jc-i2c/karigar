@@ -881,7 +881,7 @@ const Upcoming = async (req, res, next) => {
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
+          resData.servicedate = moment(serviceDate).format("MMM-DD-YYYY");
 
           findData.push(resData);
         });
@@ -943,7 +943,7 @@ const History = async (req, res, next) => {
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
+          resData.servicedate = moment(serviceDate).format("MMM-DD-YYYY");
 
           findData.push(resData);
         });

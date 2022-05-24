@@ -383,6 +383,75 @@ const editSubServices = async (req, res, next) => {
   }
 };
 
+// Search sub services API.
+const searchSubServices = async (req, res, next) => {
+  try {
+    let servicesId = new mongoose.Types.ObjectId(req.body.servicesid);
+    let subServiceName = req.body.subservicename;
+
+    if (servicesId) {
+      const getQry = await Subservices.find({
+        $or: [
+          {
+            subservicename: { $regex: ".*" + subServiceName + ".*" },
+          },
+        ],
+      })
+        .populate({
+          path: "servicesid",
+          select: "servicename serviceimage",
+        })
+        .where({ servicesid: servicesId });
+
+      let findData = [];
+      if (getQry.length > 0) {
+        let resData = {};
+        getQry.forEach((data) => {
+          resData = data.toObject();
+
+          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+          createDate = resData.createdAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
+
+          // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+          updateDate = resData.updatedAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
+
+          delete resData.__v; // delete resData["__v"]
+
+          findData.push(resData);
+        });
+        return res.send({
+          status: true,
+          message: `${findData.length} Sub service found into system.`,
+          data: findData,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `${findData.length} Sub service not found into system.`,
+        });
+      }
+    } else {
+      return res.send({
+        status: false,
+        message: `Service Id is required.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createSubServices,
   getAllSubServices,
@@ -390,4 +459,5 @@ module.exports = {
   getSingleSubServices,
   deleteSubServices,
   editSubServices,
+  searchSubServices,
 };
