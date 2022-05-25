@@ -311,7 +311,7 @@ const Offers = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/offers");
+                  navigate(-1);
                 },
               });
             } else {
@@ -339,7 +339,7 @@ const Offers = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/offers");
+                  navigate(-1);
                 },
               });
             } else {
@@ -354,8 +354,6 @@ const Offers = () => {
       }
     }
   }
-
-  // console.log(allServiceProvider, "allServiceProvider");
 
   return (
     <div>
@@ -375,13 +373,14 @@ const Offers = () => {
 
                   <CCol md={4}>
                     <CFormLabel
-                      htmlFor="servicename"
-                      className="col-sm-4 col-form-label"
+                      htmlFor="services"
+                      className="col-sm-12 col-form-label"
                     >
                       Select Service
                     </CFormLabel>
                     <CFormSelect
                       required
+                      type="text"
                       id="services"
                       name="services"
                       value={servicesId}
@@ -394,7 +393,7 @@ const Offers = () => {
                         setServicesId(e.target.value);
                       }}
                     >
-                      <option value="selecet services" selected>
+                      <option value="" disabled>
                         Selecet Services
                       </option>
 
@@ -412,8 +411,8 @@ const Offers = () => {
 
                   <CCol md={4}>
                     <CFormLabel
-                      htmlFor="servicename"
-                      className="col-sm-4 col-form-label"
+                      htmlFor="subservices"
+                      className="col-sm-12 col-form-label"
                     >
                       Sub Service
                     </CFormLabel>
@@ -429,7 +428,7 @@ const Offers = () => {
                         setSubServicesId(e.target.value);
                       }}
                     >
-                      <option value="" selected>
+                      <option value="" disabled>
                         Select Sub Services
                       </option>
 
@@ -451,7 +450,7 @@ const Offers = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="servicename"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Service Provider
                     </CFormLabel>
@@ -465,7 +464,7 @@ const Offers = () => {
                         setServicesProviderId(e.target.value);
                       }}
                     >
-                      <option value="" selected>
+                      <option value="" disabled>
                         Select Service Provider
                       </option>
 
@@ -486,20 +485,22 @@ const Offers = () => {
 
                   <CCol md={4}>
                     <CFormLabel
-                      htmlFor="email"
-                      className="col-sm-4 col-form-label"
+                      htmlFor="text"
+                      className="col-sm-12 col-form-label"
                     >
                       Current Price
                     </CFormLabel>
                     <CFormInput
-                      type="number"
                       id="currentprice"
                       placeholder="Current Price"
                       autoComplete="currentprice"
                       required
                       value={currentPrice ? currentPrice : ""}
                       onChange={(e) => {
-                        setCurrentPrice(e.target.value);
+                        var priceReg = /^[0-9]+$/i;
+                        if (priceReg.test(e.target.value)) {
+                          setCurrentPrice(e.target.value);
+                        }
                       }}
                     />
                     {currentPriceError && (
@@ -509,20 +510,22 @@ const Offers = () => {
 
                   <CCol md={4}>
                     <CFormLabel
-                      htmlFor="actualprice"
-                      className="col-sm-4 col-form-label"
+                      htmlFor="text"
+                      className="col-sm-12 col-form-label"
                     >
                       Actual Price
                     </CFormLabel>
                     <CFormInput
-                      type="number"
                       id="actualPrice"
                       placeholder="Actual Price"
                       autoComplete="actualPrice"
                       required
                       value={actualPrice ? actualPrice : ""}
                       onChange={(e) => {
-                        setActualPrice(e.target.value);
+                        var priceReg = /^[0-9]+$/i;
+                        if (priceReg.test(e.target.value)) {
+                          setActualPrice(+e.target.value);
+                        }
                       }}
                     />
                     {actualPriceError && (

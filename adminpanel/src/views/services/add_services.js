@@ -89,7 +89,7 @@ const AddServices = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/services");
+                  navigate(-1);
                 },
               });
             } else {
@@ -119,7 +119,7 @@ const AddServices = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/services");
+                  navigate(-1);
                 },
               });
             } else {

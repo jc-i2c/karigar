@@ -133,7 +133,7 @@ const AddServices = () => {
                   <CCol md={6}>
                     <CFormLabel
                       htmlFor="email"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Customer Support Title
                     </CFormLabel>
@@ -145,7 +145,10 @@ const AddServices = () => {
                       required
                       value={title ? title : ""}
                       onChange={(e) => {
-                        setTitle(e.target.value);
+                        var nameReg = /^[A-Za-z\s]+$/i;
+                        if (nameReg.test(e.target.value)) {
+                          setTitle(e.target.value);
+                        }
                       }}
                     />
                     {titleError && <p className="text-danger">{titleError}</p>}

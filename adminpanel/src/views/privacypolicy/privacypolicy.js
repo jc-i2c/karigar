@@ -84,11 +84,7 @@ const PrivacyPolicy = () => {
         )
         .then((data) => {
           if (data.data.status) {
-            toast.success(data.data.message, {
-              onClose: () => {
-                navigate("privacypolicy");
-              },
-            });
+            toast.success(data.data.message);
           } else {
             toast.error(data.data.message);
           }

@@ -142,25 +142,6 @@ const ViewCustomerSupport = () => {
               </CButton>
             </div>
           </CCardHeader>
-          {/* <CCardHeader className="mb-0 border">
-            Customer Support Sub Title
-          </CCardHeader>
-          <CCardHeader className="mb-0 border">
-            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-              <CButton
-                color="primary"
-                type="button"
-                className="btn btn-success"
-                onClick={() => {
-                  navigate("/addsubtitle", {
-                    state: { titleid: cusSupportTitleId },
-                  });
-                }}
-              >
-                Add Sub Title
-              </CButton>
-            </div>
-          </CCardHeader> */}
 
           <CCardBody>
             <CTable
@@ -267,7 +248,11 @@ const ViewCustomerSupport = () => {
               </template>
             )}
             {/* ---------------------Close Delete Dialog Box---------------------------------- */}
-            <br />
+            <div className="d-md-flex pt-2 justify-content-md-end">
+              <CButton color="primary" onClick={() => navigate(-1)}>
+                Back
+              </CButton>
+            </div>
           </CCardBody>
           <ToastContainer />
         </CCard>

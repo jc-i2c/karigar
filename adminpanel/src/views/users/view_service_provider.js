@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -31,7 +31,6 @@ import {
 
 const ViewServiceProvider = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const token = localStorage.getItem("karigar_token");
 
@@ -187,8 +186,8 @@ const ViewServiceProvider = () => {
                         {item.gender == 1
                           ? "Male"
                           : item.gender == 2
-                            ? "Female"
-                            : "-"}
+                          ? "Female"
+                          : "-"}
                       </div>
                     </CTableDataCell>
                     <CTableDataCell>
@@ -271,7 +270,11 @@ const ViewServiceProvider = () => {
               </template>
             )}
             {/* ---------------------Close Delete Dialog Box---------------------------------- */}
-            <br />
+            <div className="d-md-flex pt-2 justify-content-md-end">
+              <CButton color="primary" onClick={() => navigate(-1)}>
+                Back
+              </CButton>
+            </div>
           </CCardBody>
           <ToastContainer />
         </CCard>

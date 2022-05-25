@@ -372,7 +372,7 @@ const ServiceProvider = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="serviceprovider"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Service Provider
                     </CFormLabel>
@@ -388,7 +388,7 @@ const ServiceProvider = () => {
                       }}
                     >
                       <option defaultValue="select services">
-                        Select Services
+                        Service Provider
                       </option>
 
                       {allServiceProvider.map((item) => (
@@ -409,7 +409,7 @@ const ServiceProvider = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="servicename"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Service
                     </CFormLabel>
@@ -445,7 +445,7 @@ const ServiceProvider = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="subservice"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Sub Service
                     </CFormLabel>
@@ -459,7 +459,9 @@ const ServiceProvider = () => {
                         setSubServicesId(e.target.value);
                       }}
                     >
-                      <option value="">Select Sub Services</option>
+                      <option value="" disabled>
+                        Select Sub Services
+                      </option>
 
                       {allSubServices.map((item) => (
                         <option
@@ -480,7 +482,7 @@ const ServiceProvider = () => {
                     <CCol md={6}>
                       <CFormLabel
                         htmlFor="descripation"
-                        className="col-sm-8 col-form-label"
+                        className="col-sm-12 col-form-label"
                       >
                         Descripation
                       </CFormLabel>
@@ -506,19 +508,22 @@ const ServiceProvider = () => {
                         <CCol md={6}>
                           <CFormLabel
                             htmlFor="price"
-                            className="col-sm-6 col-form-label"
+                            className="col-sm-12 col-form-label"
                           >
                             Service Price
                           </CFormLabel>
                           <CFormInput
-                            type="number"
+                            type="text"
                             id="price"
                             placeholder="Service Price"
                             autoComplete="price"
                             required
                             value={price ? price : ""}
                             onChange={(e) => {
-                              setPrice(e.target.value);
+                              var priceReg = /^[0-9]+$/i;
+                              if (priceReg.test(e.target.value)) {
+                                setPrice(e.target.value);
+                              }
                             }}
                           />
                           {priceError && (
@@ -529,7 +534,7 @@ const ServiceProvider = () => {
                         <CCol md={6}>
                           <CFormLabel
                             htmlFor="name"
-                            className="col-sm-6 col-form-label"
+                            className="col-sm-12 col-form-label"
                           >
                             Name
                           </CFormLabel>
@@ -541,7 +546,10 @@ const ServiceProvider = () => {
                             required
                             value={name ? name : ""}
                             onChange={(e) => {
-                              setName(e.target.value);
+                              var nameReg = /^[A-Za-z\s]+$/i;
+                              if (nameReg.test(e.target.value)) {
+                                setName(e.target.value);
+                              }
                             }}
                           />
                           {nameError && (
@@ -554,7 +562,7 @@ const ServiceProvider = () => {
                         <CCol md={9}>
                           <CFormLabel
                             htmlFor="Image"
-                            className="col-sm-6 col-form-label"
+                            className="col-sm-12 col-form-label"
                           >
                             Image
                           </CFormLabel>
@@ -615,20 +623,23 @@ const ServiceProvider = () => {
                   <br />
                   <br />
                   <div>
-                    <CCol md={4}>
-                      <CFormLabel
-                        htmlFor="servicedetails"
-                        className="col-sm-6 col-form-label"
-                      >
-                        Add Service Details
-                      </CFormLabel>
-
-                      <AddCircleOutline
-                        onClick={() => {
-                          addTextControll();
-                        }}
-                      />
-                    </CCol>
+                    <CRow md={12}>
+                      <CCol md={2}>
+                        <CFormLabel
+                          htmlFor="servicedetails"
+                          className="col-sm-12 col-form-label"
+                        >
+                          Add Service Details
+                        </CFormLabel>
+                      </CCol>
+                      <CCol md={4}>
+                        <AddCircleOutline
+                          onClick={() => {
+                            addTextControll();
+                          }}
+                        />
+                      </CCol>
+                    </CRow>
                     {textBox &&
                       textBox.map((item, index) => {
                         return (
@@ -637,7 +648,7 @@ const ServiceProvider = () => {
                               <CCol md={3}>
                                 <CFormLabel
                                   htmlFor="keyname"
-                                  className="col-sm-6 col-form-label"
+                                  className="col-sm-12 col-form-label"
                                 >
                                   Key Name
                                 </CFormLabel>
@@ -649,18 +660,21 @@ const ServiceProvider = () => {
                                   required
                                   value={item.name}
                                   onChange={(e) => {
-                                    updateValue(
-                                      item.id,
-                                      "name",
-                                      e.target.value,
-                                    );
+                                    var nameReg = /^[A-Za-z\s]+$/i;
+                                    if (nameReg.test(e.target.value)) {
+                                      updateValue(
+                                        item.id,
+                                        "name",
+                                        e.target.value,
+                                      );
+                                    }
                                   }}
                                 />
                               </CCol>
                               <CCol md={3}>
                                 <CFormLabel
                                   htmlFor="keyvalue"
-                                  className="col-sm-6 col-form-label"
+                                  className="col-sm-12 col-form-label"
                                 >
                                   Key Value
                                 </CFormLabel>

@@ -195,7 +195,7 @@ const AddUserroles = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="rolename"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Userrole Name
                     </CFormLabel>
@@ -221,7 +221,7 @@ const AddUserroles = () => {
                     <CCol md={4}>
                       <CFormLabel
                         htmlFor="roletag"
-                        className="col-sm-4 col-form-label"
+                        className="col-sm-12 col-form-label"
                       >
                         Role Tag
                       </CFormLabel>
@@ -247,50 +247,46 @@ const AddUserroles = () => {
                   <br />
                   <br />
                   <div className="row">
-                    <CCol md={6}>
+                    <CCol md={12}>
                       <CFormLabel
                         htmlFor="rolename"
-                        className="col-sm-4 col-form-label"
+                        className="col-sm-12 col-form-label"
                       >
                         <b>Select Permission</b>
                       </CFormLabel>
 
-                      <div className="container">
-                        {allSystemModules &&
-                          allSystemModules.map((item, index) => {
-                            return (
-                              <CFormCheck
-                                key={index}
-                                type="checkbox"
-                                color="primary"
-                                size="xl"
-                                label={item.modulesname}
-                                checked={(() => {
-                                  let flag = false;
-                                  rolePermission &&
-                                    rolePermission.map((list) => {
-                                      if (item.modulesid === list) {
-                                        if (
-                                          rolePermission.includes(
-                                            item.modulesid,
-                                          )
-                                        ) {
-                                          flag = true;
-                                        }
+                      {allSystemModules &&
+                        allSystemModules.map((item, index) => {
+                          return (
+                            <CFormCheck
+                              key={index}
+                              type="checkbox"
+                              color="primary"
+                              size="xl"
+                              label={item.modulesname}
+                              checked={(() => {
+                                let flag = false;
+                                rolePermission &&
+                                  rolePermission.map((list) => {
+                                    if (item.modulesid === list) {
+                                      if (
+                                        rolePermission.includes(item.modulesid)
+                                      ) {
+                                        flag = true;
                                       }
-                                    });
-                                  return flag;
-                                })()}
-                                onChange={(e) => {
-                                  setPermission(item.modulesid);
-                                }}
-                              />
-                            );
-                          })}
-                        {permissionError && (
-                          <p className="text-danger">{permissionError}</p>
-                        )}
-                      </div>
+                                    }
+                                  });
+                                return flag;
+                              })()}
+                              onChange={(e) => {
+                                setPermission(item.modulesid);
+                              }}
+                            />
+                          );
+                        })}
+                      {permissionError && (
+                        <p className="text-danger">{permissionError}</p>
+                      )}
                     </CCol>
                   </div>
 

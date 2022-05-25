@@ -310,7 +310,11 @@ const ViewServices = () => {
               </template>
             )}
             {/* ---------------------Close Delete Dialog Box---------------------------------- */}
-            <br />
+            <div className="d-md-flex pt-2 justify-content-md-end">
+              <CButton color="primary" onClick={() => navigate(-1)}>
+                Back
+              </CButton>
+            </div>
           </CCardBody>
           <ToastContainer />
         </CCard>

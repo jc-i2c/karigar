@@ -127,7 +127,11 @@ const ViewSystemModules = () => {
               </CTableBody>
             </CTable>
 
-            <br />
+            <div className="d-md-flex pt-2 justify-content-md-end mb-0">
+              <CButton color="primary" onClick={() => navigate(-1)}>
+                Back
+              </CButton>
+            </div>
           </CCardBody>
           <ToastContainer />
         </CCard>

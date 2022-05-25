@@ -49,6 +49,7 @@ const AddServices = () => {
   const [mobileNumberError, setMobileNumberError] = useState("");
   const [genderError, setGenderError] = useState("");
   const [userroleError, setUSerroleError] = useState("");
+  const [numberError, setNumberError] = useState(false);
 
   // Gel all userroel.
   useEffect(() => {
@@ -84,6 +85,7 @@ const AddServices = () => {
 
   // Error state empty.
   useEffect(() => {
+    setValidated(false);
     setNameError("");
     setEmailAdressError("");
     setPasswordError("");
@@ -92,7 +94,6 @@ const AddServices = () => {
     setUSerroleError("");
     setMobileNumberError("");
     setGenderError("");
-    setValidated(false);
   }, [
     name,
     emailAddress,
@@ -119,19 +120,19 @@ const AddServices = () => {
   // Add edit users.
   function addNewUsers() {
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
-      setValidated(false);
+      setValidated(true);
       setEmailAdressError("Please enter valid email address");
     }
-    if (!/^[A-Za-z\s]+$/i.test(name)) {
-      setValidated(false);
-      setNameError("Please enter valid name");
+    if (!name) {
+      setValidated(true);
+      setNameError("Please enter name");
     }
     if (
       !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
         password,
       )
     ) {
-      setValidated(false);
+      setValidated(true);
       setPasswordError("Please enter strong password");
     }
     if (
@@ -139,26 +140,26 @@ const AddServices = () => {
         confirmPassword,
       )
     ) {
-      setValidated(false);
+      setValidated(true);
       setConfirmPasswordError("Please enter strong password");
     }
     if (!password === confirmPassword) {
-      setValidated(false);
+      setValidated(true);
       setPasswordMatchError("Password and confirm password does not match");
     }
     if (!userrole) {
-      setValidated(false);
+      setValidated(true);
       setUSerroleError("Please select userrole");
     }
     if (!/^[6-9]\d{9}$/i.test(mobileNumber)) {
-      setValidated(false);
+      setValidated(true);
       setMobileNumberError("Please enter valid mobile number");
     }
     if (!gender) {
-      setValidated(false);
+      setValidated(true);
       setGenderError("Please select gender");
     } else {
-      if (validated == true) {
+      if (validated == false) {
         if (isEdit) {
           // Admin edit userdata.
           var data = new FormData();
@@ -252,7 +253,7 @@ const AddServices = () => {
                   <CCol md={6}>
                     <CFormLabel
                       htmlFor="emailaddress"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Email Address
                     </CFormLabel>
@@ -291,7 +292,7 @@ const AddServices = () => {
                   <CCol md={6}>
                     <CFormLabel
                       htmlFor="name"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Name
                     </CFormLabel>
@@ -316,7 +317,7 @@ const AddServices = () => {
                     <CCol md={6}>
                       <CFormLabel
                         htmlFor="password"
-                        className="col-sm-6 col-form-label"
+                        className="col-sm-12 col-form-label"
                       >
                         Password
                       </CFormLabel>
@@ -340,7 +341,7 @@ const AddServices = () => {
                     <CCol md={6}>
                       <CFormLabel
                         htmlFor="password"
-                        className="col-sm-6 col-form-label"
+                        className="col-sm-12 col-form-label"
                       >
                         Confirm Password
                       </CFormLabel>
@@ -366,7 +367,7 @@ const AddServices = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="userrole"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Userrole
                     </CFormLabel>
@@ -380,7 +381,7 @@ const AddServices = () => {
                         setUserrole(e.target.value);
                       }}
                     >
-                      <option value="" selected>
+                      <option value="" disabled>
                         Selecet Userrole
                       </option>
 
@@ -402,7 +403,7 @@ const AddServices = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="mobilenumber"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Mobile Number
                     </CFormLabel>
@@ -415,7 +416,10 @@ const AddServices = () => {
                       autoComplete="mobilenumber"
                       value={mobileNumber ? mobileNumber : ""}
                       onChange={(e) => {
-                        setMobileNumber(+e.target.value);
+                        var numberReg = /^[0-9]+$/i;
+                        if (numberReg.test(e.target.value)) {
+                          setMobileNumber(e.target.value);
+                        }
                       }}
                     />
                     {mobileNumberError && (
@@ -426,7 +430,7 @@ const AddServices = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="userrole"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Select Gender
                     </CFormLabel>
@@ -440,7 +444,7 @@ const AddServices = () => {
                         setGender(e.target.value);
                       }}
                     >
-                      <option value="" selected>
+                      <option value="" disabled>
                         Gender
                       </option>
                       <option value="1">Male</option>

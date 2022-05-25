@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,9 +18,11 @@ import {
   CTableHeaderCell,
   CTableRow,
   CFormSelect,
+  CButton,
 } from "@coreui/react";
 
 const ViewServices = () => {
+  const navigate = useNavigate();
   const token = localStorage.getItem("karigar_token");
   const [offers, setOffers] = useState([]);
 
@@ -272,7 +275,11 @@ const ViewServices = () => {
               </CTableBody>
             </CTable>
 
-            <br />
+            <div className="d-md-flex pt-2 justify-content-md-end">
+              <CButton color="primary" onClick={() => navigate(-1)}>
+                Back
+              </CButton>
+            </div>
           </CCardBody>
           <ToastContainer />
         </CCard>

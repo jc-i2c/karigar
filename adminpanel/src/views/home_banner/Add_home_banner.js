@@ -104,7 +104,7 @@ const HomeBanner = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/dashboard");
+                  navigate(-1);
                 },
               });
             } else {
@@ -135,7 +135,7 @@ const HomeBanner = () => {
             if (data.data.status) {
               toast.success(data.data.message, {
                 onClose: () => {
-                  navigate("/dashboard");
+                  navigate(-1);
                 },
               });
             } else {

@@ -72,7 +72,10 @@ const AddCustomerSubTitle = () => {
 
   // Edit sub title data.
   useEffect(() => {
-    if (location.state) {
+    if (location.state.titleid) {
+      setTitle(location.state.titleid);
+    }
+    if (location.state.subtitleid) {
       setIsEdit(true);
       setTitle(location.state.titleid);
       setSubTitleId(location.state.subtitleid);
@@ -103,7 +106,6 @@ const AddCustomerSubTitle = () => {
     } else {
       if (isEdit) {
         // Edit data
-
         setSpinner(true);
         var data = new FormData();
         data.append("custsuptitleid", title);
@@ -143,7 +145,7 @@ const AddCustomerSubTitle = () => {
 
         axios
           .post(
-            `${process.env.REACT_APP_APIURL}/karigar/custsupsubtitle/edit`,
+            `${process.env.REACT_APP_APIURL}/karigar/custsupsubtitle/create`,
             data,
             {
               headers: { Authorization: `Bearer ${token}` },
@@ -188,7 +190,7 @@ const AddCustomerSubTitle = () => {
                   <CCol md={6}>
                     <CFormLabel
                       htmlFor="title"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Select Customer Support Title
                     </CFormLabel>
@@ -219,7 +221,7 @@ const AddCustomerSubTitle = () => {
                   <CCol md={6}>
                     <CFormLabel
                       htmlFor="subtitle"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Customer Support Sub Title
                     </CFormLabel>
@@ -231,7 +233,10 @@ const AddCustomerSubTitle = () => {
                       required
                       value={subTitle ? subTitle : ""}
                       onChange={(e) => {
-                        setSubTitle(e.target.value);
+                        var nameReg = /^[A-Za-z\s]+$/i;
+                        if (nameReg.test(e.target.value)) {
+                          setSubTitle(e.target.value);
+                        }
                       }}
                     />
                     {subTitleError && (

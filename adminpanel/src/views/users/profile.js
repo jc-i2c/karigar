@@ -228,7 +228,7 @@ const UserProfile = () => {
                         setGender(e.target.value);
                       }}
                     >
-                      <option value="" defaultValue>
+                      <option value="" disabled>
                         Gender
                       </option>
                       <option value="1">Male</option>
