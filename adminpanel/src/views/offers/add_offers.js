@@ -103,6 +103,7 @@ const Offers = () => {
         )
         .then((data) => {
           const records = [];
+
           if (data.data.data) {
             data.data.data.map((record) => {
               records.push({
@@ -497,8 +498,8 @@ const Offers = () => {
                       required
                       value={currentPrice ? currentPrice : ""}
                       onChange={(e) => {
-                        var priceReg = /^[0-9]*\.?[0-9]*$/;
-                        if (priceReg.test(e.target.value)) {
+                        var currentReg = /^[0-9]*\.?[0-9]*$/;
+                        if (currentReg.test(e.target.value)) {
                           setCurrentPrice(e.target.value);
                         }
                       }}
@@ -520,11 +521,11 @@ const Offers = () => {
                       placeholder="Actual Price"
                       autoComplete="actualPrice"
                       required
-                      value={actualPrice ? actualPrice : ""}
+                      value={actualPrice}
                       onChange={(e) => {
-                        var priceReg = /^[0-9]*\.?[0-9]*$/;
-                        if (priceReg.test(e.target.value)) {
-                          setActualPrice(+e.target.value);
+                        var actualReg = /^[0-9]*\.?[0-9]*$/;
+                        if (actualReg.test(e.target.value)) {
+                          setActualPrice(e.target.value);
                         }
                       }}
                     />
