@@ -387,12 +387,12 @@ const searchSubServices = async (req, res, next) => {
 
     if (servicesId) {
       const getQry = await Subservices.find({
-        $text: { $search: subServiceName },
-        deleted: false
+        subservicename: { $regex: ".*" + subServiceName + ".*", $options: "i" },
+        deleted: false,
       })
         .populate({
           path: "servicesid",
-          select: "servicename serviceimage",
+          select: "servicename",
         })
         .where({ servicesid: servicesId });
 
@@ -445,6 +445,45 @@ const searchSubServices = async (req, res, next) => {
   }
 };
 
+// Search services and sub services for home pages API(GLOBAL SEARCH).
+const searchAllServices = async (req, res, next) => {
+  try {
+    let text = req.body.text;
+
+    let findServices = await Services.find({
+      servicename: { $regex: ".*" + text + ".*", $options: "i" },
+    }).select("servicename serviceimage");
+
+    let findSubServices = await Subservices.find({
+      subservicename: { $regex: ".*" + text + ".*", $options: "i" },
+    }).select("subservicename subserviceimage");
+
+    if (findServices.length > 0 || findSubServices.length > 0) {
+      let findData = [];
+      findServices.map((services) => {
+        findData.push(services);
+      });
+      findSubServices.map((subservices) => {
+        findData.push(subservices);
+      });
+
+      return res.send({
+        status: true,
+        message: `${findData.length} Data found into system.`,
+        data: findData,
+      });
+    } else {
+      return res.send({
+        status: false,
+        message: `Data not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createSubServices,
   getAllSubServices,
@@ -453,4 +492,5 @@ module.exports = {
   deleteSubServices,
   editSubServices,
   searchSubServices,
+  searchAllServices,
 };

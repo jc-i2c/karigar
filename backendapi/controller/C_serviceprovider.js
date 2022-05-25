@@ -824,6 +824,81 @@ const getProviderList = async (req, res, next) => {
   }
 };
 
+// Search service provider API.
+const searchServiceProvider = async (req, res, next) => {
+  try {
+    const subServiceId = req.body.subserviceid;
+    let serviceProviderName = req.body.name;
+
+    if (mongoose.Types.ObjectId.isValid(subServiceId)) {
+      const getQry = await Serviceprovider.find({
+        subserviceid: subServiceId,
+        isactive: true,
+        deleted: false,
+      })
+        .where({
+          name: {
+            $regex: ".*" + serviceProviderName + ".*",
+            $options: "i",
+          },
+        })
+        .populate({ path: "userid", select: "name" })
+        .populate({
+          path: "subserviceid",
+          select: "subservicename subserviceimage",
+          populate: { path: "servicesid", select: "servicename serviceimage" },
+        });
+
+      if (getQry.length > 0) {
+        let serviceProvider = await Promise.all(
+          getQry.map(async (dataList) => {
+            let objectData = {};
+            objectData = dataList.toJSON();
+
+            let findOffer = await Offer.findOne()
+              .where({
+                subserviceid: objectData.subserviceid._id,
+                serviceproviderid: objectData._id,
+                isactive: true,
+              })
+              .select("currentprice actualprice");
+
+            if (findOffer) {
+              delete objectData.price;
+              objectData.currentprice = findOffer.currentprice;
+              objectData.actualprice = findOffer.actualprice;
+              return objectData;
+            } else {
+              objectData.currentprice = objectData.price;
+              delete objectData.price;
+              return objectData;
+            }
+          })
+        );
+
+        return res.send({
+          status: true,
+          message: `${serviceProvider.length} Service provider found into system.`,
+          data: serviceProvider,
+        });
+      } else {
+        return res.send({
+          status: false,
+          message: `${getQry.length} Service provider not found into system.`,
+        });
+      }
+    } else {
+      return res.send({
+        status: false,
+        message: `Service provider not found into system.`,
+      });
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
 module.exports = {
   createProvider,
   editProvider,
@@ -838,4 +913,5 @@ module.exports = {
   getSubServiceList,
   getSerProOwnList,
   getProviderList,
+  searchServiceProvider,
 };

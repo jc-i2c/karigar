@@ -118,20 +118,20 @@ const AddServices = () => {
 
   // Add edit users.
   function addNewUsers() {
-    if (!/^[a-zA-Z]/i.test(name)) {
-      setValidated(true);
-      setNameError("Please enter valid name");
-    }
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
-      setValidated(true);
+      setValidated(false);
       setEmailAdressError("Please enter valid email address");
+    }
+    if (!/^[A-Za-z\s]+$/i.test(name)) {
+      setValidated(false);
+      setNameError("Please enter valid name");
     }
     if (
       !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
         password,
       )
     ) {
-      setValidated(true);
+      setValidated(false);
       setPasswordError("Please enter strong password");
     }
     if (
@@ -139,91 +139,96 @@ const AddServices = () => {
         confirmPassword,
       )
     ) {
-      setValidated(true);
+      setValidated(false);
       setConfirmPasswordError("Please enter strong password");
     }
     if (!password === confirmPassword) {
-      setValidated(true);
+      setValidated(false);
       setPasswordMatchError("Password and confirm password does not match");
     }
     if (!userrole) {
-      setValidated(true);
+      setValidated(false);
       setUSerroleError("Please select userrole");
     }
     if (!/^[6-9]\d{9}$/i.test(mobileNumber)) {
-      setValidated(true);
+      setValidated(false);
       setMobileNumberError("Please enter valid mobile number");
     }
     if (!gender) {
-      setValidated(true);
+      setValidated(false);
       setGenderError("Please select gender");
     } else {
-      if (isEdit) {
-        // Admin edit userdata.
-        var data = new FormData();
-        data.append("emailaddress", emailAddress);
-        data.append("name", name);
-        data.append("userroll", userrole);
-        data.append("mobilenumber", mobileNumber);
-        data.append("gender", gender);
-        data.append("userid", userId);
+      if (validated == true) {
+        if (isEdit) {
+          // Admin edit userdata.
+          var data = new FormData();
+          data.append("emailaddress", emailAddress);
+          data.append("name", name);
+          data.append("userroll", userrole);
+          data.append("mobilenumber", mobileNumber);
+          data.append("gender", gender);
+          data.append("userid", userId);
 
-        axios
-          .post(
-            `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
-            data,
-            {
+          axios
+            .post(
+              `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
+              data,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              },
+            )
+            .then((data) => {
+              if (data.data.status) {
+                toast.success(data.data.message, {
+                  onClose: () => {
+                    navigate(-1);
+                  },
+                });
+              } else {
+                toast.error(data.data.message);
+              }
+              setSpinner(false);
+            })
+            .catch((error) => {
+              console.log(error, "error");
+              setSpinner(false);
+            });
+        } else {
+          // Add new users.
+          var data = new FormData();
+          data.append("name", name);
+          data.append("emailaddress", emailAddress);
+          data.append("password", password);
+          data.append("confirmpassword", confirmPassword);
+          data.append("userroll", userrole);
+          data.append("isadmin", true);
+          data.append("mobilenumber", mobileNumber);
+          data.append("gender", gender);
+
+          axios
+            .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
               headers: { Authorization: `Bearer ${token}` },
-            },
-          )
-          .then((data) => {
-            if (data.data.status) {
-              toast.success(data.data.message, {
-                onClose: () => {
-                  navigate(-1);
-                },
-              });
-            } else {
-              toast.error(data.data.message);
-            }
-            setSpinner(false);
-          })
-          .catch((error) => {
-            console.log(error, "error");
-            setSpinner(false);
-          });
-      } else {
-        // Add new users.
-        var data = new FormData();
-        data.append("name", name);
-        data.append("emailaddress", emailAddress);
-        data.append("password", password);
-        data.append("confirmpassword", confirmPassword);
-        data.append("userroll", userrole);
-        data.append("isadmin", true);
-        data.append("mobilenumber", mobileNumber);
-        data.append("gender", gender);
-
-        axios
-          .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then((data) => {
-            if (data.data.status) {
-              toast.success(data.data.message, {
-                onClose: () => {
-                  navigate(-1);
-                },
-              });
-            } else {
-              toast.error(data.data.message);
-            }
-            setSpinner(false);
-          })
-          .catch((error) => {
-            console.log(error, "error");
-            setSpinner(false);
-          });
+            })
+            .then((data) => {
+              if (data.data.status) {
+                toast.success(data.data.message, {
+                  onClose: () => {
+                    navigate(-1);
+                  },
+                });
+              } else {
+                toast.error(data.data.message);
+              }
+              if (data.data.status == false) {
+                toast.error(data.data.message.confirmpassword);
+              }
+              setSpinner(false);
+            })
+            .catch((error) => {
+              console.log(error, "error");
+              setSpinner(false);
+            });
+        }
       }
     }
   }
@@ -238,7 +243,7 @@ const AddServices = () => {
                 <CForm
                   className="row g-3"
                   noValidate
-                  validated={validated}
+                  validated={validated && validated}
                   onSubmit={addNewUsers}
                 >
                   <h3>Users</h3>
@@ -298,7 +303,10 @@ const AddServices = () => {
                       required
                       value={name ? name : ""}
                       onChange={(e) => {
-                        setName(e.target.value);
+                        var nameReg = /^[A-Za-z\s]+$/i;
+                        if (nameReg.test(e.target.value)) {
+                          setName(e.target.value);
+                        }
                       }}
                     />
                     {nameError && <p className="text-danger">{nameError}</p>}
@@ -400,13 +408,14 @@ const AddServices = () => {
                     </CFormLabel>
                     <CFormInput
                       required
-                      type="number"
+                      type="text"
                       id="mobilenumber"
+                      maxLength="10"
                       placeholder="Mobile Number"
                       autoComplete="mobilenumber"
                       value={mobileNumber ? mobileNumber : ""}
                       onChange={(e) => {
-                        setMobileNumber(e.target.value);
+                        setMobileNumber(+e.target.value);
                       }}
                     />
                     {mobileNumberError && (

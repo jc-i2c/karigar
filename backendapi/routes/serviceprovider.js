@@ -19,6 +19,7 @@ const {
   getSubServiceList,
   getSerProOwnList,
   getProviderList,
+  searchServiceProvider,
 } = require("../controller/C_serviceprovider");
 
 router.post("/create", auth, upload.single("image"), createProvider);
@@ -63,5 +64,7 @@ router.post("/subserviceslist", auth, multipartMiddleware, getSubServiceList);
 router.post("/ownlist", auth, multipartMiddleware, getSerProOwnList);
 
 router.post("/getproviderlist", auth, multipartMiddleware, getProviderList);
+
+router.post("/search", auth, multipartMiddleware, searchServiceProvider);
 
 module.exports = router;

@@ -13,6 +13,7 @@ const {
   deleteSubServices,
   editSubServices,
   searchSubServices,
+  searchAllServices,
 } = require("../controller/C_subservices");
 
 router.post(
@@ -45,5 +46,7 @@ router.post(
 );
 
 router.post("/search", auth, multipartMiddleware, searchSubServices);
+
+router.post("/searchall", auth, multipartMiddleware, searchAllServices);
 
 module.exports = router;
