@@ -19,7 +19,7 @@ const createChatReq = async (data, req, res, next) => {
     });
 
     if (getQryChat.length > 0) {
-      console.log(`Chat request is already created.`);
+      // console.log(`Chat request is already created.`);
     } else {
       var chatRequest = new ChatRequest({
         customerid: customerid,
@@ -29,9 +29,9 @@ const createChatReq = async (data, req, res, next) => {
       const insertQryChat = await chatRequest.save();
 
       if (insertQryChat) {
-        console.log(`Chat request created.`);
+        // console.log(`Chat request created.`);
       } else {
-        console.log(`Chat request not created.`);
+        // console.log(`Chat request not created.`);
       }
     }
   } catch (error) {
@@ -62,7 +62,7 @@ const changeStatus = async (getData) => {
           errorMsg = { ...errorMsg, [`${error.path}`]: error.message };
         });
 
-        console.log("Error validation");
+        // console.log("Error validation");
       } else {
         const getQry = await ChatRequest.findById(data.chatrequestid);
 
@@ -77,20 +77,20 @@ const changeStatus = async (getData) => {
             );
 
             if (result) {
-              console.log("Chat request status changed.");
+              // console.log("Chat request status changed.");
               return result;
             } else {
-              console.log("Chat request status not changed.");
+              // console.log("Chat request status not changed.");
             }
           }
         } else {
-          console.log("Chat request not found into system.");
+          // console.log("Chat request not found into system.");
         }
       }
     }
   } catch (error) {
-    console.log(error, "ERROR");
-    // next(error);
+    // console.log(error, "ERROR");
+    throw new Error(error.message);
   }
 };
 
@@ -106,14 +106,15 @@ const checkStatus = async (chatRequestId) => {
         // console.log(findStatus, "findStatus");
         return findStatus;
       } else {
-        console.log("Chat request not find");
+        // console.log("Chat request not find");
       }
     } else {
-      console.log("Chat request Id is required");
+      // console.log("Chat request Id is required");
     }
   } catch (error) {
-    console.log(error, "ERROR");
+    // console.log(error, "ERROR");
     // next(error);
+    throw new Error(error.message);
   }
 };
 
@@ -155,8 +156,6 @@ const getAllChatRequest = async (data) => {
 
         findData.push(resData);
       });
-
-      console.log(findData, "findData");
 
       return res.send({
         status: true,
@@ -214,8 +213,6 @@ const getAllCusChatRequest = async (data) => {
         findData.push(resData);
       });
 
-      console.log(findData, "findData");
-
       return res.send({
         status: true,
         message: `${getQry.length} Data found into system.`,
@@ -242,10 +239,10 @@ const getAllMessage = async (data, req, res, next) => {
 
     if (getQry.length > 0) {
       getQry.forEach((element) => {
-        console.log(element.message, "element.message");
+        // console.log(element.message, "element.message");
       });
     } else {
-      console.log(`No chat found into system.`);
+      // console.log(`No chat found into system.`);
     }
   } catch (error) {
     throw new Error(error.message);
@@ -294,7 +291,7 @@ const sendMessage = async (data) => {
             const chatCraeteQry = await chatCreate.save();
 
             if (chatCraeteQry) {
-              console.log(`New chat created.`);
+              // console.log(`New chat created.`);
 
               let newObj = chatCraeteQry.toObject();
 
@@ -308,10 +305,10 @@ const sendMessage = async (data) => {
 
               return newObj;
             } else {
-              console.log(`Chat not created.`);
+              // console.log(`Chat not created.`);
             }
           } else {
-            console.log(`Chat room is block.`);
+            // console.log(`Chat room is block.`);
           }
         } else {
           // Room code.
@@ -335,7 +332,7 @@ const sendMessage = async (data) => {
             const chatCraeteQry = await chatCreate.save();
 
             if (chatCraeteQry) {
-              console.log(`New chat created.`);
+              // console.log(`New chat created.`);
 
               let newObj = chatCraeteQry.toObject();
 
@@ -349,19 +346,19 @@ const sendMessage = async (data) => {
 
               return newObj;
             } else {
-              console.log(`Chat not created.`);
+              // console.log(`Chat not created.`);
             }
           }
         }
       } else {
         // Pending or reject status only show.
         if (chatReqData.chatstatus === 1 || chatReqData.chatstatus == 1) {
-          console.log(`Your request is pending.`);
+          // console.log(`Your request is pending.`);
         } else if (
           chatReqData.chatstatus === 3 ||
           chatReqData.chatstatus == 3
         ) {
-          console.log(`Your request is reject.`);
+          // console.log(`Your request is reject.`);
         }
       }
     } else {
@@ -394,7 +391,7 @@ const sendMessage = async (data) => {
           const chatCraeteQry = await chatCreate.save();
 
           if (chatCraeteQry) {
-            console.log(`New chat created.`);
+            // console.log(`New chat created.`);
 
             let newObj = chatCraeteQry.toObject();
 
@@ -408,14 +405,15 @@ const sendMessage = async (data) => {
 
             return newObj;
           } else {
-            console.log(`Chat not created.`);
+            // console.log(`Chat not created.`);
           }
         }
       }
     }
   } catch (error) {
-    console.log(error, "ERROR");
+    // console.log(error, "ERROR");
     // next(error);
+    throw new Error(error.message);
   }
 };
 
@@ -462,15 +460,16 @@ const createChatRoom = async (data) => {
       const insertQry = await chatRoom.save();
 
       if (insertQry) {
-        console.log(insertQry, "insertQry");
-        console.log("Chat room created.");
+        // console.log(insertQry, "insertQry");
+        // console.log("Chat room created.");
       } else {
-        console.log("Chat room not created.");
+        // console.log("Chat room not created.");
       }
     }
   } catch (error) {
-    console.log(error, "ERROR");
+    // console.log(error, "ERROR");
     // next(error);
+    throw new Error(error.message);
   }
 };
 

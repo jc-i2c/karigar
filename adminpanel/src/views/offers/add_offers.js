@@ -497,7 +497,7 @@ const Offers = () => {
                       required
                       value={currentPrice ? currentPrice : ""}
                       onChange={(e) => {
-                        var priceReg = /^[0-9]+$/i;
+                        var priceReg = /^[0-9]*\.?[0-9]*$/;
                         if (priceReg.test(e.target.value)) {
                           setCurrentPrice(e.target.value);
                         }
@@ -522,7 +522,7 @@ const Offers = () => {
                       required
                       value={actualPrice ? actualPrice : ""}
                       onChange={(e) => {
-                        var priceReg = /^[0-9]+$/i;
+                        var priceReg = /^[0-9]*\.?[0-9]*$/;
                         if (priceReg.test(e.target.value)) {
                           setActualPrice(+e.target.value);
                         }

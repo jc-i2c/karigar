@@ -127,7 +127,7 @@ const AddServices = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="password"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Old Password
                     </CFormLabel>
@@ -150,7 +150,7 @@ const AddServices = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="password"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       New Password
                     </CFormLabel>
@@ -172,7 +172,7 @@ const AddServices = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="password"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Confirm password
                     </CFormLabel>

@@ -123,7 +123,8 @@ const getAllRole = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log(error, "ERROR");
+    // console.log(error, "ERROR");
+    next(error);
   }
 };
 

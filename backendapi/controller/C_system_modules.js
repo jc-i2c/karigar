@@ -76,7 +76,8 @@ const getModules = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log(error, `ERROR`);
+    // console.log(error, `ERROR`);
+    next(error);
   }
 };
 
@@ -106,7 +107,8 @@ const updateModules = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log(error, "ERROR");
+    // console.log(error, "ERROR");
+    next(error);
   }
 };
 

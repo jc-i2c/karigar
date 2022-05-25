@@ -520,7 +520,7 @@ const ServiceProvider = () => {
                             required
                             value={price ? price : ""}
                             onChange={(e) => {
-                              var priceReg = /^[0-9]+$/i;
+                              var priceReg = /^[0-9]*\.?[0-9]*$/;
                               if (priceReg.test(e.target.value)) {
                                 setPrice(e.target.value);
                               }
@@ -546,7 +546,7 @@ const ServiceProvider = () => {
                             required
                             value={name ? name : ""}
                             onChange={(e) => {
-                              var nameReg = /^[A-Za-z\s]+$/i;
+                              var nameReg = /^[A-Za-z\s]*$/;
                               if (nameReg.test(e.target.value)) {
                                 setName(e.target.value);
                               }
@@ -660,7 +660,7 @@ const ServiceProvider = () => {
                                   required
                                   value={item.name}
                                   onChange={(e) => {
-                                    var nameReg = /^[A-Za-z\s]+$/i;
+                                    var nameReg = /^[A-Za-z\s]*$/;
                                     if (nameReg.test(e.target.value)) {
                                       updateValue(
                                         item.id,

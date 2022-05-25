@@ -1,27 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-import {
-  CCard,
-  CCardHeader,
-  CCol,
-  CRow,
-  CButton,
-  CDropdown,
-  CDropdownToggle,
-  CDropdownMenu,
-  CDropdownItem,
-} from "@coreui/react";
-
-import { cilMenu } from "@coreui/icons";
-import CIcon from "@coreui/icons-react";
+import { CCard, CCardHeader, CCol, CRow } from "@coreui/react";
 
 import io from "socket.io-client";
 const socket = io.connect(process.env.REACT_APP_APIURL);
 
 const ViewCustomerChat = () => {
   const token = localStorage.getItem("karigar_token");
-  const [roleName, setRoleName] = useState("");
 
   const [cutomerList, setCutomerList] = useState([]);
   const [getAllMessage, setGetAllMessage] = useState([]);
@@ -30,22 +16,6 @@ const ViewCustomerChat = () => {
 
   useEffect(() => {
     let unmounted = false;
-
-    // Identify user type.
-    axios
-      .post(
-        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      )
-      .then((data) => {
-        setRoleName(data.data.data.roletag);
-      })
-      .catch((error) => {
-        console.log(error, "error");
-      });
 
     // Get customer chat.
     axios
@@ -109,7 +79,7 @@ const ViewCustomerChat = () => {
         let updateData = cutomerList.filter(
           (item) => item.chatrequestid !== chatreqid,
         );
-        setCustomerDetails();
+        setCustomerDetails("");
         setCutomerList(updateData);
       } else {
         let updateData = cutomerList.map((list) => {

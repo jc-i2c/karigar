@@ -233,7 +233,7 @@ const AddCustomerSubTitle = () => {
                       required
                       value={subTitle ? subTitle : ""}
                       onChange={(e) => {
-                        var nameReg = /^[A-Za-z\s]+$/i;
+                        var nameReg = /^[A-Za-z\s]*$/;
                         if (nameReg.test(e.target.value)) {
                           setSubTitle(e.target.value);
                         }

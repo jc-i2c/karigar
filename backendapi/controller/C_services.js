@@ -191,7 +191,7 @@ const deleteServices = async (req, res, next) => {
                   //     removeFile(item.subserviceimage);
                   //   })
                   //   .catch((error) => {
-                  //     console.log(error.message);
+                  // console.log(error.message);
                   //   });
                 });
                 await Services.findByIdAndUpdate(servicesId, {
@@ -234,7 +234,6 @@ const deleteServices = async (req, res, next) => {
 // Edit services API.
 const editServices = async (req, res, next) => {
   try {
-    console.log(moment(new Date()).format("DD-MM-YYYY HH:MM:SS"), "SECOND");
     let data = {
       servicesid: req.body.servicesid,
       servicename: req.body.servicename,
@@ -319,7 +318,6 @@ const topFiveServices = async (req, res, next) => {
     let getQry = await Services.find({ deleted: false })
       .sort({ _id: -1 })
       .limit(5);
-    console.log(getQry.length);
 
     if (getQry.length > 0) {
       let findData = [];

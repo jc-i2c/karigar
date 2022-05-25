@@ -76,7 +76,7 @@ const checkStatus = async (req, res, next) => {
         });
       }
     } else {
-      console.log("Chat request Id is required");
+      // console.log("Chat request Id is required");
     }
   } catch (error) {
     // console.log(error, "ERROR");

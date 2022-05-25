@@ -92,7 +92,7 @@ const AddUserroles = () => {
       setValidated(true);
       setUserroleError("Please enter valid userrole name");
     }
-    if (!/^[a-zA-Z]*$/i.test(userRoleTag)) {
+    if (!/^[a-zA-Z]*$/.test(userRoleTag)) {
       setValidated(true);
       setRoleTagError("Only A-Z character accept and not space allowed");
     }

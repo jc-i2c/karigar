@@ -304,7 +304,7 @@ const AddServices = () => {
                       required
                       value={name ? name : ""}
                       onChange={(e) => {
-                        var nameReg = /^[A-Za-z\s]+$/i;
+                        var nameReg = /^[A-Za-z\s]*$/;
                         if (nameReg.test(e.target.value)) {
                           setName(e.target.value);
                         }
@@ -416,7 +416,7 @@ const AddServices = () => {
                       autoComplete="mobilenumber"
                       value={mobileNumber ? mobileNumber : ""}
                       onChange={(e) => {
-                        var numberReg = /^[0-9]+$/i;
+                        var numberReg = /^[0-9]*$/;
                         if (numberReg.test(e.target.value)) {
                           setMobileNumber(e.target.value);
                         }

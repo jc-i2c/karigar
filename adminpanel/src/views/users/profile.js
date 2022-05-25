@@ -146,7 +146,7 @@ const UserProfile = () => {
                   <CCol md={6}>
                     <CFormLabel
                       htmlFor="emailaddress"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Email Address
                     </CFormLabel>
@@ -170,7 +170,7 @@ const UserProfile = () => {
                   <CCol md={6}>
                     <CFormLabel
                       htmlFor="name"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Name
                     </CFormLabel>
@@ -191,7 +191,7 @@ const UserProfile = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="mobilenumber"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Mobile Number
                     </CFormLabel>
@@ -214,7 +214,7 @@ const UserProfile = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="userrole"
-                      className="col-sm-6 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Userrole
                     </CFormLabel>
@@ -243,7 +243,7 @@ const UserProfile = () => {
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="Role"
-                      className="col-sm-4 col-form-label"
+                      className="col-sm-12 col-form-label"
                     >
                       Role
                     </CFormLabel>
