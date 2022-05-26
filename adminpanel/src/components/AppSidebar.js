@@ -28,20 +28,22 @@ const AppSidebar = () => {
 
   // Identify user type.
   useEffect(() => {
-    axios
-      .post(
-        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      )
-      .then((data) => {
-        setRoleName(data.data.data.roletag);
-      })
-      .catch((error) => {
-        console.log(error, "error");
-      });
+    if (token) {
+      axios
+        .post(
+          `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+        .then((data) => {
+          setRoleName(data.data.data.roletag);
+        })
+        .catch((error) => {
+          console.log(error, "error");
+        });
+    }
   }, []);
 
   return (

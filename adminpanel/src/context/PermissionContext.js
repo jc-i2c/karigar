@@ -18,7 +18,8 @@ const PermissionContextProvider = ({ children }) => {
         },
       )
       .then((res) => {
-        if (res.data.data.systemmodulesid) {
+        console.log(res, "res");
+        if (res.data.data) {
           const records = [];
           res.data.data.systemmodulesid.map((item) => {
             records.push(item._id);

@@ -30,7 +30,6 @@ const AddServices = () => {
 
   const [otpError, setOtpError] = useState("");
 
-
   useEffect(() => {
     if (location.state !== null) {
       setEmailAddress(location.state.emailaddress);

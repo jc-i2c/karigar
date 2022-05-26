@@ -63,13 +63,19 @@ const sendOtp = async (data) => {
                 </head>
 
                 <body>
-                    <p style="font-size: medium;margin-bottom: 10px;">Hi, <span style="color:#2672ec;"><b>${data.name ? data.name : data.emailaddress}</b></span></p>
+                    <p style="font-size: medium;margin-bottom: 10px;">Hi, <span style="color:#2672ec;"><b>${
+                      data.name ? data.name : data.emailaddress
+                    }</b></span></p>
                     <h2 style="color:#2672ec;">Password Reset Code</h2>
                     <p style="font-size: medium;">Please use this code to reset the password for the Karigar Application 
-                        <span mailto:style="color:#2672ec;"><b>${data.emailaddress}</b></span>
+                        <span mailto:style="color:#2672ec;"><b>${
+                          data.emailaddress
+                        }</b></span>
                     </p>
                     <div style="font-size: medium;margin-bottom: 25px;">
-                        <p>Here is your code: <span style="color:#2672ec;"><b>${data.otp}</b></span></p>
+                        <p>Here is your code: <span style="color:#2672ec;"><b>${
+                          data.otp
+                        }</b></span></p>
                     </div>
                     <p>Thanks,</p>
                     <p style="margin-top: 0px;">The Karigar account team.</p>
