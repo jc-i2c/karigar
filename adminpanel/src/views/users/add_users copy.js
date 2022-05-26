@@ -23,10 +23,10 @@ const AddServices = () => {
   const location = useLocation();
 
   const token = localStorage.getItem("karigar_token");
+  const [error, setError] = useState({});
 
   const [validated, setValidated] = useState(false);
-
-  const [spinner, setSpinner] = useState(false);
+  // const [spinner, setSpinner] = useState(false);
 
   // Edit services code
   const [emailAddress, setEmailAddress] = useState("");
@@ -41,14 +41,6 @@ const AddServices = () => {
   const [userId, setUserId] = useState("");
 
   // Error state
-  const [nameError, setNameError] = useState("");
-  const [emailAdressError, setEmailAdressError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
-  const [passwordMatchError, setPasswordMatchError] = useState("");
-  const [mobileNumberError, setMobileNumberError] = useState("");
-  const [genderError, setGenderError] = useState("");
-  const [userroleError, setUSerroleError] = useState("");
 
   // Gel all userroel.
   useEffect(() => {
@@ -84,18 +76,10 @@ const AddServices = () => {
 
   // Error state empty.
   useEffect(() => {
-    setValidated(false);
-    setNameError("");
-    setEmailAdressError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
-    setPasswordMatchError("");
-    setUSerroleError("");
-    setMobileNumberError("");
-    setGenderError("");
+    setError({});
   }, [
-    name,
     emailAddress,
+    name,
     password,
     confirmPassword,
     userrole,
@@ -116,122 +100,188 @@ const AddServices = () => {
     }
   }, []);
 
-  // Add edit users.
-  function addNewUsers() {
+  // // Add edit users.
+  // const addNewUsers = (e) => {
+  //   e.preventDefault();
+  //   setError({});
+  //   if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
+  //     // setError((prevState) => {
+  //     //   return { ...prevState, emailAdressError: true };
+  //     // });
+  //     setFlag(true);
+  //     // console.log(error);
+  //   }
+  //   if (flag) {
+  //     console.log("returninng");
+  //     return;
+  //   }
+  //   if (!name) {
+  //     setError({ ...error, data: "First" });
+  //     return;
+  //   }
+  //   console.log(error);
+  //   if (
+  //     !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
+  //       password,
+  //     )
+  //   ) {
+  //     setError({ ...error, passwordError: true });
+  //   }
+  //   if (
+  //     !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
+  //       confirmPassword,
+  //     )
+  //   ) {
+  //     setError({ ...error, confirmPasswordError: true });
+  //   }
+  //   if (password !== confirmPassword) {
+  //     // setPasswordMatchError("Password and confirm password does not match");
+  //     setError({ ...error, passwordMisMatch: true });
+  //   }
+  //   if (!userrole) {
+  //     // setUserRoleError("Please select userrole");
+  //     setError({ ...error, notUserRole: true });
+  //   }
+  //   // if (!/^[6-9]\d{10}$/.test(mobileNumber)) {
+  //   if (!/^[6789]\d{9}$/.test(mobileNumber)) {
+  //     // setMobileNumberError("Please enter valid mobile number");
+  //     setError({ ...error, noMobileNo: true });
+  //   }
+  //   if (!gender) {
+  //     // setGenderError("Please select gender");
+  //     setError({ ...error, noGenderSelected: true });
+  //   }
+  //   console.log(error);
+  //   if (Object.keys(error).length > 0) {
+  //     return;
+  //   }
+  //   console.log("code reached here");
+  //   // if (isEdit) {
+  //   //   // Admin edit userdata.
+  //   //   var data = new FormData();
+  //   //   data.append("emailaddress", emailAddress);
+  //   //   data.append("name", name);
+  //   //   data.append("userroll", userrole);
+  //   //   data.append("mobilenumber", mobileNumber);
+  //   //   data.append("gender", gender);
+  //   //   data.append("userid", userId);
+  //   //   axios
+  //   //     .post(
+  //   //       `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
+  //   //       data,
+  //   //       {
+  //   //         headers: { Authorization: `Bearer ${token}` },
+  //   //       },
+  //   //     )
+  //   //     .then((data) => {
+  //   //       if (data.data.status) {
+  //   //         toast.success(data.data.message, {
+  //   //           onClose: () => {
+  //   //             navigate(-1);
+  //   //           },
+  //   //         });
+  //   //       } else {
+  //   //         toast.error(data.data.message);
+  //   //       }
+  //   //       setSpinner(false);
+  //   //     })
+  //   //     .catch((error) => {
+  //   //       console.log(error, "error");
+  //   //       setSpinner(false);
+  //   //     });
+  //   // } else {
+  //   //   // Add new users.
+  //   //   var data = new FormData();
+  //   //   data.append("name", name);
+  //   //   data.append("emailaddress", emailAddress);
+  //   //   data.append("password", password);
+  //   //   data.append("confirmpassword", confirmPassword);
+  //   //   data.append("userroll", userrole);
+  //   //   data.append("isadmin", true);
+  //   //   data.append("mobilenumber", mobileNumber);
+  //   //   data.append("gender", gender);
+  //   //   axios
+  //   //     .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
+  //   //       headers: { Authorization: `Bearer ${token}` },
+  //   //     })
+  //   //     .then((data) => {
+  //   //       if (data.data.status) {
+  //   //         toast.success(data.data.message, {
+  //   //           onClose: () => {
+  //   //             navigate(-1);
+  //   //           },
+  //   //         });
+  //   //       } else {
+  //   //         toast.error(data.data.message);
+  //   //       }
+  //   //       if (data.data.status == false) {
+  //   //         toast.error(data.data.message.confirmpassword);
+  //   //       }
+  //   //       setSpinner(false);
+  //   //     })
+  //   //     .catch((error) => {
+  //   //       console.log(error, "error");
+  //   //       setSpinner(false);
+  //   //     });
+  //   // }
+  // };
+
+  const handleFormSubmission = (e) => {
+    setError({});
+    console.log(e, "e");
+    e.preventDefault();
+    console.log(
+      emailAddress,
+      name,
+      password,
+      confirmPassword,
+      userrole,
+      mobileNumber,
+      gender,
+    );
+
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
-      setValidated(true);
-      setEmailAdressError("Please enter valid email address");
+      setError({ ...error, emailAdressError: true });
     }
     if (!name) {
-      setValidated(true);
-      setNameError("Please enter name");
+      setError({ ...error, nameError: true });
     }
     if (
       !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
         password,
       )
     ) {
-      setValidated(true);
-      setPasswordError("Please enter strong password");
+      setError({ ...error, passwordError: true });
     }
     if (
       !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
         confirmPassword,
       )
     ) {
-      setValidated(true);
-      setConfirmPasswordError("Please enter strong password");
+      setError({ ...error, confirmPasswordError: true });
     }
-    if (!password === confirmPassword) {
-      setValidated(true);
-      setPasswordMatchError("Password and confirm password does not match");
+    if (password !== confirmPassword) {
+      // setPasswordMatchError("Password and confirm password does not match");
+      setError({ ...error, passwordMisMatch: true });
     }
     if (!userrole) {
-      setValidated(true);
-      setUSerroleError("Please select userrole");
+      // setUserRoleError("Please select userrole");
+      setError({ ...error, notUserRole: true });
     }
-    if (!/^[6789]\d{9}$/i.test(mobileNumber)) {
-      setValidated(true);
-      setMobileNumberError("Please enter valid mobile number");
+    // if (!/^[6-9]\d{10}$/.test(mobileNumber)) {
+    if (!/^[6789]\d{9}$/.test(mobileNumber)) {
+      // setMobileNumberError("Please enter valid mobile number");
+      setError({ ...error, noMobileNo: true });
     }
     if (!gender) {
-      setValidated(true);
-      setGenderError("Please select gender");
-    } else {
-      if (validated == false) {
-        if (isEdit) {
-          // Admin edit userdata.
-          var data = new FormData();
-          data.append("emailaddress", emailAddress);
-          data.append("name", name);
-          data.append("userroll", userrole);
-          data.append("mobilenumber", mobileNumber);
-          data.append("gender", gender);
-          data.append("userid", userId);
-
-          axios
-            .post(
-              `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
-              data,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              },
-            )
-            .then((data) => {
-              if (data.data.status) {
-                toast.success(data.data.message, {
-                  onClose: () => {
-                    navigate(-1);
-                  },
-                });
-              } else {
-                toast.error(data.data.message);
-              }
-              setSpinner(false);
-            })
-            .catch((error) => {
-              console.log(error, "error");
-              setSpinner(false);
-            });
-        } else {
-          // Add new users.
-          var data = new FormData();
-          data.append("name", name);
-          data.append("emailaddress", emailAddress);
-          data.append("password", password);
-          data.append("confirmpassword", confirmPassword);
-          data.append("userroll", userrole);
-          data.append("isadmin", true);
-          data.append("mobilenumber", mobileNumber);
-          data.append("gender", gender);
-
-          axios
-            .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
-              headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((data) => {
-              if (data.data.status) {
-                toast.success(data.data.message, {
-                  onClose: () => {
-                    navigate(-1);
-                  },
-                });
-              } else {
-                toast.error(data.data.message);
-              }
-              if (data.data.status == false) {
-                toast.error(data.data.message.confirmpassword);
-              }
-              setSpinner(false);
-            })
-            .catch((error) => {
-              console.log(error, "error");
-              setSpinner(false);
-            });
-        }
-      }
+      // setGenderError("Please select gender");
+      setError({ ...error, noGenderSelected: true });
     }
-  }
+    console.log(error);
+    if (Object.keys(error).length > 0) {
+      return;
+    }
+  };
 
   return (
     <div>
@@ -240,12 +290,7 @@ const AddServices = () => {
           <CCol sm="12">
             <CCard>
               <CCardBody className="p-4">
-                <CForm
-                  className="row g-3"
-                  noValidate
-                  validated={validated && validated}
-                  onSubmit={addNewUsers}
-                >
+                <CForm className="row g-3" onSubmit={handleFormSubmission}>
                   <h3>Users</h3>
                   <hr />
 
@@ -282,10 +327,10 @@ const AddServices = () => {
                         }}
                       />
                     )}
-
-                    {emailAdressError && (
-                      <p className="text-danger">{emailAdressError}</p>
-                    )}
+                    <p className="text-danger">
+                      {error.emailAdressError &&
+                        "Please enter valid email address"}
+                    </p>
                   </CCol>
 
                   <CCol md={6}>
@@ -309,7 +354,9 @@ const AddServices = () => {
                         }
                       }}
                     />
-                    {nameError && <p className="text-danger">{nameError}</p>}
+                    <p className="text-danger">
+                      {error.nameError && "Please enter valid name"}
+                    </p>
                   </CCol>
 
                   {!isEdit && (
@@ -330,8 +377,10 @@ const AddServices = () => {
                           setPassword(e.target.value);
                         }}
                       />
-                      {passwordError && (
-                        <p className="text-danger">{passwordError}</p>
+                      {error.passwordError && (
+                        <p className="text-danger">
+                          {"Please enter strong password"}
+                        </p>
                       )}
                     </CCol>
                   )}
@@ -354,13 +403,11 @@ const AddServices = () => {
                           setConfirmPassword(e.target.value);
                         }}
                       />
-                      {confirmPasswordError && (
-                        <p className="text-danger">{confirmPasswordError}</p>
-                      )}
+                      <p className="text-danger">
+                        {error.confirmPasswordError &&
+                          "Please enter strong password"}
+                      </p>
                     </CCol>
-                  )}
-                  {passwordMatchError && (
-                    <p className="text-danger">{passwordMatchError}</p>
                   )}
 
                   <CCol md={4}>
@@ -393,10 +440,6 @@ const AddServices = () => {
                         </option>
                       ))}
                     </CFormSelect>
-
-                    {userroleError && (
-                      <p className="text-danger">{userroleError}</p>
-                    )}
                   </CCol>
 
                   <CCol md={4}>
@@ -422,9 +465,6 @@ const AddServices = () => {
                         }
                       }}
                     />
-                    {mobileNumberError && (
-                      <p className="text-danger">{mobileNumberError}</p>
-                    )}
                   </CCol>
 
                   <CCol md={4}>
@@ -450,31 +490,23 @@ const AddServices = () => {
                       <option value="1">Male</option>
                       <option value="2">Female</option>
                     </CFormSelect>
-
-                    {genderError && (
-                      <p className="text-danger">{genderError}</p>
-                    )}
                   </CCol>
 
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                    {spinner ? (
+                    <button color="primary" type="submit">
+                      Submit
+                    </button>
+                    {/* {spinner ? (
                       <div className="spinner-border" role="status">
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          addNewUsers();
-                        }}
-                      >
-                        Submit
-                      </CButton>
-                    )}
+                     
+                    )} */}
 
-                    <CButton color="primary" onClick={() => navigate(-1)}>
+                    <button color="primary" onClick={() => navigate(-1)}>
                       Back
-                    </CButton>
+                    </button>
                   </div>
                 </CForm>
                 <ToastContainer />

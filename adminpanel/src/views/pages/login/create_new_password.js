@@ -34,11 +34,11 @@ const AddServices = () => {
   const [passwordMatchError, setPasswordMatchError] = useState("");
 
   useEffect(() => {
-    if (location.state !== null) {
-      setEmailAddress(location.state.emailaddress);
-    } else {
-      navigate("/login");
-    }
+    // if (location.state !== null) {
+    //   setEmailAddress(location.state.emailaddress);
+    // } else {
+    //   navigate("/login");
+    // }
   }, []);
 
   //   Error state null
@@ -75,37 +75,39 @@ const AddServices = () => {
       setValidated(true);
       setPasswordMatchError("Password and confirm password does not match");
     } else {
-      // Create new password.
-      var data = new FormData();
-      data.append("emailaddress", emailAddress);
-      data.append("newpassword", newPassword);
-      data.append("confirmpassword", conPassword);
+      if (validated == false) {
+        // Create new password.
+        var data = new FormData();
+        data.append("emailaddress", emailAddress);
+        data.append("newpassword", newPassword);
+        data.append("confirmpassword", conPassword);
 
-      axios
-        .post(
-          `${process.env.REACT_APP_APIURL}/karigar/user/createnewpassword`,
-          data,
-        )
-        .then((data) => {
-          if (data.data.status) {
-            toast.success(data.data.message, {
-              onClose: () => {
-                navigate("/login");
-              },
-            });
-          } else {
-            if (data.data.message.confirmpassword) {
-              toast.warning(data.data.message.confirmpassword);
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/user/createnewpassword`,
+            data,
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate("/login");
+                },
+              });
             } else {
-              toast.warning(data.data.message);
+              if (data.data.message.confirmpassword) {
+                toast.warning(data.data.message.confirmpassword);
+              } else {
+                toast.warning(data.data.message);
+              }
             }
-          }
-          setSpinner(false);
-        })
-        .catch((error) => {
-          console.log(error, "error");
-          setSpinner(false);
-        });
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      }
     }
   }
 
@@ -115,21 +117,21 @@ const AddServices = () => {
         <CRow className="justify-content-center">
           <CCol md={5}>
             <CCardGroup>
-              <CCard className="p-4">
+              <CCard className="p-8">
                 <CCardBody>
                   <CForm
-                    className="row g-3 needs-validation"
+                    className="row g-3"
                     noValidate
-                    validated={validated}
+                    validated={validated && validated}
                     onSubmit={createNewPassword}
                   >
-                    <h3>Create New Password</h3>
+                    <h3 className="text-center">Create New Password</h3>
                     <hr />
 
-                    <CCol md={8}>
+                    <CCol md={12}>
                       <CFormLabel
                         htmlFor="password"
-                        className="col-sm-8 col-form-label"
+                        className="col-sm-12 col-form-label"
                       >
                         New Password
                       </CFormLabel>
@@ -148,10 +150,10 @@ const AddServices = () => {
                       )}
                     </CCol>
 
-                    <CCol md={8}>
+                    <CCol md={12}>
                       <CFormLabel
                         htmlFor="password"
-                        className="col-sm-8 col-form-label"
+                        className="col-sm-12 col-form-label"
                       >
                         Confirm password
                       </CFormLabel>
@@ -168,10 +170,10 @@ const AddServices = () => {
                       {conPasswordError && (
                         <p className="text-danger">{conPasswordError}</p>
                       )}
+                      {passwordMatchError && (
+                        <p className="text-danger">{passwordMatchError}</p>
+                      )}
                     </CCol>
-                    {passwordMatchError && (
-                      <p className="text-danger">{passwordMatchError}</p>
-                    )}
 
                     <div className="d-grid gap-2 d-md-flex justify">
                       {spinner ? (

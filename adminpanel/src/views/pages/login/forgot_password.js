@@ -22,11 +22,11 @@ const AddServices = () => {
   const navigate = useNavigate();
 
   const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+
   const [validated, setValidated] = useState(false);
   const [spinner, setSpinner] = useState(false);
 
   const [emailAddress, setEmailAddress] = useState("");
-
   const [emailAddressError, setEmailAddressError] = useState("");
 
   useEffect(() => {
@@ -50,36 +50,38 @@ const AddServices = () => {
       setValidated(true);
       setEmailAddressError("Please enter valid email address");
     } else {
-      // Reset password data.
-      var data = new FormData();
-      data.append("emailaddress", emailAddress);
+      if (validated == false) {
+        // Reset password data.
+        var data = new FormData();
+        data.append("emailaddress", emailAddress);
 
-      axios
-        .post(
-          `${process.env.REACT_APP_APIURL}/karigar/user/resetpassword`,
-          data,
-          {},
-        )
-        .then((data) => {
-          if (data.data.status) {
-            toast.success(data.data.message, {
-              onClose: () => {
-                navigate("/verifyotp", {
-                  state: { emailaddress: emailAddress },
-                });
-              },
-            });
-          } else {
-            if (data.data.message) {
-              toast.error(data.data.message);
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/user/resetpassword`,
+            data,
+            {},
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate("/verifyotp", {
+                    state: { emailaddress: emailAddress },
+                  });
+                },
+              });
+            } else {
+              if (data.data.message) {
+                toast.error(data.data.message);
+              }
             }
-          }
-          setSpinner(false);
-        })
-        .catch((error) => {
-          console.log(error, "error");
-          setSpinner(false);
-        });
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      }
     }
   }
 
@@ -94,25 +96,26 @@ const AddServices = () => {
                   <CForm
                     className="row g-3 needs-validation"
                     noValidate
-                    validated={validated}
+                    validated={validated && validated}
                     onSubmit={forgotPassword}
                   >
-                    <h3>Forgot Password</h3>
+                    <h3 className="text-center">Forgot Password</h3>
                     <hr />
 
-                    <CCol md={8}>
+                    <CCol md={12}>
                       <CFormLabel
-                        htmlFor="email"
-                        className="col-sm-8 col-form-label"
+                        htmlFor="emailaddress"
+                        className="col-sm-12 col-form-label"
                       >
-                        Enter Email Address
+                        Email Address
                       </CFormLabel>
                       <CFormInput
-                        type="text"
+                        type="email"
                         id="emailaddress"
                         placeholder="Email Address"
                         autoComplete="emailaddress"
                         required
+                        value={emailAddress ? emailAddress : ""}
                         onChange={(e) => {
                           setEmailAddress(e.target.value);
                         }}

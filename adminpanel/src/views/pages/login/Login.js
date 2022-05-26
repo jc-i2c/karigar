@@ -29,6 +29,7 @@ function Login() {
   // local
   const [validated, setValidated] = useState(false);
   const [spinner, setSpinner] = useState(false);
+
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [email, setEmail] = useState("");
@@ -42,9 +43,9 @@ function Login() {
   }, []);
 
   useEffect(() => {
+    setValidated(false);
     setEmailError("");
     setPasswordError("");
-    setValidated(false);
   }, [email, password]);
 
   const loginAPi = (e) => {
@@ -62,37 +63,39 @@ function Login() {
       setValidated(true);
       setPasswordError("Password must be strong");
     } else {
-      setSpinner(true);
-      let logiData = new FormData();
+      if (validated == false) {
+        setSpinner(true);
+        let logiData = new FormData();
 
-      logiData.append("emailaddress", email);
-      logiData.append("password", password);
+        logiData.append("emailaddress", email);
+        logiData.append("password", password);
 
-      axios
-        .post(`${process.env.REACT_APP_APIURL}/karigar/user/signin`, logiData)
-        .then((data) => {
-          if (data.data.token) {
-            localStorage.setItem("karigar_token", data.data.token);
+        axios
+          .post(`${process.env.REACT_APP_APIURL}/karigar/user/signin`, logiData)
+          .then((data) => {
+            if (data.data.token) {
+              localStorage.setItem("karigar_token", data.data.token);
 
-            toast.success(data.data.message, {
-              onClose: () => {
-                if (data.data.userdata.userrole == "ADMIN")
-                  navigate("/dashboard");
-                else {
-                  navigate("/services");
-                }
-              },
-            });
-          } else {
-            toast.error(data.data.message);
-          }
-          setSpinner(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          // toast.error(error);
-          setSpinner(false);
-        });
+              toast.success(data.data.message, {
+                onClose: () => {
+                  if (data.data.userdata.userrole == "ADMIN")
+                    navigate("/dashboard");
+                  else {
+                    navigate("/services");
+                  }
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error);
+            // toast.error(error);
+            setSpinner(false);
+          });
+      }
     }
   };
 
@@ -102,12 +105,12 @@ function Login() {
         <CRow className="justify-content-center">
           <CCol md={5}>
             <CCardGroup>
-              <CCard className="p-4">
+              <CCard className="p-8">
                 <CCardBody>
                   <CForm
-                    className="row g-3 needs-validation"
+                    className="row g-3"
                     noValidate
-                    validated={validated}
+                    validated={validated && validated}
                     onSubmit={loginAPi}
                   >
                     <h1 className="text-center">SIGN IN</h1>
@@ -115,43 +118,48 @@ function Login() {
                     <p className="text-medium text-center">
                       Sign In to your account
                     </p>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupText>
-                        <CIcon icon={cilUser} />
-                      </CInputGroupText>
-                      <CFormInput
-                        type="email"
-                        id="validationServer01"
-                        placeholder="Email Address"
-                        label="Email"
-                        valid
-                        required
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                        }}
-                      />
-                    </CInputGroup>
-                    {emailError && <p className="text-danger">{emailError}</p>}
 
-                    <CInputGroup className="mb-4">
-                      <CInputGroupText>
-                        <CIcon icon={cilLockLocked} />
-                      </CInputGroupText>
-                      <CFormInput
-                        type="password"
-                        placeholder="Password"
-                        label="password"
-                        valid
-                        required
-                        onChange={(e) => {
-                          setPassword(e.target.value);
-                        }}
-                      />
-                    </CInputGroup>
+                    <CCol md={12}>
+                      <CInputGroup className="mb-3">
+                        <CInputGroupText>
+                          <CIcon icon={cilUser} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="email"
+                          id="validationServer01"
+                          placeholder="Email Address"
+                          label="Email"
+                          required
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                          }}
+                        />
+                      </CInputGroup>
+                      {emailError && (
+                        <p className="text-danger">{emailError}</p>
+                      )}
+                    </CCol>
 
-                    {passwordError && (
-                      <p className="text-danger">{passwordError}</p>
-                    )}
+                    <CCol md={12}>
+                      <CInputGroup className="mb-4">
+                        <CInputGroupText>
+                          <CIcon icon={cilLockLocked} />
+                        </CInputGroupText>
+                        <CFormInput
+                          type="password"
+                          placeholder="Password"
+                          label="password"
+                          required
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                          }}
+                        />
+                      </CInputGroup>
+
+                      {passwordError && (
+                        <p className="text-danger">{passwordError}</p>
+                      )}
+                    </CCol>
 
                     <CRow>
                       {spinner ? (

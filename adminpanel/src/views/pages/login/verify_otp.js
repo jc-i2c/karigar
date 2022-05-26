@@ -96,25 +96,30 @@ const AddServices = () => {
                     validated={validated}
                     onSubmit={forgotPassword}
                   >
-                    <h3>OTP Verification</h3>
+                    <h3 className="text-center">OTP Verification</h3>
                     <hr />
 
-                    <CCol md={8}>
+                    <CCol md={12}>
                       <CFormLabel
-                        htmlFor="otp"
-                        className="col-sm-8 col-form-label"
+                        htmlFor="name"
+                        className="col-sm-12 col-form-label"
                       >
                         Enter OTP
                       </CFormLabel>
                       <CFormInput
-                        type="number"
+                        type="text"
                         id="otp"
                         placeholder="OTP"
                         autoComplete="otp"
                         required
                         maxLength="6"
+                        value={otp ? otp : ""}
                         onChange={(e) => {
-                          setOtp(e.target.value);
+                          var otpReg = /^[0-9]*$/;
+                          console.log(otpReg.test(e.target.value));
+                          if (otpReg.test(e.target.value)) {
+                            setOtp(+e.target.value);
+                          }
                         }}
                       />
                       {otpError && <p className="text-danger">{otpError}</p>}

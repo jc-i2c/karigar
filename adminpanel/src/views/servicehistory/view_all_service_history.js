@@ -49,7 +49,6 @@ const ViewServices = () => {
   // Get all offers list.
   useEffect(() => {
     if (roleName == "ADMIN") {
-      console.log("JENISH");
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/servicehistory/all`,

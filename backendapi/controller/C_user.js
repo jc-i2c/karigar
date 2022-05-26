@@ -885,7 +885,7 @@ const getAllCustomer = async (req, res, next) => {
   try {
     let getRoleTag = await Userrole.findOne({ roletag: "CUSTOMER" });
 
-    let getQry = await User.find().where({
+    let getQry = await User.find({ deleted: false }).where({
       userroll: getRoleTag._id,
     });
 
