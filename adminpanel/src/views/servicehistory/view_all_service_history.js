@@ -49,6 +49,7 @@ const ViewServices = () => {
   // Get all offers list.
   useEffect(() => {
     if (roleName == "ADMIN") {
+      console.log("JENISH");
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/servicehistory/all`,
@@ -189,13 +190,13 @@ const ViewServices = () => {
                 {offers.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
                     <CTableDataCell>
-                      <div>{item.name}</div>
+                      <div>{item.name ? item.name : ""}</div>
                     </CTableDataCell>
 
                     {roleName == "ADMIN" && (
                       <CTableDataCell>
                         <div>
-                          {item.serviceprovidername && item.serviceprovidername}
+                          {item.serviceprovidername ? item.serviceprovidername : ""}
                         </div>
                       </CTableDataCell>
                     )}
@@ -262,15 +263,15 @@ const ViewServices = () => {
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>{item.paymentstatus}</div>
+                      <div>{item.paymentstatus ? item.paymentstatus : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>{item.createdAt}</div>
+                      <div>{item.createdAt ? item.createdAt : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      <div>{item.updatedAt}</div>
+                      <div>{item.updatedAt ? item.updatedAt : ""}</div>
                     </CTableDataCell>
                   </CTableRow>
                 ))}

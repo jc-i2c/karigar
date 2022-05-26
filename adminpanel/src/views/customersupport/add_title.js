@@ -145,10 +145,7 @@ const AddServices = () => {
                       required
                       value={title ? title : ""}
                       onChange={(e) => {
-                        var nameReg = /^[A-Za-z\s]+$/i;
-                        if (nameReg.test(e.target.value)) {
-                          setTitle(e.target.value);
-                        }
+                        setTitle(e.target.value);
                       }}
                     />
                     {titleError && <p className="text-danger">{titleError}</p>}

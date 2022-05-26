@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 
 import {
@@ -18,8 +19,30 @@ import navigation from "../_nav";
 
 const AppSidebar = () => {
   const dispatch = useDispatch();
+
   const unfoldable = useSelector((state) => state.sidebarUnfoldable);
   const sidebarShow = useSelector((state) => state.sidebarShow);
+
+  const token = localStorage.getItem("karigar_token");
+  const [roleName, setRoleName] = useState("");
+
+  // Identify user type.
+  useEffect(() => {
+    axios
+      .post(
+        `${process.env.REACT_APP_APIURL}/karigar/userrole/getpermission`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
+      .then((data) => {
+        setRoleName(data.data.data.roletag);
+      })
+      .catch((error) => {
+        console.log(error, "error");
+      });
+  }, []);
 
   return (
     <CSidebar
@@ -31,13 +54,21 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarBrand className="d-none d-md-flex" to="/">
-        <a className="nav-link" href="/karigar/dashboard">
+        {roleName == "ADMIN" ? (
+          <a className="nav-link" href="/karigar/dashboard">
+            <img
+              className="sidebar-brand-full"
+              src="./images/logo.svg"
+              alt="logo"
+            />
+          </a>
+        ) : (
           <img
             className="sidebar-brand-full"
             src="./images/logo.svg"
             alt="logo"
           />
-        </a>
+        )}
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>
