@@ -60,8 +60,8 @@ const AddUserroles = () => {
         },
       )
       .then((data) => {
-        const records = [];
         if (data.data.data) {
+          const records = [];
           data.data.data.map((record) => {
             records.push({
               modulesid: record._id,

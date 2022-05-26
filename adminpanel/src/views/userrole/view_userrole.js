@@ -39,23 +39,25 @@ const ViewAllUserRoles = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then((data) => {
-        const records = [];
-        data.data.data.map((record) => {
-          let systemModulesArray = [];
-          record.systemmodulesid.map((item) => {
-            systemModulesArray.push(item._id);
-          });
+        if (data.data.data) {
+          const records = [];
+          data.data.data.map((record) => {
+            let systemModulesArray = [];
+            record.systemmodulesid.map((item) => {
+              systemModulesArray.push(item._id);
+            });
 
-          records.push({
-            userroleid: record._id,
-            rolename: record.rolename,
-            systemmodulesid: systemModulesArray,
-            roletag: record.roletag,
-            createdAt: record.createdAt,
-            updatedAt: record.updatedAt,
+            records.push({
+              userroleid: record._id,
+              rolename: record.rolename,
+              systemmodulesid: systemModulesArray,
+              roletag: record.roletag,
+              createdAt: record.createdAt,
+              updatedAt: record.updatedAt,
+            });
           });
-        });
-        setUserrole(records);
+          setUserrole(records);
+        }
       })
       .catch((error) => {
         console.log(error, "error");

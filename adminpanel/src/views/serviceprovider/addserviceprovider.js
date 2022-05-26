@@ -94,8 +94,8 @@ const ServiceProvider = () => {
         },
       )
       .then((data) => {
-        const records = [];
         if (data.data.data) {
+          const records = [];
           data.data.data.map((record) => {
             records.push({
               serviceproviderid: record._id,
@@ -119,8 +119,8 @@ const ServiceProvider = () => {
         },
       )
       .then((data) => {
-        const records = [];
         if (data.data.data) {
+          const records = [];
           data.data.data.map((record) => {
             records.push({
               serviceid: record._id,
@@ -150,8 +150,8 @@ const ServiceProvider = () => {
           },
         )
         .then((data) => {
-          const records = [];
           if (data.data.data) {
+            const records = [];
             data.data.data.map((record) => {
               records.push({
                 subserviceid: record._id,

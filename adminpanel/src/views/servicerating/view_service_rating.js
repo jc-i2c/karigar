@@ -66,19 +66,21 @@ const ViewServiceRating = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          const records = [];
-          data.data.data.map((record) => {
-            records.push({
-              ratingid: record._id,
-              customername: record.customerid.name,
-              serviceprovideridname: record.serviceproviderid.name,
-              rate: record.rate,
-              description: record.description,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
+          if (data.data.data) {
+            const records = [];
+            data.data.data.map((record) => {
+              records.push({
+                ratingid: record._id,
+                customername: record.customerid.name,
+                serviceprovideridname: record.serviceproviderid.name,
+                rate: record.rate,
+                description: record.description,
+                createdAt: record.createdAt,
+                updatedAt: record.updatedAt,
+              });
             });
-          });
-          setServiceRating(records);
+            setServiceRating(records);
+          }
         })
         .catch((error) => {
           console.log(error, "error");
@@ -92,20 +94,21 @@ const ViewServiceRating = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          const records = [];
-
-          data.data.data.map((record) => {
-            records.push({
-              ratingid: record._id,
-              customername: record.customerid.name,
-              serviceprovideridname: record.serviceproviderid.name,
-              rate: record.rate,
-              description: record.description,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
+          if (data.data.data) {
+            const records = [];
+            data.data.data.map((record) => {
+              records.push({
+                ratingid: record._id,
+                customername: record.customerid.name,
+                serviceprovideridname: record.serviceproviderid.name,
+                rate: record.rate,
+                description: record.description,
+                createdAt: record.createdAt,
+                updatedAt: record.updatedAt,
+              });
             });
-          });
-          setServiceRating(records);
+            setServiceRating(records);
+          }
         })
         .catch((error) => {
           console.log(error, "error");

@@ -21,7 +21,7 @@ const createOffer = async (req, res, next) => {
           subserviceid: subserviceid,
           serviceproviderid: serviceproviderid,
           isactive: true,
-          deleted: true,
+          deleted: false,
         });
 
         if (getQry) {
@@ -361,6 +361,7 @@ const userOffer = async (req, res, next) => {
         let resData = {};
         findQry.forEach((data) => {
           resData = data.toObject();
+
           let userIdData = resData.serviceproviderid.userid.toString();
 
           if (userIdData == userId) {

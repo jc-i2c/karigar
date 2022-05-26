@@ -64,8 +64,8 @@ const AddServices = () => {
         },
       )
       .then((data) => {
-        const records = [];
         if (data.data.data) {
+          const records = [];
           data.data.data.map((record) => {
             records.push({
               userroleid: record._id,

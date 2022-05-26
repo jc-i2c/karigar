@@ -139,8 +139,6 @@ const getCusOwnedRate = async (req, res, next) => {
         .select("rate description")
         .populate({ path: "serviceproviderid", select: "name" });
 
-      // console.log(findQry, "findQry");
-
       if (findQry.length > 0) {
         return res.send({
           status: true,

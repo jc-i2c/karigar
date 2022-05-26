@@ -69,17 +69,19 @@ const ViewServices = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          const records = [];
-          data.data.data.map((record) => {
-            records.push({
-              serviceid: record._id,
-              servicename: record.servicename,
-              serviceimage: record.serviceimage,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
+          if (data.data.data) {
+            const records = [];
+            data.data.data.map((record) => {
+              records.push({
+                serviceid: record._id,
+                servicename: record.servicename,
+                serviceimage: record.serviceimage,
+                createdAt: record.createdAt,
+                updatedAt: record.updatedAt,
+              });
             });
-          });
-          setServices(records);
+            setServices(records);
+          }
         })
         .catch((error) => {
           console.log(error, "error");

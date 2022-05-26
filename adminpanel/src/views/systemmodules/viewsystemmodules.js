@@ -37,17 +37,19 @@ const ViewSystemModules = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then((data) => {
-        const records = [];
-        data.data.data.map((record) => {
-          records.push({
-            systemmodulesid: record._id,
-            modulesname: record.modulesname,
-            modulespermission: record.modulespermission,
-            createdAt: record.createdAt,
-            updatedAt: record.updatedAt,
+        if (data.data.data) {
+          const records = [];
+          data.data.data.map((record) => {
+            records.push({
+              systemmodulesid: record._id,
+              modulesname: record.modulesname,
+              modulespermission: record.modulespermission,
+              createdAt: record.createdAt,
+              updatedAt: record.updatedAt,
+            });
           });
-        });
-        setSystemModules(records);
+          setSystemModules(records);
+        }
       })
       .catch((error) => {
         console.log(error, "error");

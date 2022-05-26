@@ -71,8 +71,8 @@ const ViewCustomer = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          const records = [];
           if (data.data.data) {
+            const records = [];
             data.data.data.map((record) => {
               records.push({
                 customerid: record._id,
@@ -245,8 +245,8 @@ const ViewCustomer = () => {
                         {item.gender == 1
                           ? "Male"
                           : item.gender == 2
-                          ? "Female"
-                          : "-"}
+                            ? "Female"
+                            : "-"}
                       </div>
                     </CTableDataCell>
                     <CTableDataCell>

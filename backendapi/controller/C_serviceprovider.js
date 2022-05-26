@@ -621,12 +621,10 @@ const changeStatus = async (req, res, next) => {
 // Get all services based on TOKEN API.
 const getServiceList = async (req, res, next) => {
   try {
-    let userId = req.userid;
-    var ObjectId = require("mongoose").Types.ObjectId;
-
+    let userId = new mongoose.Types.ObjectId(req.userid);
     if (userId) {
       let getQry = await Serviceprovider.find({ deleted: false })
-        .where({ userid: ObjectId(userId) })
+        .where({ userid: userId })
         .select("subserviceid")
         .populate({
           path: "subserviceid",

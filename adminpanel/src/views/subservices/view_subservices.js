@@ -79,8 +79,8 @@ const ViewSubServices = () => {
               },
             )
             .then((data) => {
-              const records = [];
               if (data.data.data) {
+                const records = [];
                 data.data.data.map((record) => {
                   records.push({
                     subserviceid: record._id,
@@ -111,8 +111,8 @@ const ViewSubServices = () => {
               },
             )
             .then((data) => {
-              const records = [];
               if (data.data.data) {
+                const records = [];
                 data.data.data.map((record) => {
                   records.push({
                     subserviceid: record._id,

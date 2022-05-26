@@ -69,22 +69,24 @@ const ViewOffers = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          const records = [];
-          data.data.data.map((record) => {
-            records.push({
-              offerid: record._id,
-              servicesid: record.servicesid,
-              servicename: record.servicename,
-              subserviceid: record.subserviceid._id,
-              subservicename: record.subserviceid.subservicename,
-              serviceproviderid: record.serviceproviderid._id,
-              serviceprovidername: record.serviceproviderid.name,
-              actualprice: record.actualprice,
-              currentprice: record.currentprice,
-              isactive: record.isactive,
+          if (data.data.data) {
+            const records = [];
+            data.data.data.map((record) => {
+              records.push({
+                offerid: record._id,
+                servicesid: record.servicesid,
+                servicename: record.servicename,
+                subserviceid: record.subserviceid._id,
+                subservicename: record.subserviceid.subservicename,
+                serviceproviderid: record.serviceproviderid._id,
+                serviceprovidername: record.serviceproviderid.name,
+                actualprice: record.actualprice,
+                currentprice: record.currentprice,
+                isactive: record.isactive,
+              });
             });
-          });
-          setOffers(records);
+            setOffers(records);
+          }
         })
         .catch((error) => {
           console.log(error, "error");
@@ -97,9 +99,8 @@ const ViewOffers = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          const records = [];
-
           if (data.data.data.length > 0) {
+            const records = [];
             data.data.data.map((record) => {
               records.push({
                 offerid: record._id,

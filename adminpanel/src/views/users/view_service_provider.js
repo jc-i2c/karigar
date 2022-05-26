@@ -48,19 +48,21 @@ const ViewServiceProvider = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then((data) => {
-        const records = [];
-        data.data.data.map((record) => {
-          records.push({
-            serviceproviderid: record._id,
-            emailaddress: record.emailaddress,
-            name: record.name,
-            gender: record.gender,
-            status: record.status,
-            isactive: record.isactive,
-            mobilenumber: record.mobilenumber,
+        if (data.data.data) {
+          const records = [];
+          data.data.data.map((record) => {
+            records.push({
+              serviceproviderid: record._id,
+              emailaddress: record.emailaddress,
+              name: record.name,
+              gender: record.gender,
+              status: record.status,
+              isactive: record.isactive,
+              mobilenumber: record.mobilenumber,
+            });
           });
-        });
-        setServiceProvider(records);
+          setServiceProvider(records);
+        }
       })
       .catch((error) => {
         console.log(error, "error");
@@ -186,8 +188,8 @@ const ViewServiceProvider = () => {
                         {item.gender == 1
                           ? "Male"
                           : item.gender == 2
-                          ? "Female"
-                          : "-"}
+                            ? "Female"
+                            : "-"}
                       </div>
                     </CTableDataCell>
                     <CTableDataCell>

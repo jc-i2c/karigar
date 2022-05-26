@@ -78,8 +78,8 @@ const Offers = () => {
           },
         )
         .then((data) => {
-          const records = [];
           if (data.data.data) {
+            const records = [];
             data.data.data.map((record) => {
               records.push({
                 serviceid: record._id,
@@ -102,10 +102,10 @@ const Offers = () => {
           },
         )
         .then((data) => {
-          const records = [];
-
           if (data.data.data) {
+            const records = [];
             data.data.data.map((record) => {
+              console.log(record, "record");
               records.push({
                 serviceid: record.subserviceid.servicesid._id,
                 servicename: record.subserviceid.servicesid.servicename,
@@ -136,8 +136,8 @@ const Offers = () => {
             },
           )
           .then((data) => {
-            const records = [];
             if (data.data.data) {
+              const records = [];
               data.data.data.map((record) => {
                 records.push({
                   subserviceid: record._id,
@@ -165,8 +165,8 @@ const Offers = () => {
             },
           )
           .then((data) => {
-            const records = [];
             if (data.data.data) {
+              const records = [];
               data.data.data.map((record) => {
                 records.push({
                   subserviceid: record._id,
@@ -199,8 +199,8 @@ const Offers = () => {
             },
           )
           .then((data) => {
-            const records = [];
             if (data.data.data) {
+              const records = [];
               data.data.data.map((record) => {
                 records.push({
                   serviceproviderid: record._id,
@@ -228,8 +228,8 @@ const Offers = () => {
             },
           )
           .then((data) => {
-            const records = [];
             if (data.data.data) {
+              const records = [];
               records.push({
                 serviceproviderid: data.data.data._id,
                 serviceprovidername: data.data.data.name,

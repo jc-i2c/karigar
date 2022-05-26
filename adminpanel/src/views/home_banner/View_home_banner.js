@@ -47,18 +47,20 @@ const ViewCustomer = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       )
       .then((data) => {
-        const records = [];
-        data.data.data.map((record) => {
-          records.push({
-            bannerid: record._id,
-            bannertitle: record.bannertitle,
-            bannersubtitle: record.bannersubtitle,
-            bannerimage: record.bannerimage,
-            createdAt: record.createdAt,
-            updatedAt: record.updatedAt,
+        if (data.data.data) {
+          const records = [];
+          data.data.data.map((record) => {
+            records.push({
+              bannerid: record._id,
+              bannertitle: record.bannertitle,
+              bannersubtitle: record.bannersubtitle,
+              bannerimage: record.bannerimage,
+              createdAt: record.createdAt,
+              updatedAt: record.updatedAt,
+            });
           });
-        });
-        setBanners(records);
+          setBanners(records);
+        }
       })
       .catch((error) => {
         console.log(error, "error");

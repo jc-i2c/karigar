@@ -56,24 +56,25 @@ const ViewServices = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          const records = [];
-
-          data.data.data.map((record) => {
-            records.push({
-              servicehistoryid: record._id,
-              name: record.name,
-              serviceprovidername: record.serviceproviderid.name,
-              customername: record.customerid.name,
-              addresstype: record.addresstype,
-              servicedate: record.servicedate,
-              sessiontime: record.sessiontime,
-              servicestatus: record.servicestatus,
-              paymentstatus: record.paymentstatus,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
+          if (data.data.data) {
+            const records = [];
+            data.data.data.map((record) => {
+              records.push({
+                servicehistoryid: record._id,
+                name: record.name,
+                serviceprovidername: record.serviceproviderid.name,
+                customername: record.customerid.name,
+                addresstype: record.addresstype,
+                servicedate: record.servicedate,
+                sessiontime: record.sessiontime,
+                servicestatus: record.servicestatus,
+                paymentstatus: record.paymentstatus,
+                createdAt: record.createdAt,
+                updatedAt: record.updatedAt,
+              });
             });
-          });
-          setOffers(records);
+            setOffers(records);
+          }
         })
         .catch((error) => {
           console.log(error, "error");
@@ -86,25 +87,26 @@ const ViewServices = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          const records = [];
-
-          data.data.data.map((record) => {
-            // console.log(record, "record");
-            records.push({
-              servicehistoryid: record._id,
-              name: record.name,
-              serviceprovidername: record.serviceproviderid.name,
-              customername: record.customerid.name,
-              addresstype: record.addresstype,
-              servicedate: record.servicedate,
-              sessiontime: record.sessiontime,
-              servicestatus: record.servicestatus,
-              paymentstatus: record.paymentstatus,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
+          if (data.data.data) {
+            const records = [];
+            data.data.data.map((record) => {
+              // console.log(record, "record");
+              records.push({
+                servicehistoryid: record._id,
+                name: record.name,
+                serviceprovidername: record.serviceproviderid.name,
+                customername: record.customerid.name,
+                addresstype: record.addresstype,
+                servicedate: record.servicedate,
+                sessiontime: record.sessiontime,
+                servicestatus: record.servicestatus,
+                paymentstatus: record.paymentstatus,
+                createdAt: record.createdAt,
+                updatedAt: record.updatedAt,
+              });
             });
-          });
-          setOffers(records);
+            setOffers(records);
+          }
         })
         .catch((error) => {
           console.log(error, "error");
@@ -207,8 +209,8 @@ const ViewServices = () => {
                         {item.addresstype == 1
                           ? "OFFICE"
                           : item.addresstype == 2
-                          ? "HOME"
-                          : ""}
+                            ? "HOME"
+                            : ""}
                       </div>
                     </CTableDataCell>
 

@@ -76,21 +76,23 @@ const ViewServiceProvider = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          const records = [];
-          data.data.data.map((record) => {
-            records.push({
-              serviceproviderid: record._id,
-              name: record.name,
-              description: record.description,
-              image: record.image,
-              userid: record.userid,
-              subserviceid: record.subserviceid,
-              price: record.price,
-              isactive: record.isactive,
-              servicedetails: record.servicedetails,
+          if (data.data.data) {
+            const records = [];
+            data.data.data.map((record) => {
+              records.push({
+                serviceproviderid: record._id,
+                name: record.name,
+                description: record.description,
+                image: record.image,
+                userid: record.userid,
+                subserviceid: record.subserviceid,
+                price: record.price,
+                isactive: record.isactive,
+                servicedetails: record.servicedetails,
+              });
             });
-          });
-          setServiceProvider(records);
+            setServiceProvider(records);
+          }
         })
         .catch((error) => {
           console.log(error, "error");
@@ -103,22 +105,24 @@ const ViewServiceProvider = () => {
           { headers: { Authorization: `Bearer ${token}` } },
         )
         .then((data) => {
-          const records = [];
-          data.data.data.map((record) => {
-            setServiceProviderId(record.userid._id);
-            records.push({
-              serviceproviderid: record._id,
-              name: record.name,
-              description: record.description,
-              image: record.image,
-              userid: record.userid,
-              subserviceid: record.subserviceid,
-              price: record.price,
-              isactive: record.isactive,
-              servicedetails: record.servicedetails,
+          if (data.data.data) {
+            const records = [];
+            data.data.data.map((record) => {
+              setServiceProviderId(record.userid._id);
+              records.push({
+                serviceproviderid: record._id,
+                name: record.name,
+                description: record.description,
+                image: record.image,
+                userid: record.userid,
+                subserviceid: record.subserviceid,
+                price: record.price,
+                isactive: record.isactive,
+                servicedetails: record.servicedetails,
+              });
             });
-          });
-          setServiceProvider(records);
+            setServiceProvider(records);
+          }
         })
         .catch((error) => {
           console.log(error, "error");
