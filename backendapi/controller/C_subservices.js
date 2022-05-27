@@ -4,6 +4,7 @@ const Subservices = require("../models/M_subservices");
 const Services = require("../models/M_services");
 const Servicehistory = require("../models/M_service_history");
 const Serviceprovider = require("../models/M_serviceprovider");
+const Servicerating = require("../models/M_service_rating");
 
 const {
   createSubServicesVal,
@@ -448,7 +449,7 @@ const searchSubServices = async (req, res, next) => {
   }
 };
 
-// Search services and sub services for home pages API(GLOBAL SEARCH).
+// Search sub services for home pages API(GLOBAL SEARCH).
 const searchAllServices = async (req, res, next) => {
   try {
     let text = req.body.text;
@@ -466,7 +467,9 @@ const searchAllServices = async (req, res, next) => {
     if (findSubServices.length > 0) {
       await Promise.all(
         findSubServices.map(async (item1) => {
-          let serviceCount = 0;
+          let servicecount = 0;
+          let ratingcount = 0;
+          let averagerate = 0;
           let findServiceProvider = await Serviceprovider.find()
             .where({
               subserviceid: item1._id,
@@ -475,15 +478,36 @@ const searchAllServices = async (req, res, next) => {
 
           await Promise.all(
             findServiceProvider.map(async (item2) => {
-              let findCount = await Servicehistory.find()
+              let subServiceCount = await Servicehistory.find()
                 .where({
                   serviceproviderid: item2._id,
                 })
                 .count();
-              serviceCount = serviceCount + findCount;
+              servicecount = +subServiceCount;
+
+              let ratingCount = await Servicerating.find()
+                .where({
+                  serviceproviderid: item2._id,
+                })
+                .select("rate");
+
+              ratingcount = ratingCount.length;
+
+              if (ratingCount.length > 0) {
+                ratingCount.forEach((rate) => {
+                  averagerate = averagerate + rate.rate;
+                });
+
+                averagerate = averagerate / ratingcount;
+              }
+
+              averagerate = averagerate;
             })
           );
-          returnedObject = [...returnedObject, { ...item1._doc, serviceCount }];
+          returnedObject = [
+            ...returnedObject,
+            { ...item1._doc, servicecount, ratingcount, averagerate },
+          ];
         })
       );
 

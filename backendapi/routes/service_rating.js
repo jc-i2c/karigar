@@ -11,7 +11,7 @@ const {
   getServiceRate,
   countRate,
   getAll,
-  getServiceRating
+  getServiceRating,
 } = require("../controller/C_service_rating");
 
 router.post("/create", auth, multipartMiddleware, createServiceRate);
