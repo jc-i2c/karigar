@@ -2,6 +2,8 @@ var moment = require("moment");
 const mongoose = require("mongoose");
 const Subservices = require("../models/M_subservices");
 const Services = require("../models/M_services");
+const Servicehistory = require("../models/M_service_history");
+const Serviceprovider = require("../models/M_serviceprovider");
 
 const {
   createSubServicesVal,
@@ -9,6 +11,7 @@ const {
 } = require("../helper/joivalidation");
 
 const { removeFile } = require("../helper/removefile");
+const { filter } = require("lodash");
 
 // Create new sub services API.
 const createSubServices = async (req, res, next) => {
@@ -450,27 +453,44 @@ const searchAllServices = async (req, res, next) => {
   try {
     let text = req.body.text;
 
-    let findServices = await Services.find({
-      servicename: { $regex: ".*" + text + ".*", $options: "i" },
-    }).select("servicename serviceimage");
-
     let findSubServices = await Subservices.find({
       subservicename: { $regex: ".*" + text + ".*", $options: "i" },
-    }).select("subservicename subserviceimage");
+    })
+      .select("subservicename subserviceimage")
+      .populate({
+        path: "servicesid",
+        select: "servicename",
+      });
 
-    if (findServices.length > 0 || findSubServices.length > 0) {
-      let findData = [];
-      findServices.map((services) => {
-        findData.push(services);
-      });
-      findSubServices.map((subservices) => {
-        findData.push(subservices);
-      });
+    let returnedObject = [];
+    if (findSubServices.length > 0) {
+      await Promise.all(
+        findSubServices.map(async (item1) => {
+          let serviceCount = 0;
+          let findServiceProvider = await Serviceprovider.find()
+            .where({
+              subserviceid: item1._id,
+            })
+            .select("_id");
+
+          await Promise.all(
+            findServiceProvider.map(async (item2) => {
+              let findCount = await Servicehistory.find()
+                .where({
+                  serviceproviderid: item2._id,
+                })
+                .count();
+              serviceCount = serviceCount + findCount;
+            })
+          );
+          returnedObject = [...returnedObject, { ...item1._doc, serviceCount }];
+        })
+      );
 
       return res.send({
         status: true,
-        message: `${findData.length} Data found into system.`,
-        data: findData,
+        message: `${findSubServices.length} Data found into system.`,
+        data: returnedObject,
       });
     } else {
       return res.send({

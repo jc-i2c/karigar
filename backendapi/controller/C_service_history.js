@@ -1,6 +1,8 @@
 var moment = require("moment");
 const mongoose = require("mongoose");
 const ServiceHistory = require("../models/M_service_history");
+const Serviceprovider = require("../models/M_serviceprovider");
+const User = require("../models/M_user");
 
 const {
   createServiceHisVal,
@@ -11,6 +13,9 @@ const {
 // Create new service history API.
 const createServiceHistory = async (req, res, next) => {
   try {
+    let bookingdate = new Date();
+    bookingdate = moment(bookingdate).format("DD MMM, hh:mm A");
+
     let data = {
       serviceproviderid: req.body.serviceproviderid,
       customerid: req.body.customerid,
@@ -20,6 +25,7 @@ const createServiceHistory = async (req, res, next) => {
       servicedate: req.body.servicedate,
       sessiontime: req.body.sessiontime,
       servicestatus: req.body.servicestatus,
+      bookingdate: bookingdate,
     };
 
     // Joi validation.
@@ -45,6 +51,7 @@ const createServiceHistory = async (req, res, next) => {
         servicedate: data.servicedate,
         sessiontime: data.sessiontime,
         servicestatus: data.servicestatus,
+        bookingdate: data.bookingdate,
       });
 
       const insertQry = await createServiceHistory.save();
@@ -469,12 +476,19 @@ const changeServiceStatus = async (req, res, next) => {
       const getQry = await ServiceHistory.findById(serviceHistoryId);
 
       if (getQry) {
+        let bookingdate = new Date();
+        bookingdate = moment(bookingdate).format("DD MMM, hh:mm A");
+
         let updateQry = await ServiceHistory.findByIdAndUpdate(
           serviceHistoryId,
           {
-            $set: { servicestatus: data.servicestatus },
+            $set: {
+              servicestatus: data.servicestatus,
+              bookingdate: bookingdate,
+            },
           }
         );
+
         if (updateQry) {
           return res.send({
             status: true,
@@ -595,7 +609,7 @@ const getServiceStatus = async (req, res, next) => {
 
       if (mongoose.isValidObjectId(serviceHistoryId)) {
         let getQry = await ServiceHistory.findById(serviceHistoryId).select(
-          "servicestatus"
+          "serviceproviderid servicestatus bookingdate"
         );
         if (getQry == null) {
           return res.send({
@@ -607,13 +621,41 @@ const getServiceStatus = async (req, res, next) => {
             let resData = {};
             resData = getQry.toObject();
 
-            delete resData.updatedAt; // delete person["updatedAt"]
-            delete resData.__v; // delete person["__v"]
+            let findProfile = await Serviceprovider.findOne({
+              _id: resData.serviceproviderid,
+            }).populate({ path: "userid", select: "name mobilenumber" });
+
+            let objectData = [];
+            for (let index = 0; index <= 4; index++) {
+              if (index == 0) {
+                var title = "Booking request sent";
+              } else if (index == 1) {
+                var title = "Accepted";
+              } else if (index == 2) {
+                var title = "Job started";
+              } else if (index == 3) {
+                var title = "Job Compvared";
+              } else if (index == 4) {
+                var title = "Reject";
+              }
+
+              let newObject = {
+                _id: resData._id,
+                servicestatus: false,
+                title: title,
+                bookingdate: resData.bookingdate,
+              };
+              if (index <= resData.servicestatus) {
+                newObject = { ...newObject, servicestatus: true };
+              }
+              objectData.push(newObject);
+            }
 
             return res.send({
               status: true,
               message: `Customer service status found into system.`,
-              data: resData,
+              serviceproviderdetails: findProfile.userid,
+              data: objectData,
             });
           } else {
             return res.send({
@@ -754,59 +796,59 @@ const getSerProHistoty = async (req, res, next) => {
         .populate({
           path: "customerid",
           select: "name",
-        });
+        })
+        .where({ serviceproviderid: serProviderId });
 
+      let findData = [];
       if (getQry.length > 0) {
-        let findData = [];
         let resData = {};
         getQry.forEach((data) => {
           resData = data.toObject();
 
-          let userId = resData.serviceproviderid.userid.toString();
+          delete resData.__v; // delete person["__v"]
 
-          if (userId == serProviderId) {
-            delete resData.__v; // delete person["__v"]
-
-            // Set payment status.
-            if (resData.paymentstatus) {
-              resData.paymentstatus = "Completed";
-            } else {
-              resData.paymentstatus = "Pending";
-            }
-
-            // Servicedate date convert into date and time (DD/MM/YYYY) format
-            var serviceDate = resData.servicedate.toISOString().slice(0, 10);
-            resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
-
-            // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-            createDate = resData.createdAt
-              .toISOString()
-              .replace(/T/, " ")
-              .replace(/\..+/, "");
-
-            resData.createdAt = moment(createDate).format(
-              "DD-MM-YYYY HH:MM:SS"
-            );
-
-            // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-            updateDate = resData.updatedAt
-              .toISOString()
-              .replace(/T/, " ")
-              .replace(/\..+/, "");
-
-            resData.updatedAt = moment(updateDate).format(
-              "DD-MM-YYYY HH:MM:SS"
-            );
-
-            findData.push(resData);
+          // Set payment status.
+          if (resData.paymentstatus) {
+            resData.paymentstatus = "Completed";
+          } else {
+            resData.paymentstatus = "Pending";
           }
+
+          // Servicedate date convert into date and time (DD/MM/YYYY) format
+          var serviceDate = resData.servicedate.toISOString().slice(0, 10);
+          resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
+
+          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+          createDate = resData.createdAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
+
+          // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+          updateDate = resData.updatedAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
+
+          findData.push(resData);
         });
 
-        return res.send({
-          status: true,
-          message: `Service history found into system.`,
-          data: findData,
-        });
+        if (findData.length > 0) {
+          return res.send({
+            status: true,
+            message: `${findData.length} Service history found into system.`,
+            data: findData,
+          });
+        } else {
+          return res.send({
+            status: false,
+            message: `Service history not found into system.`,
+          });
+        }
       } else {
         return res.send({
           status: false,
