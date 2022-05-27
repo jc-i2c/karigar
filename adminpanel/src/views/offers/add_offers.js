@@ -105,7 +105,6 @@ const Offers = () => {
           if (data.data.data) {
             const records = [];
             data.data.data.map((record) => {
-              console.log(record, "record");
               records.push({
                 serviceid: record.subserviceid.servicesid._id,
                 servicename: record.subserviceid.servicesid.servicename,

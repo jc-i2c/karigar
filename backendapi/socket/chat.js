@@ -193,15 +193,6 @@ const getAllCusChatRequest = async (data) => {
         delete resData.updatedAt; // delete person["updatedAt"]
         delete resData.__v; // delete person["__v"]
 
-        // Set chat request status.
-        if (resData.chatstatus == 1) {
-          resData.chatstatus = "Pending";
-        } else if (resData.chatstatus == 2) {
-          resData.chatstatus = "Accept";
-        } else if (resData.chatstatus == 3) {
-          resData.chatstatus = "Reject";
-        }
-
         // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()
@@ -212,17 +203,10 @@ const getAllCusChatRequest = async (data) => {
 
         findData.push(resData);
       });
-
-      return res.send({
-        status: true,
-        message: `${getQry.length} Data found into system.`,
-        data: findData,
-      });
+      console.log("Data not found into system.");
+      return findData;
     } else {
-      return res.send({
-        status: false,
-        message: `${getQry.length} Data not found into system.`,
-      });
+      console.log("Data not found into system.");
     }
   } catch (error) {
     // console.log(error, "ERROR");

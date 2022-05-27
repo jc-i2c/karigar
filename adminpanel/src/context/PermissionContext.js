@@ -24,7 +24,6 @@ const PermissionContextProvider = ({ children }) => {
             records.push(item._id);
           });
           setPermissions(records);
-          // console.log(records, "records");
         }
       })
       .catch((error) => {

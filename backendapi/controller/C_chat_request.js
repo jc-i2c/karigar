@@ -208,15 +208,6 @@ const getAllCusChatRequest = async (req, res, next) => {
         delete resData.updatedAt; // delete person["updatedAt"]
         delete resData.__v; // delete person["__v"]
 
-        // Set chat request status.
-        if (resData.chatstatus == 1) {
-          resData.chatstatus = "Pending";
-        } else if (resData.chatstatus == 2) {
-          resData.chatstatus = "Accept";
-        } else if (resData.chatstatus == 3) {
-          resData.chatstatus = "Reject";
-        }
-
         // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
           .toISOString()

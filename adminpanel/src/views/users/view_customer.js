@@ -166,7 +166,6 @@ const ViewCustomer = () => {
         .then((data) => {
           if (data.data.status) {
             toast.success(data.data.message);
-            // console.log(data.data.message, "data.data.message");
             let customerStatus = customers.map((listOfCustomer) => {
               if (listOfCustomer.customerid == userId) {
                 if (listOfCustomer.status) {

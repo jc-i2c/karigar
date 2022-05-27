@@ -17,34 +17,41 @@ const ViewCustomerChat = () => {
   useEffect(() => {
     let unmounted = false;
 
-    // Get customer chat.
-    axios
-      .post(
-        `${process.env.REACT_APP_APIURL}/karigar/chatrequest/getallchatrequest`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      )
-      .then((data) => {
-        if (data.data.data) {
-          const records = [];
-          data.data.data.map((record) => {
-            records.push({
-              chatrequestid: record._id,
-              customerid: record.customerid._id,
-              customername: record.customerid.name,
-              serviceprovid: record.serviceprovid._id,
-              serviceprovname: record.serviceprovid.name,
-              chatstatus: record.chatstatus,
-            });
-          });
-          setCutomerList(records);
-        }
-      })
-      .catch((error) => {
-        console.log(error, "error");
+    if (token) {
+      socket.emit("getCusChat", token);
+
+      socket.on("getCusChat", function (data) {
+        console.log(data);
       });
+    }
+    // // Get customer chat.
+    // axios
+    //   .post(
+    //     `${process.env.REACT_APP_APIURL}/karigar/chatrequest/getallchatrequest`,
+    //     {},
+    //     {
+    //       headers: { Authorization: `Bearer ${token}` },
+    //     },
+    //   )
+    //   .then((data) => {
+    //     if (data.data.data) {
+    //       const records = [];
+    //       data.data.data.map((record) => {
+    //         records.push({
+    //           chatrequestid: record._id,
+    //           customerid: record.customerid._id,
+    //           customername: record.customerid.name,
+    //           serviceprovid: record.serviceprovid._id,
+    //           serviceprovname: record.serviceprovid.name,
+    //           chatstatus: record.chatstatus,
+    //         });
+    //       });
+    //       setCutomerList(records);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error, "error");
+    //   });
     return () => {
       unmounted = true;
     };

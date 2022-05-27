@@ -8,14 +8,6 @@ const http = require("http");
 require("dotenv").config();
 const port = process.env.API_PORT || 3031;
 
-// app.use("/demo", path.join("./uploads/demo.html"));
-
-// app.use(express.static(path.join(__dirname, "/build")));
-// // serving index.html file to client
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(__dirname, "/build", "index.html"));
-// });
-
 // Database file include.
 require("./server/database")
   .connect()
@@ -53,6 +45,7 @@ const {
   sendMessage,
   changeStatus,
   createChatRoom,
+  getAllCusChatRequest,
 } = require("./socket/chat.js");
 
 const server = http.createServer(app);
@@ -95,6 +88,17 @@ io.on("connection", (socket) => {
     socket.on("changestatus", async (data) => {
       let resData = await changeStatus(data);
       socket.emit("changestatus", resData);
+    });
+  } catch (error) {
+    socket.emit("error", error.message);
+  }
+
+  // get all chat customer.
+  try {
+    socket.on("getCusChat", async (customerId) => {
+      data = { customerid: customerId };
+      let resData = await getAllCusChatRequest(data);
+      socket.emit("getCusChat", resData);
     });
   } catch (error) {
     socket.emit("error", error.message);

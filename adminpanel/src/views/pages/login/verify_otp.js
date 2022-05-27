@@ -116,7 +116,6 @@ const AddServices = () => {
                         value={otp ? otp : ""}
                         onChange={(e) => {
                           var otpReg = /^[0-9]*$/;
-                          console.log(otpReg.test(e.target.value));
                           if (otpReg.test(e.target.value)) {
                             setOtp(+e.target.value);
                           }

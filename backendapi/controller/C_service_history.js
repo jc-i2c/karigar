@@ -610,21 +610,6 @@ const getServiceStatus = async (req, res, next) => {
             delete resData.updatedAt; // delete person["updatedAt"]
             delete resData.__v; // delete person["__v"]
 
-            // Set service status.
-            if (resData.servicestatus == 0) {
-              resData.servicestatus = "Booking_request_sent";
-            } else if (resData.servicestatus == 1) {
-              resData.servicestatus = "accept";
-            } else if (resData.servicestatus == 2) {
-              resData.servicestatus = "Booking_confirmed";
-            } else if (resData.servicestatus == 3) {
-              resData.servicestatus = "Job_started";
-            } else if (resData.servicestatus == 4) {
-              resData.servicestatus = "Job_Completed";
-            } else if (resData.servicestatus == 5) {
-              resData.servicestatus = "Reject";
-            }
-
             return res.send({
               status: true,
               message: `Customer service status found into system.`,
