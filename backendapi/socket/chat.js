@@ -3,7 +3,10 @@ const ChatRoom = require("../models/M_chat_room");
 const Chat = require("../models/M_chat");
 var moment = require("moment");
 
-const { chatReqStatusVal, loginDataVal } = require("../helper/joivalidation");
+const jwt = require("jsonwebtoken");
+const config = process.env;
+
+const { chatReqStatusVal } = require("../helper/joivalidation");
 const { default: mongoose } = require("mongoose");
 
 // Create chat request API.
@@ -121,96 +124,127 @@ const checkStatus = async (chatRequestId) => {
 // Get all chat Request based on service provider Id API.
 const getAllChatRequest = async (data) => {
   try {
-    const { serviceprovid } = data;
+    if (data) {
+      var token = data.split(" ");
+      token = token[0];
 
-    let getQry = await ChatRequest.find().where({
-      serviceprovid: serviceprovid,
-    });
+      const decoded = jwt.verify(token, config.TOKEN_KEY);
 
-    if (getQry.length > 0) {
-      let findData = [];
-      let resData = {};
+      let getQry = await ChatRequest.find()
+        .where({
+          serviceprovid: decoded.id,
+        })
+        .populate({ path: "customerid", select: "name" })
+        .populate({ path: "serviceprovid", select: "name" });
 
-      getQry.forEach((data) => {
-        resData = data.toObject();
+      if (getQry.length > 0) {
+        let findData = [];
+        let resData = {};
 
-        delete resData.updatedAt; // delete person["updatedAt"]
-        delete resData.__v; // delete person["__v"]
+        getQry.forEach((data) => {
+          resData = data.toObject();
 
-        // Set chat request status.
-        if (resData.chatstatus == 1) {
-          resData.chatstatus = "Pending";
-        } else if (resData.chatstatus == 2) {
-          resData.chatstatus = "Accept";
-        } else if (resData.chatstatus == 3) {
-          resData.chatstatus = "Reject";
+          delete resData.updatedAt; // delete person["updatedAt"]
+          delete resData.__v; // delete person["__v"]
+
+          // Set chat request status.
+          if (resData.chatstatus == 1) {
+            resData.chatstatus = "Pending";
+          } else if (resData.chatstatus == 2) {
+            resData.chatstatus = "Accept";
+          } else if (resData.chatstatus == 3) {
+            resData.chatstatus = "Reject";
+          }
+
+          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+          createDate = resData.createdAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
+
+          findData.push(resData);
+        });
+        if (findData) {
+          return findData;
+        } else {
+          return "Data not found into system.";
         }
-
-        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-        createDate = resData.createdAt
-          .toISOString()
-          .replace(/T/, " ")
-          .replace(/\..+/, "");
-
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
-
-        findData.push(resData);
-      });
-
-      return res.send({
-        status: true,
-        message: `${getQry.length} Data found into system.`,
-        data: findData,
-      });
+      } else {
+        return "Data not found into system.";
+      }
     } else {
-      return res.send({
-        status: false,
-        message: `${getQry.length} Data not found into system.`,
-      });
+      return "Token is required.";
     }
   } catch (error) {
-    // console.log(error, "ERROR");
-    next(error);
+    console.log(error, "ERROR");
+    // next(error);
   }
 };
 
 // Get all chat Request based on customer Id API.
 const getAllCusChatRequest = async (data) => {
   try {
-    const { customerid } = data;
+    if (data) {
+      var token = data.split(" ");
+      token = token[0];
 
-    let getQry = await ChatRequest.find().where({
-      customerid: customerid,
-    });
+      const decoded = jwt.verify(token, config.TOKEN_KEY);
 
-    if (getQry.length > 0) {
-      let findData = [];
-      let resData = {};
+      let getQry = await ChatRequest.find()
+        .where({
+          customerid: decoded.id,
+        })
+        .populate({ path: "customerid", select: "name" })
+        .populate({ path: "serviceprovid", select: "name" });
 
-      getQry.forEach((data) => {
-        resData = data.toObject();
+      console.log(getQry, "getQry");
 
-        delete resData.updatedAt; // delete person["updatedAt"]
-        delete resData.__v; // delete person["__v"]
+      if (getQry.length > 0) {
+        let findData = [];
+        let resData = {};
 
-        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-        createDate = resData.createdAt
-          .toISOString()
-          .replace(/T/, " ")
-          .replace(/\..+/, "");
+        getQry.forEach((data) => {
+          resData = data.toObject();
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
+          delete resData.updatedAt; // delete person["updatedAt"]
+          delete resData.__v; // delete person["__v"]
 
-        findData.push(resData);
-      });
-      console.log("Data not found into system.");
-      return findData;
+          // Set chat request status.
+          if (resData.chatstatus == 1) {
+            resData.chatstatus = "Pending";
+          } else if (resData.chatstatus == 2) {
+            resData.chatstatus = "Accept";
+          } else if (resData.chatstatus == 3) {
+            resData.chatstatus = "Reject";
+          }
+
+          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+          createDate = resData.createdAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
+
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
+
+          findData.push(resData);
+        });
+        if (findData) {
+          console.log(findData, "findData");
+          return findData;
+        } else {
+          return "Data not found into system.";
+        }
+      } else {
+        return "Data not found into system.";
+      }
     } else {
-      console.log("Data not found into system.");
+      return "Token is required.";
     }
   } catch (error) {
-    // console.log(error, "ERROR");
-    next(error);
+    console.log(error, "ERROR");
+    // next(error);
   }
 };
 

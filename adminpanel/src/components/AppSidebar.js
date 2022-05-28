@@ -65,11 +65,13 @@ const AppSidebar = () => {
             />
           </a>
         ) : (
-          <img
-            className="sidebar-brand-full"
-            src="./images/logo.svg"
-            alt="logo"
-          />
+          <a className="nav-link" href="/karigar/services">
+            <img
+              className="sidebar-brand-full"
+              src="./images/logo.svg"
+              alt="logo"
+            />
+          </a>
         )}
       </CSidebarBrand>
       <CSidebarNav>

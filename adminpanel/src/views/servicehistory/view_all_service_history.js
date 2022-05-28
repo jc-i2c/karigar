@@ -194,7 +194,9 @@ const ViewServices = () => {
                     {roleName == "ADMIN" && (
                       <CTableDataCell>
                         <div>
-                          {item.serviceprovidername ? item.serviceprovidername : ""}
+                          {item.serviceprovidername
+                            ? item.serviceprovidername
+                            : ""}
                         </div>
                       </CTableDataCell>
                     )}
@@ -208,8 +210,8 @@ const ViewServices = () => {
                         {item.addresstype == 1
                           ? "OFFICE"
                           : item.addresstype == 2
-                            ? "HOME"
-                            : ""}
+                          ? "HOME"
+                          : ""}
                       </div>
                     </CTableDataCell>
 
@@ -222,9 +224,9 @@ const ViewServices = () => {
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      {item.servicestatus == 5 ? (
+                      {item.servicestatus == 4 ? (
                         <CFormSelect required id="services" name="services">
-                          <option key={5} value={5}>
+                          <option key={4} value={4}>
                             Reject
                           </option>
                         </CFormSelect>
@@ -245,15 +247,12 @@ const ViewServices = () => {
                             Accept
                           </option>
                           <option key={2} value={2}>
-                            Confirmed
-                          </option>
-                          <option key={3} value={3}>
                             Job_started
                           </option>
-                          <option key={4} value={4}>
+                          <option key={3} value={3}>
                             Job_Completed
                           </option>
-                          <option key={5} value={5}>
+                          <option key={4} value={4}>
                             Reject
                           </option>
                         </CFormSelect>

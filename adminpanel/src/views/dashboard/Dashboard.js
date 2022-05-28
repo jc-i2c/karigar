@@ -42,9 +42,6 @@ const Dashboard = () => {
     if (roleName == "ADMIN") {
       navigate("/dashboard");
     }
-    if (roleName == "SERVICEPROVIDER") {
-      navigate("/services");
-    }
 
     return () => {
       unmounted = true;

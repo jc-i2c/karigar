@@ -22,7 +22,8 @@ const Offers = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const token = localStorage.getItem("karigar_token");
+
   const [validated, setValidated] = useState(false);
 
   const [spinner, setSpinner] = useState(false);
@@ -34,6 +35,8 @@ const Offers = () => {
   const [servicesProviderId, setServicesProviderId] = useState("");
   const [currentPrice, setCurrentPrice] = useState("");
   const [actualPrice, setActualPrice] = useState("");
+
+  const [newRoleName, setNewRoleName] = useState("");
 
   const [allServices, setAllServices] = useState([]);
   const [allSubServices, setAllSubServices] = useState([]);
@@ -59,16 +62,21 @@ const Offers = () => {
         },
       )
       .then((data) => {
-        setRoleName(data.data.data.roletag);
+        if (data.data.data.roletag) {
+          setRoleName(data.data.data.roletag);
+          setNewRoleName(data.data.data.roletag);
+        }
       })
       .catch((error) => {
         console.log(error, "error");
       });
   }, []);
 
+  // console.log(roleName, "JOVO BHAI AVE CHE");
+
   useEffect(() => {
     // Gel all services.
-    if (roleName == "ADMIN") {
+    if (newRoleName == "ADMIN") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/services/all`,
@@ -117,7 +125,7 @@ const Offers = () => {
           console.log(error, "error");
         });
     }
-  }, [roleName]);
+  }, [newRoleName]);
 
   // Get all sub services.
   useEffect(() => {
@@ -152,6 +160,7 @@ const Offers = () => {
             console.log(error, "error");
           });
       } else {
+        // console.log("YES SERVICE PROVIDER");
         var data = new FormData();
         data.append("servicesid", servicesId);
 
@@ -182,7 +191,7 @@ const Offers = () => {
     }
   }, [servicesId]);
 
-  // Get all service provider
+  // Get all service provider.
   useEffect(() => {
     if (subServicesId) {
       if (roleName == "ADMIN") {
@@ -383,7 +392,7 @@ const Offers = () => {
                       type="text"
                       id="services"
                       name="services"
-                      value={servicesId}
+                      value={servicesId && servicesId}
                       onChange={(e) => {
                         setServicesId("");
                         setSubServicesId("");
@@ -420,7 +429,7 @@ const Offers = () => {
                       required
                       id="subservices"
                       name="subservices"
-                      value={subServicesId}
+                      value={subServicesId && subServicesId}
                       onChange={(e) => {
                         setSubServicesId("");
                         setServicesProviderId("");
@@ -458,7 +467,7 @@ const Offers = () => {
                       required
                       id="servicesprovider"
                       name="servicesprovider"
-                      value={servicesProviderId}
+                      value={servicesProviderId && servicesProviderId}
                       onChange={(e) => {
                         setServicesProviderId("");
                         setServicesProviderId(e.target.value);

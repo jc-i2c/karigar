@@ -16,42 +16,57 @@ const ViewCustomerChat = () => {
 
   useEffect(() => {
     let unmounted = false;
-
+    // get all customer list for service provider.
     if (token) {
       socket.emit("getCusChat", token);
 
       socket.on("getCusChat", function (data) {
-        console.log(data);
+        if (data) {
+          const records = [];
+          data.map((record) => {
+            records.push({
+              chatrequestid: record._id,
+              customerid: record.customerid._id,
+              customername: record.customerid.name,
+              serviceprovid: record.serviceprovid._id,
+              serviceprovname: record.serviceprovid.name,
+              chatstatus: record.chatstatus,
+            });
+          });
+          setCutomerList(records);
+        }
       });
+    } else {
+      console.log("Token is required");
     }
-    // // Get customer chat.
-    // axios
-    //   .post(
-    //     `${process.env.REACT_APP_APIURL}/karigar/chatrequest/getallchatrequest`,
-    //     {},
-    //     {
-    //       headers: { Authorization: `Bearer ${token}` },
-    //     },
-    //   )
-    //   .then((data) => {
-    //     if (data.data.data) {
-    //       const records = [];
-    //       data.data.data.map((record) => {
-    //         records.push({
-    //           chatrequestid: record._id,
-    //           customerid: record.customerid._id,
-    //           customername: record.customerid.name,
-    //           serviceprovid: record.serviceprovid._id,
-    //           serviceprovname: record.serviceprovid.name,
-    //           chatstatus: record.chatstatus,
-    //         });
-    //       });
-    //       setCutomerList(records);
+
+    // // get all service provider list for customer.
+    // if (token) {
+    //   socket.emit(
+    //     "getSerProChat",
+    //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNTk0MGZiYjNlNzE2MTk2YTVkNGM3NCIsInVzZXJyb2xsIjoiNjI3YTI0MDljNDNkNjkxNzFkZWFhM2JhIiwicm9sZXRhZyI6IkNVU1RPTUVSIiwiaWF0IjoxNjUzNzE0NjE1fQ.anlc1Y0nEBP94ErWuDS4YMDh9LCNU-Prpm1STE_KFu8",
+    //   );
+
+    //   socket.on("getSerProChat", function (data) {
+    //     if (data) {
+    //       console.log(data, "data");
+    //       // const records = [];
+    //       // data.map((record) => {
+    //       //   records.push({
+    //       //     chatrequestid: record._id,
+    //       //     customerid: record.customerid._id,
+    //       //     customername: record.customerid.name,
+    //       //     serviceprovid: record.serviceprovid._id,
+    //       //     serviceprovname: record.serviceprovid.name,
+    //       //     chatstatus: record.chatstatus,
+    //       //   });
+    //       // });
+    //       // setCutomerList(records);
     //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error, "error");
     //   });
+    // } else {
+    //   console.log("Token is required");
+    // }
     return () => {
       unmounted = true;
     };
@@ -138,11 +153,10 @@ const ViewCustomerChat = () => {
                           cutomerList.map((item, index) => {
                             return (
                               <li
-                                className={`${
-                                  item.customerid === customerDetails.customerid
-                                    ? "p-1 border-bottom bg-light"
-                                    : "p-1 border-bottom"
-                                }`}
+                                className={`${item.customerid === customerDetails.customerid
+                                  ? "p-1 border-bottom bg-light"
+                                  : "p-1 border-bottom"
+                                  }`}
                                 key={index}
                                 onClick={() => {
                                   setCustomerDetails("");

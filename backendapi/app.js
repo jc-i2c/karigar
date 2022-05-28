@@ -45,6 +45,7 @@ const {
   sendMessage,
   changeStatus,
   createChatRoom,
+  getAllChatRequest,
   getAllCusChatRequest,
 } = require("./socket/chat.js");
 
@@ -95,10 +96,21 @@ io.on("connection", (socket) => {
 
   // get all chat customer.
   try {
-    socket.on("getCusChat", async (customerId) => {
-      data = { customerid: customerId };
-      let resData = await getAllCusChatRequest(data);
+    socket.on("getCusChat", async (token) => {
+      let resData = await getAllChatRequest(token);
+
       socket.emit("getCusChat", resData);
+    });
+  } catch (error) {
+    socket.emit("error", error.message);
+  }
+
+  // get all chat service provider.
+  try {
+    socket.on("getSerProChat", async (token) => {
+      let resData = await getAllCusChatRequest(token);
+
+      socket.emit("getSerProChat", resData);
     });
   } catch (error) {
     socket.emit("error", error.message);

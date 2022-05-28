@@ -62,6 +62,7 @@ const userSignUp = async (req, res, next) => {
           otp: null,
           userroll: userroll,
           status: true,
+          deleted: false,
         });
 
         user.save(async (error, doc) => {
@@ -105,6 +106,7 @@ const userSignUp = async (req, res, next) => {
               password: password,
               otp: genOtp,
               userroll: getRole._id, // default customer
+              deleted: false,
             });
 
             user.save(async (error, doc) => {

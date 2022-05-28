@@ -243,7 +243,7 @@ const AddServices = () => {
                 <CForm
                   className="row g-3"
                   noValidate
-                  validated={validated && validated}
+                  validated={validated}
                   onSubmit={addNewUsers}
                 >
                   <h3>Users</h3>
@@ -315,7 +315,7 @@ const AddServices = () => {
                   {!isEdit && (
                     <CCol md={6}>
                       <CFormLabel
-                        htmlFor="password"
+                        htmlFor="userpassword"
                         className="col-sm-12 col-form-label"
                       >
                         Password
@@ -339,7 +339,7 @@ const AddServices = () => {
                   {!isEdit && (
                     <CCol md={6}>
                       <CFormLabel
-                        htmlFor="password"
+                        htmlFor="userpassword"
                         className="col-sm-12 col-form-label"
                       >
                         Confirm Password
