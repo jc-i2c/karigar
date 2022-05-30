@@ -18,14 +18,12 @@ import {
   CFormSelect,
 } from "@coreui/react";
 
-const AddServices = () => {
+const AddUsers = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const token = localStorage.getItem("karigar_token");
-
-  const [validated, setValidated] = useState(false);
-
+  const [isEdit, setIsEdit] = useState(false);
   const [spinner, setSpinner] = useState(false);
 
   // Edit services code
@@ -37,20 +35,11 @@ const AddServices = () => {
   const [gender, setGender] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [allUserRole, setAllUserRole] = useState([]);
-  const [isEdit, setIsEdit] = useState(false);
   const [userId, setUserId] = useState("");
 
-  // Error state
-  const [nameError, setNameError] = useState("");
-  const [emailAdressError, setEmailAdressError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
-  const [passwordMatchError, setPasswordMatchError] = useState("");
-  const [mobileNumberError, setMobileNumberError] = useState("");
-  const [genderError, setGenderError] = useState("");
-  const [userroleError, setUSerroleError] = useState("");
+  var validationError = [];
 
-  // Gel all userroel.
+  // Get all userrole.
   useEffect(() => {
     let unmounted = false;
 
@@ -82,27 +71,6 @@ const AddServices = () => {
     };
   }, []);
 
-  // Error state empty.
-  useEffect(() => {
-    setValidated(false);
-    setNameError("");
-    setEmailAdressError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
-    setPasswordMatchError("");
-    setUSerroleError("");
-    setMobileNumberError("");
-    setGenderError("");
-  }, [
-    name,
-    emailAddress,
-    password,
-    confirmPassword,
-    userrole,
-    mobileNumber,
-    gender,
-  ]);
-
   // Props data set.
   useEffect(() => {
     if (location.state) {
@@ -116,119 +84,125 @@ const AddServices = () => {
     }
   }, []);
 
+  // Error message empty.
+  useEffect(() => {
+    setSpinner(false);
+    validationError = [];
+  }, [
+    emailAddress,
+    name,
+    password,
+    confirmPassword,
+    userrole,
+    gender,
+    mobileNumber,
+  ]);
+
   // Add edit users.
   function addNewUsers() {
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
-      setValidated(true);
-      setEmailAdressError("Please enter valid email address");
+      validationError.push("emailError");
     }
-    if (!name) {
-      setValidated(true);
-      setNameError("Please enter name");
+
+    if (name.trim() === "") {
+      validationError.push("nameError");
     }
+
+    if (password !== confirmPassword) {
+      validationError.push("passwordMisMatch");
+    }
+
     if (
       !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
         password,
       )
     ) {
-      setValidated(true);
-      setPasswordError("Please enter strong password");
+      validationError.push("weakPassowrd");
     }
-    if (
-      !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
-        confirmPassword,
-      )
-    ) {
-      setValidated(true);
-      setConfirmPasswordError("Please enter strong password");
-    }
-    if (!password === confirmPassword) {
-      setValidated(true);
-      setPasswordMatchError("Password and confirm password does not match");
-    }
+
     if (!userrole) {
-      setValidated(true);
-      setUSerroleError("Please select userrole");
+      validationError.push("userRoleError");
     }
-    if (!/^[6789]\d{9}$/i.test(mobileNumber)) {
-      setValidated(true);
-      setMobileNumberError("Please enter valid mobile number");
+
+    if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber == null) {
+      validationError.push("mobileError");
     }
+
     if (!gender) {
-      setValidated(true);
-      setGenderError("Please select gender");
-    } else {
-      if (validated == false) {
-        if (isEdit) {
-          // Admin edit userdata.
-          var data = new FormData();
-          data.append("emailaddress", emailAddress);
-          data.append("name", name);
-          data.append("userroll", userrole);
-          data.append("mobilenumber", mobileNumber);
-          data.append("gender", gender);
-          data.append("userid", userId);
+      validationError.push("genderError");
+    }
 
-          axios
-            .post(
-              `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
-              data,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              },
-            )
-            .then((data) => {
-              if (data.data.status) {
-                toast.success(data.data.message, {
-                  onClose: () => {
-                    navigate(-1);
-                  },
-                });
-              } else {
-                toast.error(data.data.message);
-              }
-              setSpinner(false);
-            })
-            .catch((error) => {
-              console.log(error, "error");
-              setSpinner(false);
-            });
-        } else {
-          // Add new users.
-          var data = new FormData();
-          data.append("name", name);
-          data.append("emailaddress", emailAddress);
-          data.append("password", password);
-          data.append("confirmpassword", confirmPassword);
-          data.append("userroll", userrole);
-          data.append("isadmin", true);
-          data.append("mobilenumber", mobileNumber);
-          data.append("gender", gender);
+    if (validationError.length === 0) {
+      setSpinner(false);
 
-          axios
-            .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
+      if (isEdit) {
+        // Admin edit users.
+        var data = new FormData();
+        data.append("emailaddress", emailAddress);
+        data.append("name", name);
+        data.append("userroll", userrole);
+        data.append("mobilenumber", mobileNumber);
+        data.append("gender", gender);
+        data.append("userid", userId);
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
+            data,
+            {
               headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((data) => {
-              if (data.data.status) {
-                toast.success(data.data.message, {
-                  onClose: () => {
-                    navigate(-1);
-                  },
-                });
-              } else {
-                toast.error(data.data.message);
-              }
-              if (data.data.status == false) {
-                toast.error(data.data.message.confirmpassword);
-              }
-              setSpinner(false);
-            })
-            .catch((error) => {
-              console.log(error, "error");
-              setSpinner(false);
-            });
-        }
+            },
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate(-1);
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      } else {
+        // Add new users.
+        var data = new FormData();
+        data.append("name", name);
+        data.append("emailaddress", emailAddress);
+        data.append("password", password);
+        data.append("confirmpassword", confirmPassword);
+        data.append("userroll", userrole);
+        data.append("isadmin", true);
+        data.append("mobilenumber", mobileNumber);
+        data.append("gender", gender);
+
+        axios
+          .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate(-1);
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            if (data.data.status == false) {
+              toast.error(data.data.message.confirmpassword);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
       }
     }
   }
@@ -240,12 +214,7 @@ const AddServices = () => {
           <CCol sm="12">
             <CCard>
               <CCardBody className="p-4">
-                <CForm
-                  className="row g-3"
-                  noValidate
-                  validated={validated}
-                  onSubmit={addNewUsers}
-                >
+                <CForm className="row g-3" noValidate>
                   <h3>Users</h3>
                   <hr />
 
@@ -256,35 +225,20 @@ const AddServices = () => {
                     >
                       Email Address
                     </CFormLabel>
-                    {isEdit ? (
-                      <CFormInput
-                        type="email"
-                        id="validationServer01"
-                        placeholder="Email address"
-                        autoComplete="emailaddress"
-                        required
-                        disabled
-                        value={emailAddress ? emailAddress : ""}
-                        onChange={(e) => {
-                          setEmailAddress(e.target.value);
-                        }}
-                      />
-                    ) : (
-                      <CFormInput
-                        type="email"
-                        id="validationServer01"
-                        placeholder="Email address"
-                        autoComplete="emailaddress"
-                        required
-                        value={emailAddress ? emailAddress : ""}
-                        onChange={(e) => {
-                          setEmailAddress(e.target.value);
-                        }}
-                      />
-                    )}
+                    <CFormInput
+                      type="email"
+                      id="validationServer01"
+                      placeholder="Email address"
+                      required
+                      disabled={isEdit ? true : false}
+                      value={emailAddress}
+                      onChange={(e) => {
+                        setEmailAddress(e.target.value);
+                      }}
+                    />
 
-                    {emailAdressError && (
-                      <p className="text-danger">{emailAdressError}</p>
+                    {validationError.includes("emailError") && (
+                      <p className="text-danger">Enter valid email address.</p>
                     )}
                   </CCol>
 
@@ -298,10 +252,9 @@ const AddServices = () => {
                     <CFormInput
                       type="text"
                       id="name"
-                      placeholder="Name"
-                      autoComplete="name"
+                      placeholder="Enter Name"
                       required
-                      value={name ? name : ""}
+                      value={name}
                       onChange={(e) => {
                         var nameReg = /^[A-Za-z\s]*$/;
                         if (nameReg.test(e.target.value)) {
@@ -309,13 +262,15 @@ const AddServices = () => {
                         }
                       }}
                     />
-                    {nameError && <p className="text-danger">{nameError}</p>}
+                    {validationError.includes("nameError") && (
+                      <p className="text-danger">Name must be a string.</p>
+                    )}
                   </CCol>
 
                   {!isEdit && (
                     <CCol md={6}>
                       <CFormLabel
-                        htmlFor="userpassword"
+                        htmlFor="password"
                         className="col-sm-12 col-form-label"
                       >
                         Password
@@ -324,14 +279,16 @@ const AddServices = () => {
                         type="password"
                         id="password"
                         placeholder="password"
-                        autoComplete="password"
                         required
                         onChange={(e) => {
                           setPassword(e.target.value);
                         }}
                       />
-                      {passwordError && (
-                        <p className="text-danger">{passwordError}</p>
+                      {validationError.includes("weakPassowrd") && (
+                        <p className="text-danger">Enter Strong Password.</p>
+                      )}
+                      {validationError.includes("passwordMisMatch") && (
+                        <p className="text-danger">Password does not match.</p>
                       )}
                     </CCol>
                   )}
@@ -339,7 +296,7 @@ const AddServices = () => {
                   {!isEdit && (
                     <CCol md={6}>
                       <CFormLabel
-                        htmlFor="userpassword"
+                        htmlFor="password"
                         className="col-sm-12 col-form-label"
                       >
                         Confirm Password
@@ -348,19 +305,18 @@ const AddServices = () => {
                         type="password"
                         id="confirmpassword"
                         placeholder="Confirm password"
-                        autoComplete="Confirm password"
                         required
                         onChange={(e) => {
                           setConfirmPassword(e.target.value);
                         }}
                       />
-                      {confirmPasswordError && (
-                        <p className="text-danger">{confirmPasswordError}</p>
+                      {validationError.includes("weakPassowrd") && (
+                        <p className="text-danger">Enter Strong Password.</p>
+                      )}
+                      {validationError.includes("passwordMisMatch") && (
+                        <p className="text-danger">Password does not match.</p>
                       )}
                     </CCol>
-                  )}
-                  {passwordMatchError && (
-                    <p className="text-danger">{passwordMatchError}</p>
                   )}
 
                   <CCol md={4}>
@@ -393,9 +349,8 @@ const AddServices = () => {
                         </option>
                       ))}
                     </CFormSelect>
-
-                    {userroleError && (
-                      <p className="text-danger">{userroleError}</p>
+                    {validationError.includes("userRoleError") && (
+                      <p className="text-danger">Selecet userrole.</p>
                     )}
                   </CCol>
 
@@ -407,14 +362,13 @@ const AddServices = () => {
                       Mobile Number
                     </CFormLabel>
                     <CFormInput
-                      required
                       type="text"
+                      required
                       id="mobilenumber"
                       maxLength="10"
                       minLength="10"
                       placeholder="Mobile Number"
-                      autoComplete="mobilenumber"
-                      value={mobileNumber ? mobileNumber : ""}
+                      value={mobileNumber}
                       onChange={(e) => {
                         var numberReg = /^[0-9]*$/;
                         if (numberReg.test(e.target.value)) {
@@ -422,8 +376,8 @@ const AddServices = () => {
                         }
                       }}
                     />
-                    {mobileNumberError && (
-                      <p className="text-danger">{mobileNumberError}</p>
+                    {validationError.includes("mobileError") && (
+                      <p className="text-danger">Enter valid mobile number.</p>
                     )}
                   </CCol>
 
@@ -451,8 +405,8 @@ const AddServices = () => {
                       <option value="2">Female</option>
                     </CFormSelect>
 
-                    {genderError && (
-                      <p className="text-danger">{genderError}</p>
+                    {validationError.includes("genderError") && (
+                      <p className="text-danger">Select Gender</p>
                     )}
                   </CCol>
 
@@ -462,12 +416,7 @@ const AddServices = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          addNewUsers();
-                        }}
-                      >
+                      <CButton color="primary" onClick={addNewUsers()}>
                         Submit
                       </CButton>
                     )}
@@ -487,4 +436,4 @@ const AddServices = () => {
   );
 };
 
-export default AddServices;
+export default AddUsers;

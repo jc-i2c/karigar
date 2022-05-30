@@ -36,8 +36,6 @@ const Offers = () => {
   const [currentPrice, setCurrentPrice] = useState("");
   const [actualPrice, setActualPrice] = useState("");
 
-  const [newRoleName, setNewRoleName] = useState("");
-
   const [allServices, setAllServices] = useState([]);
   const [allSubServices, setAllSubServices] = useState([]);
   const [allServiceProvider, setAllServiceProvider] = useState([]);
@@ -64,7 +62,6 @@ const Offers = () => {
       .then((data) => {
         if (data.data.data.roletag) {
           setRoleName(data.data.data.roletag);
-          setNewRoleName(data.data.data.roletag);
         }
       })
       .catch((error) => {
@@ -72,11 +69,9 @@ const Offers = () => {
       });
   }, []);
 
-  // console.log(roleName, "JOVO BHAI AVE CHE");
-
   useEffect(() => {
-    // Gel all services.
-    if (newRoleName == "ADMIN") {
+    // Get all services.
+    if (roleName == "ADMIN") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/services/all`,
@@ -125,11 +120,12 @@ const Offers = () => {
           console.log(error, "error");
         });
     }
-  }, [newRoleName]);
+  }, [roleName]);
 
   // Get all sub services.
   useEffect(() => {
-    if (servicesId) {
+    if (servicesId && roleName) {
+      console.log(servicesId, "-------", roleName, "----", "serviceId");
       if (roleName == "ADMIN") {
         var data = new FormData();
         data.append("servicesid", servicesId);
@@ -189,11 +185,12 @@ const Offers = () => {
           });
       }
     }
-  }, [servicesId]);
+  }, [servicesId, roleName]);
 
   // Get all service provider.
   useEffect(() => {
-    if (subServicesId) {
+    if (subServicesId && roleName) {
+      console.log(subServicesId, "subserviceId");
       if (roleName == "ADMIN") {
         var data = new FormData();
         data.append("subserviceid", subServicesId);
@@ -250,7 +247,7 @@ const Offers = () => {
           });
       }
     }
-  }, [subServicesId]);
+  }, [subServicesId, roleName]);
 
   // Error state empty.
   useEffect(() => {
@@ -279,7 +276,7 @@ const Offers = () => {
       setCurrentPrice(location.state.currentprice);
       setActualPrice(location.state.actualprice);
     }
-  }, [location.state]);
+  }, []);
 
   // Add and edit offers.
   function addOffers() {

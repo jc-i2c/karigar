@@ -251,7 +251,7 @@ const ViewSubServices = () => {
                             src={
                               `${process.env.REACT_APP_PROFILEPIC}` + "fiximage"
                             }
-                            alt={"fiximage"}
+                            alt={"Image not found"}
                             style={{
                               height: "50px",
                               width: "50px",

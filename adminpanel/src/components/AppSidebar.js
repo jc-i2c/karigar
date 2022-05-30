@@ -38,7 +38,7 @@ const AppSidebar = () => {
           },
         )
         .then((data) => {
-          setRoleName(data.data.data.roletag);
+          if (data.data.data.roletag) setRoleName(data.data.data.roletag);
         })
         .catch((error) => {
           console.log(error, "error");

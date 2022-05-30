@@ -12,7 +12,7 @@ const Addsubservices = React.lazy(() => import("./views/subservices/add_subservi
 
 // All user
 const AllUser = React.lazy(() => import("./views/users/all_users"));
-const Addusers = React.lazy(() => import("./views/users/add_users"));
+const Addusers = React.lazy(() => import("./views/users/new_users"));
 const Serviceprovider = React.lazy(() => import("./views/users/view_service_provider"));
 const Viewcustomer = React.lazy(() => import("./views/users/view_customer"));
 const Changepassword = React.lazy(() => import("./views/users/change_password"));

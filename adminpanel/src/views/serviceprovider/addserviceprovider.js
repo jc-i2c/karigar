@@ -84,7 +84,7 @@ const ServiceProvider = () => {
         console.log(error, "error");
       });
 
-    // Gel all service provider API.
+    // Get all service provider API.
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/user/allserviceprovider`,
@@ -109,7 +109,7 @@ const ServiceProvider = () => {
         console.log(error, "error");
       });
 
-    // Gel all services.
+    // Get all services.
     axios
       .post(
         `${process.env.REACT_APP_APIURL}/karigar/services/all`,

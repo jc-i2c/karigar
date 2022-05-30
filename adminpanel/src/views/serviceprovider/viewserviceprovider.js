@@ -282,7 +282,7 @@ const ViewServiceProvider = () => {
                             src={
                               `${process.env.REACT_APP_PROFILEPIC}` + item.image
                             }
-                            alt={item.image}
+                            alt={"Image not found"}
                             style={{
                               height: "50px",
                               width: "50px",
@@ -294,7 +294,7 @@ const ViewServiceProvider = () => {
                             src={
                               `${process.env.REACT_APP_PROFILEPIC}` + "fiximage"
                             }
-                            alt={"fiximage"}
+                            alt={"Image not found"}
                             style={{
                               height: "50px",
                               width: "50px",
