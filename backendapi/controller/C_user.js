@@ -183,13 +183,14 @@ const userLogin = async (req, res, next) => {
             if (passVerify) {
               let getRoleData = await Userrole.findById(findUser.userroll);
 
-              if (getRoleData.roletag == "CUSTOMER") {
-                if (!req.useragent.isDesktop) {
-                  return res.send({
-                    status: false,
-                    message: `Wrong credentials`,
-                  });
-                }
+              if (
+                getRoleData.roletag == "CUSTOMER" &&
+                !req.useragent.isDesktop
+              ) {
+                return res.send({
+                  status: false,
+                  message: `Wrong credentials`,
+                });
               } else {
                 // Create token
                 const token = jwt.sign(
