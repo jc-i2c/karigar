@@ -21,7 +21,7 @@ const ViewCustomerChat = () => {
       socket.emit("getCusChat", token);
 
       socket.on("getCusChat", function (data) {
-        if (data) {
+        if (data !== null) {
           const records = [];
           data.map((record) => {
             records.push({
@@ -31,6 +31,8 @@ const ViewCustomerChat = () => {
               serviceprovid: record.serviceprovid._id,
               serviceprovname: record.serviceprovid.name,
               chatstatus: record.chatstatus,
+              lastmsg: record.lastmsg,
+              msgtime: record.msgtime,
             });
           });
           setCutomerList(records);
@@ -79,7 +81,6 @@ const ViewCustomerChat = () => {
         data.chatrequestid = customerDetails.chatrequestid;
         data.customerid = customerDetails.customerid;
         data.serviceprovid = customerDetails.serviceprovid;
-
         socket.emit("getMessage", data);
 
         socket.on("getMessage", function (data) {
@@ -120,7 +121,6 @@ const ViewCustomerChat = () => {
 
   // Send message
   function sendMessage() {
-    setTypeMessage("");
     let sendData = {};
 
     sendData.senderid = customerDetails.serviceprovid;
@@ -130,8 +130,21 @@ const ViewCustomerChat = () => {
     socket.emit("onChat", sendData);
 
     socket.on("onChat", function (resData) {
-      setGetAllMessage([...getAllMessage, resData]);
+      let lastMsg = cutomerList.map((cusList) => {
+        if (customerDetails.chatrequestid === cusList.chatrequestid) {
+          return { ...cusList, lastmsg: typeMessage, msgtime: resData.msgtime };
+        } else {
+          return cusList;
+        }
+      });
+      setCutomerList(lastMsg);
+      if (getAllMessage.length > 0) {
+        return setGetAllMessage([...getAllMessage, resData]);
+      } else {
+        return setGetAllMessage([resData]);
+      }
     });
+    setTypeMessage("");
   }
 
   return (
@@ -149,29 +162,46 @@ const ViewCustomerChat = () => {
                   <div className="card">
                     <div className="card-body">
                       <ul className="list-unstyled mb-0">
-                        {cutomerList &&
-                          cutomerList.map((item, index) => {
-                            return (
-                              <li
-                                className={`${item.customerid === customerDetails.customerid
-                                  ? "p-1 border-bottom bg-light"
-                                  : "p-1 border-bottom"
+                        {cutomerList
+                          ? cutomerList.map((item, index) => {
+                              return (
+                                <li
+                                  className={`${
+                                    item.customerid ===
+                                    customerDetails.customerid
+                                      ? "p-1 border-bottom bg-light"
+                                      : "p-1 border-bottom"
                                   }`}
-                                key={index}
-                                onClick={() => {
-                                  setCustomerDetails("");
-                                  setCustomerDetails(item);
-                                }}
-                              >
-                                <p className="fw-bold mb-0">
-                                  {item.customername}
-                                </p>
-                                <p className="small text mb-1">
-                                  Hello, Are you there?
-                                </p>
-                              </li>
-                            );
-                          })}
+                                  key={index}
+                                  onClick={() => {
+                                    setCustomerDetails("");
+                                    setCustomerDetails(item);
+                                  }}
+                                >
+                                  <div className="container">
+                                    <div className="row">
+                                      <div className="col-md-auto">
+                                        <p className="fw-bold mb-0">
+                                          {item.customername &&
+                                            item.customername}
+                                        </p>
+                                      </div>
+                                      <div className="col">
+                                        <p className="mb-0 d-flex justify-content-end">
+                                          {item.msgtime && item.msgtime}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="col">
+                                      <p className="w-100 small text">
+                                        {item.lastmsg ? item.lastmsg : " "}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </li>
+                              );
+                            })
+                          : ""}
                       </ul>
                     </div>
                   </div>
@@ -201,7 +231,7 @@ const ViewCustomerChat = () => {
                                       <div className="d-flex">
                                         <div className="card-text">
                                           <p className="p-1 mb-0">
-                                            {msg.message + " " + msg.createdAt}
+                                            {msg.message + " " + msg.msgtime}
                                           </p>
                                         </div>
                                       </div>

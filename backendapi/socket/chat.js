@@ -10,7 +10,7 @@ const { chatReqStatusVal } = require("../helper/joivalidation");
 const { default: mongoose } = require("mongoose");
 
 // Create chat request API.
-const createChatReq = async (data, req, res, next) => {
+const createChatReq = async (data) => {
   try {
     let senderid = data.senderid;
     let receiverid = data.receiverid;
@@ -21,26 +21,16 @@ const createChatReq = async (data, req, res, next) => {
       serviceprovid: receiverid,
     });
 
-    if (getQryChat.length > 0) {
-      // console.log(`Chat request is already created.`);
-    } else {
+    if (getQryChat.length < 0) {
       var chatRequest = new ChatRequest({
         customerid: customerid,
         serviceprovid: serviceprovid,
       });
 
-      const insertQryChat = await chatRequest.save();
-
-      if (insertQryChat) {
-        // console.log(`Chat request created.`);
-      } else {
-        // console.log(`Chat request not created.`);
-      }
+      await chatRequest.save();
     }
   } catch (error) {
-    // console.log(error, "Socket ERROR");
     throw new Error(error.message);
-    // next(error);
   }
 };
 
@@ -64,8 +54,6 @@ const changeStatus = async (getData) => {
         error.details.map(async (error) => {
           errorMsg = { ...errorMsg, [`${error.path}`]: error.message };
         });
-
-        // console.log("Error validation");
       } else {
         const getQry = await ChatRequest.findById(data.chatrequestid);
 
@@ -80,19 +68,13 @@ const changeStatus = async (getData) => {
             );
 
             if (result) {
-              // console.log("Chat request status changed.");
               return result;
-            } else {
-              // console.log("Chat request status not changed.");
             }
           }
-        } else {
-          // console.log("Chat request not found into system.");
         }
       }
     }
   } catch (error) {
-    // console.log(error, "ERROR");
     throw new Error(error.message);
   }
 };
@@ -106,17 +88,10 @@ const checkStatus = async (chatRequestId) => {
       );
 
       if (findStatus) {
-        // console.log(findStatus, "findStatus");
         return findStatus;
-      } else {
-        // console.log("Chat request not find");
       }
-    } else {
-      // console.log("Chat request Id is required");
     }
   } catch (error) {
-    // console.log(error, "ERROR");
-    // next(error);
     throw new Error(error.message);
   }
 };
@@ -131,6 +106,7 @@ const getAllChatRequest = async (data) => {
       const decoded = jwt.verify(token, config.TOKEN_KEY);
 
       let getQry = await ChatRequest.find()
+        .sort({ createdAt: -1 })
         .where({
           serviceprovid: decoded.id,
         })
@@ -139,47 +115,51 @@ const getAllChatRequest = async (data) => {
 
       if (getQry.length > 0) {
         let findData = [];
-        let resData = {};
 
-        getQry.forEach((data) => {
-          resData = data.toObject();
+        await Promise.all(
+          getQry.map(async (list) => {
+            let resData = {};
+            resData = list.toObject();
 
-          delete resData.updatedAt; // delete person["updatedAt"]
-          delete resData.__v; // delete person["__v"]
+            delete resData.updatedAt; // delete person["updatedAt"]
+            delete resData.__v; // delete person["__v"]
 
-          // Set chat request status.
-          if (resData.chatstatus == 1) {
-            resData.chatstatus = "Pending";
-          } else if (resData.chatstatus == 2) {
-            resData.chatstatus = "Accept";
-          } else if (resData.chatstatus == 3) {
-            resData.chatstatus = "Reject";
-          }
+            // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+            createDate = resData.createdAt
+              .toISOString()
+              .replace(/T/, " ")
+              .replace(/\..+/, "");
 
-          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-          createDate = resData.createdAt
-            .toISOString()
-            .replace(/T/, " ")
-            .replace(/\..+/, "");
+            resData.createdAt = moment(createDate).format(
+              "DD-MM-YYYY HH:MM:SS"
+            );
 
-          resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
+            let findLastMsg = await ChatRoom.find()
+              .where({
+                chatrequestid: resData._id,
+              })
+              .select("lastmsg msgtime");
 
-          findData.push(resData);
-        });
+            if (findLastMsg.length > 0) {
+              findLastMsg.map(async (msgList) => {
+                resData.lastmsg = msgList.lastmsg;
+                resData.msgtime = msgList.msgtime;
+              });
+            }
+
+            return findData.push(resData);
+          })
+        );
+
         if (findData) {
           return findData;
-        } else {
-          return "Data not found into system.";
         }
-      } else {
-        return "Data not found into system.";
       }
     } else {
       return "Token is required.";
     }
   } catch (error) {
-    console.log(error, "ERROR");
-    // next(error);
+    throw new Error(error.message);
   }
 };
 
@@ -199,8 +179,6 @@ const getAllCusChatRequest = async (data) => {
         .populate({ path: "customerid", select: "name" })
         .populate({ path: "serviceprovid", select: "name" });
 
-      console.log(getQry, "getQry");
-
       if (getQry.length > 0) {
         let findData = [];
         let resData = {};
@@ -210,15 +188,6 @@ const getAllCusChatRequest = async (data) => {
 
           delete resData.updatedAt; // delete person["updatedAt"]
           delete resData.__v; // delete person["__v"]
-
-          // Set chat request status.
-          if (resData.chatstatus == 1) {
-            resData.chatstatus = "Pending";
-          } else if (resData.chatstatus == 2) {
-            resData.chatstatus = "Accept";
-          } else if (resData.chatstatus == 3) {
-            resData.chatstatus = "Reject";
-          }
 
           // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           createDate = resData.createdAt
@@ -231,41 +200,14 @@ const getAllCusChatRequest = async (data) => {
           findData.push(resData);
         });
         if (findData) {
-          console.log(findData, "findData");
           return findData;
-        } else {
-          return "Data not found into system.";
         }
-      } else {
-        return "Data not found into system.";
       }
     } else {
       return "Token is required.";
     }
   } catch (error) {
-    console.log(error, "ERROR");
-    // next(error);
-  }
-};
-
-// Get all message based on room Id API.
-const getAllMessage = async (data, req, res, next) => {
-  try {
-    const getQry = await Chat.find().where({
-      chatroomid: data.chatroomid,
-    });
-
-    if (getQry.length > 0) {
-      getQry.forEach((element) => {
-        // console.log(element.message, "element.message");
-      });
-    } else {
-      // console.log(`No chat found into system.`);
-    }
-  } catch (error) {
     throw new Error(error.message);
-    // console.log(error, "ERROR");
-    // next(error);
   }
 };
 
@@ -273,6 +215,9 @@ const getAllMessage = async (data, req, res, next) => {
 const sendMessage = async (data) => {
   try {
     // Chat request code.
+    let getTime = new Date();
+    getTime = moment(getTime).format("hh:mm A");
+
     let senderid = data.senderid;
     let receiverid = data.receiverid;
     let message = data.message;
@@ -297,6 +242,13 @@ const sendMessage = async (data) => {
         });
 
         if (getQryRoom) {
+          // Update last msg into CHATROOM API.
+          await ChatRoom.findOneAndUpdate(
+            { _id: getQryRoom._id },
+            { sendby: senderid, lastmsg: message, msgtime: getTime },
+            { new: true }
+          );
+
           // Chat code.
           if (getQryRoom.chatactive) {
             var chatCreate = new Chat({
@@ -304,36 +256,27 @@ const sendMessage = async (data) => {
               senderid: senderid,
               receiverid: receiverid,
               message: message,
+              msgtime: getTime,
             });
 
             const chatCraeteQry = await chatCreate.save();
 
             if (chatCraeteQry) {
-              // console.log(`New chat created.`);
-
-              let newObj = chatCraeteQry.toObject();
-
-              // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-              createDate = newObj.createdAt
-                .toISOString()
-                .replace(/T/, " ")
-                .replace(/\..+/, "");
-
-              newObj.createdAt = moment(createDate).format("HH:MM");
-
-              return newObj;
-            } else {
-              // console.log(`Chat not created.`);
+              return chatCraeteQry;
             }
-          } else {
-            // console.log(`Chat room is block.`);
           }
         } else {
           // Room code.
+          let getTime = new Date();
+          getTime = moment(getTime).format("hh:mm A");
+
           var chatRoom = new ChatRoom({
             chatrequestid: chatReqData._id,
             userid: senderid,
             otheruserid: receiverid,
+            sendby: senderid,
+            lastmsg: message,
+            msgtime: getTime,
           });
 
           const roomCraeteQry = await chatRoom.save();
@@ -350,33 +293,9 @@ const sendMessage = async (data) => {
             const chatCraeteQry = await chatCreate.save();
 
             if (chatCraeteQry) {
-              // console.log(`New chat created.`);
-
-              let newObj = chatCraeteQry.toObject();
-
-              // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-              createDate = newObj.createdAt
-                .toISOString()
-                .replace(/T/, " ")
-                .replace(/\..+/, "");
-
-              newObj.createdAt = moment(createDate).format("HH:MM");
-
-              return newObj;
-            } else {
-              // console.log(`Chat not created.`);
+              return chatCraeteQry;
             }
           }
-        }
-      } else {
-        // Pending or reject status only show.
-        if (chatReqData.chatstatus === 1 || chatReqData.chatstatus == 1) {
-          // console.log(`Your request is pending.`);
-        } else if (
-          chatReqData.chatstatus === 3 ||
-          chatReqData.chatstatus == 3
-        ) {
-          // console.log(`Your request is reject.`);
         }
       }
     } else {
@@ -388,49 +307,38 @@ const sendMessage = async (data) => {
       const chatCraeteQry = await chatRequest.save();
 
       if (chatCraeteQry) {
+        // Room code.
         var chatRoom = new ChatRoom({
-          chatrequestid: chatCraeteQry._id,
+          chatrequestid: chatReqData._id,
           userid: senderid,
           otheruserid: receiverid,
+          sendby: senderid,
+          lastmsg: message,
+          msgtime: getTime,
         });
 
         const roomCraeteQry = await chatRoom.save();
 
         if (roomCraeteQry) {
-          // console.log(`Chat room created.`);
           // Chat code.
           var chatCreate = new Chat({
             chatroomid: roomCraeteQry._id,
             senderid: senderid,
             receiverid: receiverid,
             message: message,
+            msgtime: getTime,
           });
 
           const chatCraeteQry = await chatCreate.save();
 
           if (chatCraeteQry) {
-            // console.log(`New chat created.`);
-
-            let newObj = chatCraeteQry.toObject();
-
-            // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-            createDate = newObj.createdAt
-              .toISOString()
-              .replace(/T/, " ")
-              .replace(/\..+/, "");
-
-            newObj.createdAt = moment(createDate).format("HH:MM");
-
-            return newObj;
-          } else {
-            // console.log(`Chat not created.`);
+            return chatCraeteQry;
           }
         }
       }
     }
   } catch (error) {
-    // console.log(error, "ERROR");
-    // next(error);
+    console.log(error);
     throw new Error(error.message);
   }
 };
@@ -445,8 +353,6 @@ const createChatRoom = async (data) => {
     });
 
     if (findRoom) {
-      // console.log(findRoom, "findRoom");
-
       const getQry = await Chat.find().where({
         chatroomid: findRoom._id,
       });
@@ -473,20 +379,12 @@ const createChatRoom = async (data) => {
         userid: customerid,
         otheruserid: serviceprovid,
         chatrequestid: chatrequestid,
+        sendby: serviceprovid,
       });
 
-      const insertQry = await chatRoom.save();
-
-      if (insertQry) {
-        // console.log(insertQry, "insertQry");
-        // console.log("Chat room created.");
-      } else {
-        // console.log("Chat room not created.");
-      }
+      await chatRoom.save();
     }
   } catch (error) {
-    // console.log(error, "ERROR");
-    // next(error);
     throw new Error(error.message);
   }
 };
@@ -497,7 +395,6 @@ module.exports = {
   checkStatus,
   getAllChatRequest,
   getAllCusChatRequest,
-  getAllMessage,
   sendMessage,
   createChatRoom,
 };

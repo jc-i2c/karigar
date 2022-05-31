@@ -141,7 +141,7 @@ const Offers = () => {
     }
 
     if (
-      !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
         password,
       )
     ) {
@@ -168,82 +168,83 @@ const Offers = () => {
       setValidated(true);
       setMobileNumberError("Mobile number Invalid.");
     } else if (
-      validated == false
-      // emailError == "" &&
-      // nameError == "" &&
-      // passwordError == "" &&
-      // conPasswordError == "" &&
-      // passwordMitchError == "" &&
-      // userRoleError == "" &&
-      // genderError == "" &&
-      // mobileNumberError == ""
+      emailError == "" &&
+      nameError == "" &&
+      passwordError == "" &&
+      conPasswordError == "" &&
+      passwordMitchError == "" &&
+      userRoleError == "" &&
+      genderError == "" &&
+      mobileNumberError == ""
     ) {
-      if (isEdit) {
-        var data = new FormData();
-        data.append("emailaddress", emailAddress);
-        data.append("name", name);
-        data.append("userroll", userRole);
-        data.append("mobilenumber", mobileNumber);
-        data.append("gender", gender);
-        data.append("userid", userId);
-        axios
-          .post(
-            `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
-            data,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          )
-          .then((data) => {
-            if (data.data.status) {
-              toast.success(data.data.message, {
-                onClose: () => {
-                  navigate(-1);
-                },
-              });
-            } else {
-              toast.error(data.data.message);
-            }
-            setSpinner(false);
-          })
-          .catch((error) => {
-            console.log(error, "error");
-            setSpinner(false);
-          });
-      } else {
-        var data = new FormData();
-        data.append("emailaddress", emailAddress);
-        data.append("name", name);
-        data.append("password", password);
-        data.append("confirmpassword", conPassword);
-        data.append("userroll", userRole);
-        data.append("mobilenumber", mobileNumber);
-        data.append("gender", gender);
-        data.append("isadmin", true);
+      if (validated == false) {
+        if (isEdit) {
+          var data = new FormData();
+          data.append("emailaddress", emailAddress);
+          data.append("name", name);
+          data.append("userroll", userRole);
+          data.append("mobilenumber", mobileNumber);
+          data.append("gender", gender);
+          data.append("userid", userId);
+          axios
+            .post(
+              `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
+              data,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              },
+            )
+            .then((data) => {
+              if (data.data.status) {
+                toast.success(data.data.message, {
+                  onClose: () => {
+                    navigate(-1);
+                  },
+                });
+              } else {
+                toast.error(data.data.message);
+              }
+              setSpinner(false);
+            })
+            .catch((error) => {
+              console.log(error, "error");
+              setSpinner(false);
+            });
+        } else {
+          var data = new FormData();
+          data.append("emailaddress", emailAddress);
+          data.append("name", name);
+          data.append("password", password);
+          data.append("confirmpassword", conPassword);
+          data.append("userroll", userRole);
+          data.append("mobilenumber", mobileNumber);
+          data.append("gender", gender);
+          data.append("isadmin", true);
 
-        axios
-          .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then((data) => {
-            if (data.data.status) {
-              toast.success(data.data.message, {
-                onClose: () => {
-                  navigate(-1);
-                },
-              });
-            } else {
-              toast.error(data.data.message);
-            }
-            if (data.data.status == false) {
-              toast.error(data.data.message.confirmpassword);
-            }
-            setSpinner(false);
-          })
-          .catch((error) => {
-            console.log(error, "error");
-            setSpinner(false);
-          });
+          axios
+            .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
+              headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((data) => {
+              if (data.data.status) {
+                toast.success(data.data.message, {
+                  onClose: () => {
+                    navigate(-1);
+                  },
+                });
+              } else {
+                toast.error(data.data.message);
+              }
+              if (data.data.status == false) {
+                toast.error(data.data.message.confirmpassword);
+              }
+              setSpinner(false);
+            })
+            .catch((error) => {
+              console.log(error, "error");
+              setSpinner(false);
+            });
+        }
       }
     }
   }

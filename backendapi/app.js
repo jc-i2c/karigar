@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 const http = require("http");
+var useragent = require("express-useragent");
 
 require("dotenv").config();
 const port = process.env.API_PORT || 3031;
@@ -15,6 +16,8 @@ require("./server/database")
     app.use(express.json());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
+
+    app.use(useragent.express());
 
     // Image showing into browser.
     app.use("/uploads", express.static(path.join("./uploads")));
