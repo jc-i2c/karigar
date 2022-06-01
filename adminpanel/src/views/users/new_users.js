@@ -126,125 +126,118 @@ const Offers = () => {
     mobileNumber,
   ]);
 
-  // Add new users and edit users.
-  function addNewUsers() {
-    setValidated(false);
+  function validationCheck() {
+    setEmailError("");
+    setNameError("");
+    setPasswordError("");
+    setConPasswordError("");
+    setPasswordMitchError("");
+    setUserRoleError("");
+    setGenderError("");
+    setMobileNumberError("");
 
+    console.log("YES IM CALLING");
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
       setValidated(true);
       setEmailError("Email Invalid.");
-    }
-
-    if (!name) {
+    } else if (!name) {
       setValidated(true);
       setNameError("Name Invalid.");
-    }
-
-    if (
+    } else if (
       !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
         password,
       )
     ) {
       setValidated(true);
       setPasswordError("Password must be strong.");
-    }
-
-    if (password !== conPassword) {
+    } else if (password !== conPassword) {
       setValidated(true);
       setPasswordMitchError("Password and Confirm password does not match.");
-    }
-
-    if (!userRole) {
+    } else if (!userRole) {
       setValidated(true);
       setUserRoleError("Select Userrole.");
-    }
-
-    if (!gender) {
+    } else if (!gender) {
       setValidated(true);
       setGenderError("Select Gender.");
-    }
-
-    if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber == null) {
+    } else if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber == null) {
       setValidated(true);
       setMobileNumberError("Mobile number Invalid.");
-    } else if (
-      emailError == "" &&
-      nameError == "" &&
-      passwordError == "" &&
-      conPasswordError == "" &&
-      passwordMitchError == "" &&
-      userRoleError == "" &&
-      genderError == "" &&
-      mobileNumberError == ""
-    ) {
-      if (validated == false) {
-        if (isEdit) {
-          var data = new FormData();
-          data.append("emailaddress", emailAddress);
-          data.append("name", name);
-          data.append("userroll", userRole);
-          data.append("mobilenumber", mobileNumber);
-          data.append("gender", gender);
-          data.append("userid", userId);
-          axios
-            .post(
-              `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
-              data,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              },
-            )
-            .then((data) => {
-              if (data.data.status) {
-                toast.success(data.data.message, {
-                  onClose: () => {
-                    navigate(-1);
-                  },
-                });
-              } else {
-                toast.error(data.data.message);
-              }
-              setSpinner(false);
-            })
-            .catch((error) => {
-              console.log(error, "error");
-              setSpinner(false);
-            });
-        } else {
-          var data = new FormData();
-          data.append("emailaddress", emailAddress);
-          data.append("name", name);
-          data.append("password", password);
-          data.append("confirmpassword", conPassword);
-          data.append("userroll", userRole);
-          data.append("mobilenumber", mobileNumber);
-          data.append("gender", gender);
-          data.append("isadmin", true);
+    } else {
+      return false;
+    }
+  }
 
-          axios
-            .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
+  // Add new users and edit users.
+  function addNewUsers() {
+    let getStatus = validationCheck();
+
+    if (getStatus == false) {
+      if (isEdit) {
+        var data = new FormData();
+        data.append("emailaddress", emailAddress);
+        data.append("name", name);
+        data.append("userroll", userRole);
+        data.append("mobilenumber", mobileNumber);
+        data.append("gender", gender);
+        data.append("userid", userId);
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
+            data,
+            {
               headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((data) => {
-              if (data.data.status) {
-                toast.success(data.data.message, {
-                  onClose: () => {
-                    navigate(-1);
-                  },
-                });
-              } else {
-                toast.error(data.data.message);
-              }
-              if (data.data.status == false) {
-                toast.error(data.data.message.confirmpassword);
-              }
-              setSpinner(false);
-            })
-            .catch((error) => {
-              console.log(error, "error");
-              setSpinner(false);
-            });
-        }
+            },
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate(-1);
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      } else {
+        var data = new FormData();
+        data.append("emailaddress", emailAddress);
+        data.append("name", name);
+        data.append("password", password);
+        data.append("confirmpassword", conPassword);
+        data.append("userroll", userRole);
+        data.append("mobilenumber", mobileNumber);
+        data.append("gender", gender);
+        data.append("isadmin", true);
+
+        axios
+          .post(`${process.env.REACT_APP_APIURL}/karigar/user/signup`, data, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate(-1);
+                },
+              });
+            } else {
+              toast.error(data.data.message);
+            }
+            if (data.data.status == false) {
+              toast.error(data.data.message.confirmpassword);
+            }
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
       }
     }
   }

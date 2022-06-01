@@ -35,6 +35,7 @@ const ViewServiceProvider = () => {
 
   const token = localStorage.getItem("karigar_token");
   const [visible, setVisible] = useState(false);
+  const [roleName, setRoleName] = useState("");
 
   const [serviceProvider, setServiceProvider] = useState([]);
   const [detailsData, setDetailsData] = useState([]);
@@ -47,7 +48,6 @@ const ViewServiceProvider = () => {
   const [deleteItemId, setDeleteItemId] = useState("");
 
   const [openDesBox, setOpenDesBox] = useState(false);
-  const [roleName, setRoleName] = useState("");
 
   // Identify user type.
   useEffect(() => {
@@ -275,7 +275,7 @@ const ViewServiceProvider = () => {
                       <div>{item.price ? item.price : ""}</div>
                     </CTableDataCell>
 
-                    <CTableDataCell>
+                    <CTableDataCell className="text-center">
                       <div>
                         {item.image ? (
                           <img

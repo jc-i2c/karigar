@@ -194,9 +194,12 @@ const getAllCusChatRequest = async (req, res, next) => {
   try {
     const { customerid } = req.body;
 
-    let getQry = await ChatRequest.find().where({
-      customerid: customerid,
-    });
+    let getQry = await ChatRequest.find()
+      .where({
+        customerid: customerid,
+      })
+      .populate({ path: "customerid", select: "name" })
+      .populate({ path: "serviceprovid", select: "name" });
 
     if (getQry.length > 0) {
       let findData = [];
