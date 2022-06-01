@@ -178,7 +178,7 @@ const ViewServices = () => {
                   <CTableHeaderCell>Address Type</CTableHeaderCell>
                   <CTableHeaderCell>Service Date</CTableHeaderCell>
                   <CTableHeaderCell>Service Time</CTableHeaderCell>
-                  <CTableHeaderCell>Service Status</CTableHeaderCell>
+                  {/* <CTableHeaderCell>Service Status</CTableHeaderCell> */}
                   <CTableHeaderCell>Payment Status</CTableHeaderCell>
                   <CTableHeaderCell>CreatedAt</CTableHeaderCell>
                   <CTableHeaderCell>UpdatedAt</CTableHeaderCell>
@@ -210,8 +210,8 @@ const ViewServices = () => {
                         {item.addresstype == 1
                           ? "OFFICE"
                           : item.addresstype == 2
-                            ? "HOME"
-                            : ""}
+                          ? "HOME"
+                          : ""}
                       </div>
                     </CTableDataCell>
 
@@ -223,7 +223,7 @@ const ViewServices = () => {
                       {item.sessiontime ? item.sessiontime : ""}
                     </CTableDataCell>
 
-                    <CTableDataCell>
+                    {/* <CTableDataCell>
                       {item.servicestatus == 4 ? (
                         <CFormSelect required id="services" name="services">
                           <option key={4} value={4}>
@@ -257,7 +257,7 @@ const ViewServices = () => {
                           </option>
                         </CFormSelect>
                       )}
-                    </CTableDataCell>
+                    </CTableDataCell> */}
 
                     <CTableDataCell>
                       <div>{item.paymentstatus ? item.paymentstatus : ""}</div>

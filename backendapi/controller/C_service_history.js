@@ -2,7 +2,9 @@ var moment = require("moment");
 const mongoose = require("mongoose");
 const ServiceHistory = require("../models/M_service_history");
 const Serviceprovider = require("../models/M_serviceprovider");
+
 const PaymentHistory = require("../models/M_payment_history");
+const ChatRequest = require("../models/M_chat_request");
 
 const {
   createServiceHisVal,
@@ -42,6 +44,8 @@ const createServiceHistory = async (req, res, next) => {
         message: errorMsg,
       });
     } else {
+      const { amount, transactionid, paymentstatus } = req.body;
+
       let createServiceHistory = new ServiceHistory({
         serviceproviderid: data.serviceproviderid,
         customerid: data.customerid,
@@ -52,13 +56,12 @@ const createServiceHistory = async (req, res, next) => {
         sessiontime: data.sessiontime,
         servicestatus: data.servicestatus,
         bookingdate: data.bookingdate,
+        paymentstatus: paymentstatus,
       });
 
       const insertQry = await createServiceHistory.save();
 
       if (insertQry) {
-        const { amount, transactionid, paymentstatus } = req.body;
-
         let payPayment = new PaymentHistory({
           servicehistoryid: insertQry._id,
           customerid: data.customerid,
@@ -70,28 +73,37 @@ const createServiceHistory = async (req, res, next) => {
         const makePayment = await payPayment.save();
 
         if (makePayment) {
-          return res.send({
-            status: true,
-            message: `Service booked.`,
-          });
+          if (paymentstatus) {
+            const getQry1 = await ChatRequest.findOne().where({
+              customerid: data.customerid,
+              serviceprovid: data.serviceproviderid,
+            });
 
-          // console.log("Payment Done");
-          // const result = await ServiceHistory.findByIdAndUpdate(getQry._id, {
-          //   $set: { paymentstatus: true },
-          // });
+            const getQry2 = await ChatRequest.findOne().where({
+              customerid: data.serviceproviderid,
+              serviceprovid: data.customerid,
+            });
+
+            let findData = getQry1 ? getQry1 : getQry2;
+            if (!findData) {
+              var chatRequest = new ChatRequest({
+                customerid: data.customerid,
+                serviceprovid: data.serviceproviderid,
+                chatstatus: 2,
+              });
+              const chatSave = await chatRequest.save();
+              if (chatSave) {
+                return res.send({
+                  status: true,
+                  message: `Service booked.`,
+                });
+              }
+            }
+          }
+        } else {
           // return res.send({
           //   status: true,
-          //   message: `Payment history booked.`,
-          // });
-        } else {
-          return res.send({
-            status: true,
-            message: `Payment failed.`,
-          });
-          // console.log("Payment NOT Done");
-          // return res.send({
-          //   status: false,
-          //   message: `Payment history not booked.`,
+          //   message: `Service booked.`,
           // });
         }
       } else {

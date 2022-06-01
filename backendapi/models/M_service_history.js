@@ -45,8 +45,7 @@ const ServiceHistorySchema = new mongoose.Schema({
   },
   paymentstatus: {
     type: Boolean,
-    enum: [true, false],
-    default: false, // true-Completed, false-Pending
+    enum: [true, false], // true-Completed, false-Pending
     required: [true, "Payment status is required."],
   },
   createdAt: { type: Date, default: Date.now() },

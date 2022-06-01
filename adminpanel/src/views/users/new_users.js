@@ -126,6 +126,7 @@ const Offers = () => {
   //   mobileNumber,
   // ]);
 
+  // Form validation
   function validationCheck() {
     setEmailError("");
     setNameError("");
@@ -136,35 +137,54 @@ const Offers = () => {
     setGenderError("");
     setMobileNumberError("");
 
-    console.log("YES IM CALLING");
-
-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
-      setValidated(true);
-      setEmailError("Email Invalid.");
-    } else if (!name) {
-      setValidated(true);
-      setNameError("Name Invalid.");
-    } else if (
-      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-        password,
-      )
-    ) {
-      setValidated(true);
-      setPasswordError("Password must be strong.");
-    } else if (password !== conPassword) {
-      setValidated(true);
-      setPasswordMitchError("Password and Confirm password does not match.");
-    } else if (!userRole) {
-      setValidated(true);
-      setUserRoleError("Select Userrole.");
-    } else if (!gender) {
-      setValidated(true);
-      setGenderError("Select Gender.");
-    } else if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber == null) {
-      setValidated(true);
-      setMobileNumberError("Mobile number Invalid.");
+    if (isEdit) {
+      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
+        setValidated(true);
+        setEmailError("Email Invalid.");
+      } else if (!name) {
+        setValidated(true);
+        setNameError("Name Invalid.");
+      } else if (!userRole) {
+        setValidated(true);
+        setUserRoleError("Select Userrole.");
+      } else if (!gender) {
+        setValidated(true);
+        setGenderError("Select Gender.");
+      } else if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber == null) {
+        setValidated(true);
+        setMobileNumberError("Mobile number Invalid.");
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
+        setValidated(true);
+        setEmailError("Email Invalid.");
+      } else if (!name) {
+        setValidated(true);
+        setNameError("Name Invalid.");
+      } else if (
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+          password,
+        )
+      ) {
+        setValidated(true);
+        setPasswordError("Password must be strong.");
+      } else if (password !== conPassword) {
+        setValidated(true);
+        setPasswordMitchError("Password and Confirm password does not match.");
+      } else if (!userRole) {
+        setValidated(true);
+        setUserRoleError("Select Userrole.");
+      } else if (!gender) {
+        setValidated(true);
+        setGenderError("Select Gender.");
+      } else if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber == null) {
+        setValidated(true);
+        setMobileNumberError("Mobile number Invalid.");
+      } else {
+        return false;
+      }
     }
   }
 
