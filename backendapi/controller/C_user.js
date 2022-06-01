@@ -183,72 +183,62 @@ const userLogin = async (req, res, next) => {
             if (passVerify) {
               let getRoleData = await Userrole.findById(findUser.userroll);
 
-              if (
-                getRoleData.roletag == "CUSTOMER" &&
-                !req.useragent.isDesktop
-              ) {
-                return res.send({
-                  status: false,
-                  message: `Wrong credentials`,
-                });
-              } else {
-                // Create token
-                const token = jwt.sign(
-                  {
-                    id: findUser._id,
-                    userroll: findUser.userroll,
-                    roletag: getRoleData.roletag,
-                  },
-                  process.env.TOKEN_KEY
-                );
+              // Create token
+              const token = jwt.sign(
+                {
+                  id: findUser._id,
+                  userroll: findUser.userroll,
+                  roletag: getRoleData.roletag,
+                },
+                process.env.TOKEN_KEY
+              );
 
-                let userData = findUser.toObject();
+              let userData = findUser.toObject();
 
-                // Set user gender.
-                if (userData.gender == 1) {
-                  userData.gender = "male";
-                } else if (userData.gender == 2) {
-                  userData.gender = "female";
-                }
-
-                // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-                createDate = userData.createdAt
-                  .toISOString()
-                  .replace(/T/, " ")
-                  .replace(/\..+/, "");
-
-                userData.createdAt = moment(createDate).format(
-                  "DD-MM-YYYY HH:MM:SS"
-                );
-
-                // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-                updateDate = userData.updatedAt
-                  .toISOString()
-                  .replace(/T/, " ")
-                  .replace(/\..+/, "");
-
-                userData.updatedAt = moment(updateDate).format(
-                  "DD-MM-YYYY HH:MM:SS"
-                );
-
-                userData.userrole = getRoleData.roletag;
-
-                delete userData.status;
-                delete userData.isactive;
-                delete userData.password;
-                delete userData.otp;
-                delete userData.userroll;
-                delete userData.__v;
-                delete userData.createdAt;
-                delete userData.updatedAt;
-
-                return res.send({
-                  status: true,
-                  message: `Login successfully`,
-                  userdata: userData,
-                  token: token,
-                });
+              // Set user gender.
+              if (userData.gender == 1) {
+                userData.gender = "male";
+              } else if (userData.gender == 2) {
+                userData.gender = "female";
               }
+
+              // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+              createDate = userData.createdAt
+                .toISOString()
+                .replace(/T/, " ")
+                .replace(/\..+/, "");
+
+              userData.createdAt = moment(createDate).format(
+                "DD-MM-YYYY HH:MM:SS"
+              );
+
+              // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+              updateDate = userData.updatedAt
+                .toISOString()
+                .replace(/T/, " ")
+                .replace(/\..+/, "");
+
+              userData.updatedAt = moment(updateDate).format(
+                "DD-MM-YYYY HH:MM:SS"
+              );
+
+              userData.userrole = getRoleData.roletag;
+
+              delete userData.status;
+              delete userData.isactive;
+              delete userData.password;
+              delete userData.otp;
+              delete userData.userroll;
+              delete userData.__v;
+              delete userData.createdAt;
+              delete userData.updatedAt;
+
+              return res.send({
+                status: true,
+                message: `Login successfully`,
+                userdata: userData,
+                token: token,
+              });
             } else {
               return res.send({
                 status: false,
