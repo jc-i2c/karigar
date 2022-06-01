@@ -47,6 +47,7 @@ const loginDataVal = (data) => {
   const loginDataVal = Joi.object().keys({
     emailaddress: Joi.string().email().required().label("Email Address"),
     password: Joi.string().min(6).required().label("Password"),
+    customer_key: Joi.allow(),
   });
   return loginDataVal.validate(data, {
     abortEarly: false,

@@ -1,6 +1,7 @@
 var moment = require("moment");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 const User = require("../models/M_user");
 const Userrole = require("../models/M_userrole");
@@ -18,7 +19,7 @@ const {
 
 const { sendOtp } = require("../helper/mailsending");
 
-// User signup API.
+// User SIGNUP API.
 const userSignUp = async (req, res, next) => {
   try {
     let signUpValData = {
@@ -150,7 +151,7 @@ const userSignUp = async (req, res, next) => {
   }
 };
 
-// User signup API.
+// User SIGNIN API.
 const userLogin = async (req, res, next) => {
   try {
     const { emailaddress, password } = req.body;
@@ -169,20 +170,81 @@ const userLogin = async (req, res, next) => {
         message: errorMsg,
       });
     } else {
+      // Find users
       const findUser = await User.findOne({ emailaddress: emailaddress });
-      if (findUser.deleted == false) {
+
+      // Compare password with database.
+      const passVerify = await bcrypt.compare(password, findUser.password);
+
+      // Find userrole
+      let getRoleData = await Userrole.findById(findUser.userroll);
+
+      if (findUser.deleted == false && passVerify && getRoleData) {
         // Check user is verify.
         if (findUser.status == 1) {
           // Check user is active or not.
           if (findUser.isactive == true) {
-            // Compare password with database.
-            const passVerify = await bcrypt.compare(
-              password,
-              findUser.password
-            );
-            if (passVerify) {
-              let getRoleData = await Userrole.findById(findUser.userroll);
+            if (req.body.customer_key === getRoleData.roletag) {
+              // Create token
+              const token = jwt.sign(
+                {
+                  id: findUser._id,
+                  userroll: findUser.userroll,
+                  roletag: getRoleData.roletag,
+                },
+                process.env.TOKEN_KEY
+              );
 
+              let userData = findUser.toObject();
+
+              // Set user gender.
+              if (userData.gender == 1) {
+                userData.gender = "male";
+              } else if (userData.gender == 2) {
+                userData.gender = "female";
+              }
+
+              // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+              createDate = userData.createdAt
+                .toISOString()
+                .replace(/T/, " ")
+                .replace(/\..+/, "");
+
+              userData.createdAt = moment(createDate).format(
+                "DD-MM-YYYY HH:MM:SS"
+              );
+
+              // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+              updateDate = userData.updatedAt
+                .toISOString()
+                .replace(/T/, " ")
+                .replace(/\..+/, "");
+
+              userData.updatedAt = moment(updateDate).format(
+                "DD-MM-YYYY HH:MM:SS"
+              );
+
+              userData.userrole = getRoleData.roletag;
+
+              delete userData.status;
+              delete userData.isactive;
+              delete userData.password;
+              delete userData.otp;
+              delete userData.userroll;
+              delete userData.__v;
+              delete userData.createdAt;
+              delete userData.updatedAt;
+
+              return res.send({
+                status: true,
+                message: `Login successfully`,
+                userdata: userData,
+                token: token,
+              });
+            } else if (
+              req.body.customer_key == null ||
+              req.body.customer_key == undefined
+            ) {
               // Create token
               const token = jwt.sign(
                 {
