@@ -176,8 +176,8 @@ const ViewServices = () => {
                   )}
                   <CTableHeaderCell>Customer Name</CTableHeaderCell>
                   <CTableHeaderCell>Address Type</CTableHeaderCell>
-                  <CTableHeaderCell>Service Time</CTableHeaderCell>
                   <CTableHeaderCell>Service Date</CTableHeaderCell>
+                  <CTableHeaderCell>Service Time</CTableHeaderCell>
                   <CTableHeaderCell>Service Status</CTableHeaderCell>
                   <CTableHeaderCell>Payment Status</CTableHeaderCell>
                   <CTableHeaderCell>CreatedAt</CTableHeaderCell>
@@ -210,8 +210,8 @@ const ViewServices = () => {
                         {item.addresstype == 1
                           ? "OFFICE"
                           : item.addresstype == 2
-                          ? "HOME"
-                          : ""}
+                            ? "HOME"
+                            : ""}
                       </div>
                     </CTableDataCell>
 

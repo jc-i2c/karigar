@@ -107,24 +107,24 @@ const Offers = () => {
     }
   }, []);
 
-  useEffect(() => {
-    setEmailError("");
-    setNameError("");
-    setPasswordError("");
-    setConPasswordError("");
-    setPasswordMitchError("");
-    setUserRoleError("");
-    setGenderError("");
-    setMobileNumberError("");
-  }, [
-    emailAddress,
-    name,
-    password,
-    conPassword,
-    userRole,
-    gender,
-    mobileNumber,
-  ]);
+  // useEffect(() => {
+  //   setEmailError("");
+  //   setNameError("");
+  //   setPasswordError("");
+  //   setConPasswordError("");
+  //   setPasswordMitchError("");
+  //   setUserRoleError("");
+  //   setGenderError("");
+  //   setMobileNumberError("");
+  // }, [
+  //   emailAddress,
+  //   name,
+  //   password,
+  //   conPassword,
+  //   userRole,
+  //   gender,
+  //   mobileNumber,
+  // ]);
 
   function validationCheck() {
     setEmailError("");
@@ -137,6 +137,7 @@ const Offers = () => {
     setMobileNumberError("");
 
     console.log("YES IM CALLING");
+
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
       setValidated(true);
       setEmailError("Email Invalid.");

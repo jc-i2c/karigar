@@ -2,7 +2,7 @@ var moment = require("moment");
 const mongoose = require("mongoose");
 const ServiceHistory = require("../models/M_service_history");
 const Serviceprovider = require("../models/M_serviceprovider");
-const User = require("../models/M_user");
+const PaymentHistory = require("../models/M_payment_history");
 
 const {
   createServiceHisVal,
@@ -57,14 +57,47 @@ const createServiceHistory = async (req, res, next) => {
       const insertQry = await createServiceHistory.save();
 
       if (insertQry) {
-        return res.send({
-          status: true,
-          message: `Service created.`,
+        const { amount, transactionid, paymentstatus } = req.body;
+
+        let payPayment = new PaymentHistory({
+          servicehistoryid: insertQry._id,
+          customerid: data.customerid,
+          amount: amount,
+          transactionid: transactionid,
+          paymentstatus: paymentstatus,
         });
+
+        const makePayment = await payPayment.save();
+
+        if (makePayment) {
+          return res.send({
+            status: true,
+            message: `Service booked.`,
+          });
+
+          // console.log("Payment Done");
+          // const result = await ServiceHistory.findByIdAndUpdate(getQry._id, {
+          //   $set: { paymentstatus: true },
+          // });
+          // return res.send({
+          //   status: true,
+          //   message: `Payment history booked.`,
+          // });
+        } else {
+          return res.send({
+            status: true,
+            message: `Payment failed.`,
+          });
+          // console.log("Payment NOT Done");
+          // return res.send({
+          //   status: false,
+          //   message: `Payment history not booked.`,
+          // });
+        }
       } else {
         return res.send({
           status: false,
-          message: `Service not created.`,
+          message: `Service not booked.`,
         });
       }
     }

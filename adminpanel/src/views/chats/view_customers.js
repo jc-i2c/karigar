@@ -293,25 +293,36 @@ const ViewCustomerChat = () => {
                             {customerDetails.customername} have been sent you
                             request!
                           </p>
-
-                          <button
-                            type="button"
-                            className="btn btn-outline-primary"
-                            onClick={() => {
-                              changeStatus(customerDetails.chatrequestid, "2");
-                            }}
+                          <div
+                            className="btn-group mr-2"
+                            role="group"
+                            aria-label="First group"
                           >
-                            Accept
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-outline-danger"
-                            onClick={() => {
-                              changeStatus(customerDetails.chatrequestid, "3");
-                            }}
-                          >
-                            Reject
-                          </button>
+                            <button
+                              type="button"
+                              className="btn btn-outline-primary"
+                              onClick={() => {
+                                changeStatus(
+                                  customerDetails.chatrequestid,
+                                  "2",
+                                );
+                              }}
+                            >
+                              Accept
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-outline-danger"
+                              onClick={() => {
+                                changeStatus(
+                                  customerDetails.chatrequestid,
+                                  "3",
+                                );
+                              }}
+                            >
+                              Reject
+                            </button>
+                          </div>
                         </div>
                       )}
                     </div>
