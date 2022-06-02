@@ -12,7 +12,7 @@ const ServiceHistorySchema = new mongoose.Schema({
     required: [true, "Customer Id is required."],
   },
   addresstype: {
-    type: String,
+    type: Number,
     enum: [1, 2],
     default: 1, // 1-office, 2-home
     required: [true, "Address type is required."],
@@ -43,11 +43,6 @@ const ServiceHistorySchema = new mongoose.Schema({
     type: String,
     required: [true, "booking date is required."], // 14 March 10:00 PM
   },
-  paymentstatus: {
-    type: Boolean,
-    enum: [true, false], // true-Completed, false-Pending
-    required: [true, "Payment status is required."],
-  },
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
 });
@@ -57,6 +52,7 @@ ServiceHistorySchema.servicedate;
 ServiceHistorySchema.methods.toJSON = function () {
   const serviceHistory = this;
   const serviceHistoryObj = serviceHistory.toObject();
+
   delete serviceHistoryObj.__v;
   delete serviceHistoryObj.createdAt;
   delete serviceHistoryObj.updatedAt;
