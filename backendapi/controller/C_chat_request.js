@@ -20,13 +20,7 @@ const createChatReq = async (req, res, next) => {
 
     let findData = getQry1 ? getQry1 : getQry2;
 
-    if (getQry1 || getQry2) {
-      return res.send({
-        status: true,
-        message: `Chat request is already created.`,
-        data: findData,
-      });
-    } else {
+    if (!findData) {
       var chatRequest = new ChatRequest({
         customerid: customerid,
         serviceprovid: serviceprovid,

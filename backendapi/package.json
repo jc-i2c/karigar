@@ -35,5 +35,6 @@
     "path": "^0.12.7",
     "socket.io": "^4.4.1",
     "stripe": "^8.215.0"
-  }
+  },
+  "devDependencies": {}
 }

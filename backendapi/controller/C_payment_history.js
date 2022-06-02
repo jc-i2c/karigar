@@ -1,5 +1,6 @@
 const PaymentHistory = require("../models/M_payment_history");
 const ServiceHistory = require("../models/M_service_history");
+const ChatRequest = require("../models/M_chat_request");
 
 // Create payment history API.
 const createPayment = async (req, res, next) => {
@@ -15,6 +16,8 @@ const createPayment = async (req, res, next) => {
     const getQry = await ServiceHistory.findById(servicehistoryid);
 
     if (getQry) {
+      let serviceProvider = getQry.serviceproviderid;
+
       let createPaymentHistory = new PaymentHistory({
         servicehistoryid: servicehistoryid,
         customerid: customerid,
@@ -23,21 +26,41 @@ const createPayment = async (req, res, next) => {
         paymentstatus: paymentstatus,
       });
 
-      const insertQry = await createPaymentHistory.save();
+      const createHistory = await createPaymentHistory.save();
 
-      if (insertQry) {
-        const result = await ServiceHistory.findByIdAndUpdate(getQry._id, {
-          $set: { paymentstatus: true },
+      if (createHistory) {
+        const getQry1 = await ChatRequest.findOne().where({
+          customerid: customerid,
+          serviceprovid: serviceProvider,
         });
+
+        const getQry2 = await ChatRequest.findOne().where({
+          customerid: serviceProvider,
+          serviceprovid: customerid,
+        });
+
+        let findData = getQry1 ? getQry1 : getQry2;
+
+        if (!findData) {
+          var chatRequest = new ChatRequest({
+            customerid: customerid,
+            serviceprovid: serviceProvider,
+            chatstatus: 2,
+          });
+
+          const createChat = await chatRequest.save();
+
+          // console.log(createChat, "createChat");
+        }
 
         return res.send({
           status: true,
-          message: `Payment history created.`,
+          message: `Payment completed.`,
         });
       } else {
         return res.send({
           status: false,
-          message: `Payment history not created.`,
+          message: `Payment not completed.`,
         });
       }
     } else {
