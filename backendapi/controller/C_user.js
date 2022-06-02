@@ -197,12 +197,12 @@ const userLogin = async (req, res, next) => {
 
               let userData = findUser.toObject();
 
-              // Set user gender.
-              if (userData.gender == 1) {
-                userData.gender = "male";
-              } else if (userData.gender == 2) {
-                userData.gender = "female";
-              }
+              // // Set user gender.
+              // if (userData.gender == 1) {
+              //   userData.gender = "male";
+              // } else if (userData.gender == 2) {
+              //   userData.gender = "female";
+              // }
 
               // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
               createDate = userData.createdAt
@@ -257,12 +257,12 @@ const userLogin = async (req, res, next) => {
 
               let userData = findUser.toObject();
 
-              // Set user gender.
-              if (userData.gender == 1) {
-                userData.gender = "male";
-              } else if (userData.gender == 2) {
-                userData.gender = "female";
-              }
+              // // Set user gender.
+              // if (userData.gender == 1) {
+              //   userData.gender = "male";
+              // } else if (userData.gender == 2) {
+              //   userData.gender = "female";
+              // }
 
               // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
               createDate = userData.createdAt

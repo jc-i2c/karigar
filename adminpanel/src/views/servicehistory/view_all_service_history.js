@@ -69,8 +69,8 @@ const ViewServices = () => {
                 sessiontime: record.sessiontime,
                 servicestatus: record.servicestatus,
                 paymentstatus: record.paymentstatus,
-                createdAt: record.createdAt,
-                updatedAt: record.updatedAt,
+                // createdAt: record.createdAt,
+                // updatedAt: record.updatedAt,
               });
             });
             setOffers(records);
@@ -100,8 +100,8 @@ const ViewServices = () => {
                 sessiontime: record.sessiontime,
                 servicestatus: record.servicestatus,
                 paymentstatus: record.paymentstatus,
-                createdAt: record.createdAt,
-                updatedAt: record.updatedAt,
+                // createdAt: record.createdAt,
+                // updatedAt: record.updatedAt,
               });
             });
             setOffers(records);
@@ -180,8 +180,8 @@ const ViewServices = () => {
                   <CTableHeaderCell>Service Time</CTableHeaderCell>
                   {/* <CTableHeaderCell>Service Status</CTableHeaderCell> */}
                   <CTableHeaderCell>Payment Status</CTableHeaderCell>
-                  <CTableHeaderCell>CreatedAt</CTableHeaderCell>
-                  <CTableHeaderCell>UpdatedAt</CTableHeaderCell>
+                  {/* <CTableHeaderCell>CreatedAt</CTableHeaderCell> */}
+                  {/* <CTableHeaderCell>UpdatedAt</CTableHeaderCell> */}
                 </CTableRow>
               </CTableHead>
               <CTableBody>
@@ -191,7 +191,7 @@ const ViewServices = () => {
                       <div>{item.name ? item.name : ""}</div>
                     </CTableDataCell>
 
-                    {roleName == "ADMIN" && (
+                    {roleName === "ADMIN" && (
                       <CTableDataCell>
                         <div>
                           {item.serviceprovidername
@@ -207,9 +207,9 @@ const ViewServices = () => {
 
                     <CTableDataCell>
                       <div>
-                        {item.addresstype == 1
+                        {item.addresstype === 1
                           ? "OFFICE"
-                          : item.addresstype == 2
+                          : item.addresstype === 2
                           ? "HOME"
                           : ""}
                       </div>
@@ -263,13 +263,13 @@ const ViewServices = () => {
                       <div>{item.paymentstatus ? item.paymentstatus : ""}</div>
                     </CTableDataCell>
 
-                    <CTableDataCell>
+                    {/* <CTableDataCell>
                       <div>{item.createdAt ? item.createdAt : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
                       <div>{item.updatedAt ? item.updatedAt : ""}</div>
-                    </CTableDataCell>
+                    </CTableDataCell> */}
                   </CTableRow>
                 ))}
               </CTableBody>
