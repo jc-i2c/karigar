@@ -105,6 +105,8 @@ const getAllChatRequest = async (data) => {
 
       const decoded = jwt.verify(token, config.TOKEN_KEY);
 
+      // console.log(decoded.id, "decoded.id");
+
       let getQry = await ChatRequest.find()
         .sort({ createdAt: -1 })
         .where({
@@ -113,7 +115,7 @@ const getAllChatRequest = async (data) => {
         .populate({ path: "customerid", select: "name" })
         .populate({ path: "serviceprovid", select: "name" });
 
-      console.log(getQry, "getQry");
+      // console.log(getQry, "getQry");
 
       if (getQry.length > 0) {
         let findData = [];

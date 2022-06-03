@@ -66,15 +66,18 @@ io.on("connection", (socket) => {
 
   // Save message.
   socket.on("onChat", async (getData) => {
-    // console.log(getData, "getData");
+    console.log(getData, "getData");
     try {
       let data = {};
       data.senderid = getData.senderid;
       data.receiverid = getData.receiverid;
       data.message = getData.message;
 
+      console.log(data, "data");
+
       let resData = await sendMessage(data);
 
+      console.log(resData, "resData");
       io.emit("onChat", resData);
     } catch (error) {
       socket.emit("error", error.message);
