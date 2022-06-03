@@ -187,6 +187,7 @@ const getAllChatRequest = async (req, res, next) => {
 const getAllCusChatRequest = async (req, res, next) => {
   try {
     const { customerid } = req.body;
+    console.log(customerid, "customerid");
 
     let getQry = await ChatRequest.find()
       .where({

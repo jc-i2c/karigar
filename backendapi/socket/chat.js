@@ -1,13 +1,15 @@
 const ChatRequest = require("../models/M_chat_request");
 const ChatRoom = require("../models/M_chat_room");
 const Chat = require("../models/M_chat");
+const Serviceprovider = require("../models/M_serviceprovider");
 var moment = require("moment");
 
 const jwt = require("jsonwebtoken");
 const config = process.env;
 
 const { chatReqStatusVal } = require("../helper/joivalidation");
-const { default: mongoose } = require("mongoose");
+
+let mongoose = require("mongoose");
 
 // Create chat request API.
 const createChatReq = async (data) => {
@@ -37,10 +39,47 @@ const createChatReq = async (data) => {
 // Change chat request status API.
 const changeStatus = async (getData) => {
   try {
+    console.log(getData, "getData");
     let data = {
       chatrequestid: getData.chatreqid,
       chatstatus: getData.status,
     };
+
+    // If customer request accepted then create one room.
+    if (data.chatstatus == "2" || data.chatstatus == 2) {
+      const findRoom = await ChatRoom.findOne().where({
+        chatrequestid: new mongoose.Types.ObjectId(getData.chatreqid),
+      });
+
+      console.log(findRoom, "findRoom");
+
+      if (findRoom == null || findRoom == undefined) {
+        var chatRoom = new ChatRoom({
+          userid: getData.customerid,
+          otheruserid: getData.serviceprovid,
+          chatrequestid: getData.chatreqid,
+        });
+
+        const insertQry = await chatRoom.save();
+
+        // if (insertQry) {
+        //   console.log("Chat room created");
+        //   // return res.send({
+        //   //   status: true,
+        //   //   message: `Chat room created.`,
+        //   //   data: insertQry,
+        //   // });
+        // } else {
+        //   console.log("Chat room not created.");
+        //   // return res.send({
+        //   //   status: false,
+        //   //   message: `Chat room not created.`,
+        //   // });
+        // }
+      } else {
+        console.log("Chat room already available.");
+      }
+    }
 
     if (data.chatstatus == "3" || data.chatstatus == 3) {
       // Delete chat request.
@@ -104,24 +143,39 @@ const getAllChatRequest = async (data) => {
       token = token[0];
 
       const decoded = jwt.verify(token, config.TOKEN_KEY);
-
       // console.log(decoded.id, "decoded.id");
 
-      let getQry = await ChatRequest.find()
-        .sort({ createdAt: -1 })
-        .where({
-          serviceprovid: decoded.id,
+      // we have user id
+      // find all the serviceprovide
+      // with that id we will find chat request
+
+      let findServiceProvider = await Serviceprovider.find({
+        userid: decoded.id,
+      }).select("_id");
+
+      let chatList = [];
+      await Promise.all(
+        findServiceProvider.map(async (item) => {
+          const result = await ChatRequest.find({ serviceprovid: item._id })
+            .populate({ path: "customerid", select: "name" })
+            .populate({ path: "serviceprovid", select: "name" });
+          chatList = [...chatList, ...result];
         })
-        .populate({ path: "customerid", select: "name" })
-        .populate({ path: "serviceprovid", select: "name" });
+      );
+
+      // let getQry = await ChatRequest.find()
+      //   .sort({ createdAt: -1 })
+      //   .where({
+      //     serviceprovid: decoded.id,
+      //   })
 
       // console.log(getQry, "getQry");
 
-      if (getQry.length > 0) {
+      if (chatList.length > 0) {
         let findData = [];
 
         await Promise.all(
-          getQry.map(async (list) => {
+          chatList.map(async (list) => {
             let resData = {};
             resData = list.toObject();
 

@@ -25,11 +25,10 @@ const chatRoomSchema = new mongoose.Schema({
   sendby: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
-    required: [true, "Message sender Id is required."],
   },
   lastmsg: {
     type: String,
-    default: "Now you can chat with each other"
+    default: "Now you can chat with each other",
   },
   msgtime: {
     type: String,

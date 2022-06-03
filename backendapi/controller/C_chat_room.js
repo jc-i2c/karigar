@@ -10,13 +10,7 @@ const createChatRoom = async (req, res, next) => {
       chatrequestid: new mongoose.Types.ObjectId(chatrequestid),
     });
 
-    if (findRoom) {
-      return res.send({
-        status: true,
-        message: `Chat room is already created.`,
-        data: findRoom,
-      });
-    } else {
+    if (!findRoom) {
       var chatRoom = new ChatRoom({
         userid: userid,
         otheruserid: otheruserid,
@@ -97,4 +91,27 @@ const changeStatus = async (req, res, next) => {
   }
 };
 
-module.exports = { createChatRoom, changeStatus };
+// Get room Id based on chat ID API.
+const getRoom = async (req, res, next) => {
+  try {
+    let { chatrequestid } = req.body;
+
+    const getQry = await ChatRoom.findOne({
+      chatrequestid: chatrequestid,
+    }).select("_id");
+
+    if (getQry) {
+      return res.send({
+        status: true,
+        message: `Chat room find.`,
+        data: getQry,
+      });
+    } else {
+    }
+  } catch (error) {
+    // console.log(error, "ERROR");
+    next(error);
+  }
+};
+
+module.exports = { createChatRoom, changeStatus, getRoom };

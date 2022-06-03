@@ -90,10 +90,13 @@ const ViewCustomerChat = () => {
   }, [customerDetails]);
 
   // Change status accept or reject.
-  function changeStatus(chatreqid, status) {
+  function changeStatus(customerid, serviceprovid, chatreqid, status) {
     let data = {};
+    data.customerid = customerid;
+    data.serviceprovid = serviceprovid;
     data.chatreqid = chatreqid;
     data.status = status;
+
     socket.emit("changestatus", data);
 
     socket.on("changestatus", function (data) {
@@ -303,6 +306,8 @@ const ViewCustomerChat = () => {
                               className="btn btn-outline-primary"
                               onClick={() => {
                                 changeStatus(
+                                  customerDetails.customerid,
+                                  customerDetails.serviceprovid,
                                   customerDetails.chatrequestid,
                                   "2",
                                 );
