@@ -66,7 +66,7 @@ io.on("connection", (socket) => {
 
   // Save message.
   socket.on("onChat", async (getData) => {
-    // console.log(getData, "getData");
+    console.log(getData, "getData");
     try {
       let temp = JSON.parse(getData);
 
@@ -75,11 +75,11 @@ io.on("connection", (socket) => {
       data.receiverid = temp.receiverid;
       data.message = temp.message;
 
-      // console.log(data, "data");
+      console.log(data, "data");
 
       let resData = await sendMessage(data);
 
-      // console.log(resData, "resData");
+      console.log(resData, "resData");
       io.emit("onChat", resData);
     } catch (error) {
       socket.emit("error", error.message);

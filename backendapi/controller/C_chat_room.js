@@ -1,4 +1,5 @@
 const ChatRoom = require("../models/M_chat_room");
+const Chat = require("../models/M_chat");
 let mongoose = require("mongoose");
 
 // Create chat room API.
@@ -101,12 +102,28 @@ const getRoom = async (req, res, next) => {
     }).select("_id");
 
     if (getQry) {
-      return res.send({
-        status: true,
-        message: `Chat room find.`,
-        data: getQry,
+      const getMsg = await Chat.find().where({
+        chatroomid: getQry._id,
       });
+
+      if (getMsg.length > 0) {
+        return res.send({
+          status: true,
+          message: `Messages fount into system.`,
+          data: getMsg,
+        });
+      } else {
+        return res.send({
+          status: false,
+          totalcount: totalCount,
+          message: `Messages not fount into system.`,
+        });
+      }
     } else {
+      return res.send({
+        status: false,
+        message: `Chat room not found.`,
+      });
     }
   } catch (error) {
     // console.log(error, "ERROR");
