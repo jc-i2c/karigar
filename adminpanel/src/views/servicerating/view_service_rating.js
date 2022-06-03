@@ -58,7 +58,7 @@ const ViewServiceRating = () => {
   }, []);
 
   useEffect(() => {
-    if (roleName == "ADMIN") {
+    if (roleName === "ADMIN") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/servicerating/getall`,
@@ -86,7 +86,7 @@ const ViewServiceRating = () => {
           console.log(error, "error");
         });
     }
-    if (roleName == "SERVICEPROVIDER") {
+    if (roleName === "SERVICEPROVIDER") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/servicerating/getservicerating`,
@@ -175,7 +175,7 @@ const ViewServiceRating = () => {
                   <CTableHeaderCell>Description</CTableHeaderCell>
                   <CTableHeaderCell>CreateAT</CTableHeaderCell>
                   <CTableHeaderCell>UpdateAT</CTableHeaderCell>
-                  {roleName == "ADMIN" && (
+                  {roleName === "ADMIN" && (
                     <CTableHeaderCell>Action</CTableHeaderCell>
                   )}
                 </CTableRow>
@@ -202,7 +202,7 @@ const ViewServiceRating = () => {
                       <div>{item.updatedAt}</div>
                     </CTableDataCell>
 
-                    {roleName == "ADMIN" && (
+                    {roleName === "ADMIN" && (
                       <CTableDataCell>
                         <DeleteIcon
                           variant="contained"

@@ -202,7 +202,7 @@ const AddServices = () => {
                     {imagePath ? (
                       <img
                         src={imagePath}
-                        alt={imagePath}
+                        alt={"Image not found"}
                         style={{
                           height: "80px",
                           width: "80px",
@@ -213,7 +213,7 @@ const AddServices = () => {
                         src={
                           `${process.env.REACT_APP_PROFILEPIC}` + serviceImage
                         }
-                        alt={serviceImage}
+                        alt={"Image not found"}
                         style={{
                           height: "80px",
                           width: "80px",

@@ -50,7 +50,7 @@ const AddServices = () => {
       setValidated(true);
       setEmailAddressError("Please enter valid email address");
     } else {
-      if (validated == false) {
+      if (validated === false) {
         // Reset password data.
         var data = new FormData();
         data.append("emailaddress", emailAddress);

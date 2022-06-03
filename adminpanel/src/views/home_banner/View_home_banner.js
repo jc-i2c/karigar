@@ -154,7 +154,7 @@ const ViewCustomer = () => {
                               `${process.env.REACT_APP_PROFILEPIC}` +
                               item.bannerimage
                             }
-                            alt={item.bannerimage}
+                            alt={"Image not found"}
                             style={{
                               height: "70px",
                               width: "70px",

@@ -87,7 +87,7 @@ const AllUsers = () => {
         if (data.data.status) {
           toast.success(data.data.message);
           let newCustomerData = allUsers.map((listOfCustomer) => {
-            if (listOfCustomer.userid == customerId) {
+            if (listOfCustomer.userid === customerId) {
               if (listOfCustomer.isactive) {
                 return { ...listOfCustomer, isactive: false };
               } else {
@@ -135,7 +135,7 @@ const AllUsers = () => {
   }
 
   function verifyUser(userId, status) {
-    if (status == false) {
+    if (status === false || !status) {
       let data = new FormData();
       data.append("userid", userId);
 
@@ -226,9 +226,9 @@ const AllUsers = () => {
 
                     <CTableDataCell>
                       <div>
-                        {item.gender == 1
+                        {item.gender === 1
                           ? "Male"
-                          : item.gender == 2
+                          : item.gender === 2
                           ? "Female"
                           : "-"}
                       </div>
@@ -253,7 +253,7 @@ const AllUsers = () => {
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      {item.userroll.rolename == "admin" ? (
+                      {item.userroll.rolename === "admin" ? (
                         <CFormCheck
                           key={index}
                           type="checkbox"
@@ -280,7 +280,7 @@ const AllUsers = () => {
                     </CTableDataCell>
 
                     <CTableDataCell>
-                      {item.userroll.rolename == "admin" ? (
+                      {item.userroll.rolename === "admin" ? (
                         <CFormSwitch
                           key={index}
                           type="checkbox"

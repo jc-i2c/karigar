@@ -61,7 +61,7 @@ const ViewOffers = () => {
 
   // Get all offers list.
   useEffect(() => {
-    if (roleName == "ADMIN") {
+    if (roleName === "ADMIN") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/offer/getalloffer`,
@@ -138,7 +138,7 @@ const ViewOffers = () => {
         if (data.data.status) {
           toast.success(data.data.message);
           let newOfferData = offers.map((offerList) => {
-            if (offerList.offerid == offerId) {
+            if (offerList.offerid === offerId) {
               if (offerList.isactive) {
                 return { ...offerList, isactive: false };
               } else {

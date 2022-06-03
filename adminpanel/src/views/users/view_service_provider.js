@@ -84,7 +84,7 @@ const ViewServiceProvider = () => {
         if (data.data.status) {
           toast.success(data.data.message);
           let newCustomerData = serviceProvider.map((serviceProviderList) => {
-            if (serviceProviderList.serviceproviderid == serviceProviderId) {
+            if (serviceProviderList.serviceproviderid === serviceProviderId) {
               if (serviceProviderList.isactive) {
                 return { ...serviceProviderList, isactive: false };
               } else {
@@ -185,11 +185,11 @@ const ViewServiceProvider = () => {
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>
-                        {item.gender == 1
+                        {item.gender === 1
                           ? "Male"
-                          : item.gender == 2
-                            ? "Female"
-                            : "-"}
+                          : item.gender === 2
+                          ? "Female"
+                          : "-"}
                       </div>
                     </CTableDataCell>
                     <CTableDataCell>

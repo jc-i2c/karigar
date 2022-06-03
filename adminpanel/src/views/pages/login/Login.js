@@ -63,7 +63,7 @@ function Login() {
       setValidated(true);
       setPasswordError("Password must be strong");
     } else {
-      if (validated == false) {
+      if (validated === false) {
         setSpinner(true);
         let logiData = new FormData();
 
@@ -78,7 +78,7 @@ function Login() {
 
               toast.success(data.data.message, {
                 onClose: () => {
-                  if (data.data.userdata.userrole == "ADMIN")
+                  if (data.data.userdata.userrole === "ADMIN")
                     navigate("/dashboard");
                   else {
                     navigate("/services");

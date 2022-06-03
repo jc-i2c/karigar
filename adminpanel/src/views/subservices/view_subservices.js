@@ -66,7 +66,7 @@ const ViewSubServices = () => {
     if (location.state) {
       setServiceId(location.state.serviceid);
       if (servicesId) {
-        if (roleName == "ADMIN") {
+        if (roleName === "ADMIN") {
           let data = new FormData();
           data.append("servicesid", servicesId);
 
@@ -176,7 +176,7 @@ const ViewSubServices = () => {
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
             <div>Sub Services List</div>
-            {roleName == "ADMIN" && (
+            {roleName === "ADMIN" && (
               <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                 <CButton
                   color="primary"
@@ -216,7 +216,7 @@ const ViewSubServices = () => {
                   <CTableHeaderCell>CreateAT</CTableHeaderCell>
                   <CTableHeaderCell>UpdateAT</CTableHeaderCell>
 
-                  {roleName == "ADMIN" && (
+                  {roleName === "ADMIN" && (
                     <CTableHeaderCell>Action</CTableHeaderCell>
                   )}
                 </CTableRow>
@@ -244,7 +244,7 @@ const ViewSubServices = () => {
                               `${process.env.REACT_APP_PROFILEPIC}` +
                               item.subserviceimage
                             }
-                            alt={item.subserviceimage}
+                            alt={"Image not found"}
                           />
                         ) : (
                           <img
@@ -269,7 +269,7 @@ const ViewSubServices = () => {
                       <div>{item.updatedAt}</div>
                     </CTableDataCell>
 
-                    {roleName == "ADMIN" && (
+                    {roleName === "ADMIN" && (
                       <CTableDataCell>
                         <EditIcon
                           variant="contained"

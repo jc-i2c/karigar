@@ -34,7 +34,7 @@ const WidgetsDropdown = () => {
   }, []);
 
   useEffect(() => {
-    if (roleName == "ADMIN") {
+    if (roleName === "ADMIN") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/admindashboard/widgetdata`,

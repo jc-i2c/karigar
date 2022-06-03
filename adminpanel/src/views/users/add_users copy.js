@@ -124,7 +124,7 @@ const AddUsers = () => {
       validationError.push("userRoleError");
     }
 
-    if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber == null) {
+    if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber === null) {
       validationError.push("mobileError");
     }
 
@@ -194,7 +194,7 @@ const AddUsers = () => {
             } else {
               toast.error(data.data.message);
             }
-            if (data.data.status == false) {
+            if (data.data.status === false || !data.data.status) {
               toast.error(data.data.message.confirmpassword);
             }
             setSpinner(false);

@@ -61,7 +61,7 @@ const ViewServices = () => {
 
   // Get all services based on userrole
   useEffect(() => {
-    if (roleName == "ADMIN") {
+    if (roleName === "ADMIN") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/services/all`,
@@ -148,7 +148,7 @@ const ViewServices = () => {
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
             <div>Services List</div>
-            {roleName == "ADMIN" && (
+            {roleName === "ADMIN" && (
               <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                 <CButton
                   color="primary"
@@ -183,7 +183,7 @@ const ViewServices = () => {
                   <CTableHeaderCell>View Subservices</CTableHeaderCell>
                   <CTableHeaderCell>CreateAT</CTableHeaderCell>
                   <CTableHeaderCell>UpdateAT</CTableHeaderCell>
-                  {roleName == "ADMIN" && (
+                  {roleName === "ADMIN" && (
                     <CTableHeaderCell>Action</CTableHeaderCell>
                   )}
                 </CTableRow>
@@ -203,7 +203,7 @@ const ViewServices = () => {
                               `${process.env.REACT_APP_PROFILEPIC}` +
                               item.serviceimage
                             }
-                            alt={item.serviceimage}
+                            alt={"Image not found"}
                             style={{
                               height: "50px",
                               width: "50px",
@@ -215,7 +215,7 @@ const ViewServices = () => {
                             src={
                               `${process.env.REACT_APP_PROFILEPIC}` + "fiximage"
                             }
-                              alt={"Image not found"}
+                            alt={"Image not found"}
                             style={{
                               height: "50px",
                               width: "50px",
@@ -245,7 +245,7 @@ const ViewServices = () => {
                       <div>{item.updatedAt}</div>
                     </CTableDataCell>
 
-                    {roleName == "ADMIN" && (
+                    {roleName === "ADMIN" && (
                       <CTableDataCell>
                         <EditIcon
                           variant="contained"
@@ -313,7 +313,7 @@ const ViewServices = () => {
             )}
             {/* ---------------------Close Delete Dialog Box---------------------------------- */}
             <div className="d-md-flex pt-2 justify-content-md-end">
-              {roleName == "ADMIN" && (
+              {roleName === "ADMIN" && (
                 <CButton color="primary" onClick={() => navigate(-1)}>
                   Back
                 </CButton>

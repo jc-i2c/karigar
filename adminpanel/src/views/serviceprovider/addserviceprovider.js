@@ -587,7 +587,7 @@ const ServiceProvider = () => {
                           {imagePath ? (
                             <img
                               src={imagePath}
-                              alt={imagePath}
+                              alt={"Image not found"}
                               style={{
                                 height: "80px",
                                 width: "80px",
@@ -599,7 +599,7 @@ const ServiceProvider = () => {
                                 `${process.env.REACT_APP_PROFILEPIC}` +
                                 uploadImage
                               }
-                              alt={uploadImage}
+                              alt={"Image not found"}
                               style={{
                                 height: "80px",
                                 width: "80px",

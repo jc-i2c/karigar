@@ -241,7 +241,7 @@ const HomeBanner = () => {
                     {imagePath ? (
                       <img
                         src={imagePath}
-                        alt={imagePath}
+                        alt={"Image not found"}
                         style={{
                           height: "80px",
                           width: "80px",
@@ -252,7 +252,7 @@ const HomeBanner = () => {
                         src={
                           `${process.env.REACT_APP_PROFILEPIC}` + bannerImage
                         }
-                        alt={bannerImage}
+                        alt={"Image not found"}
                         style={{
                           height: "80px",
                           width: "80px",

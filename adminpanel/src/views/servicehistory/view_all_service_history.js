@@ -48,7 +48,7 @@ const ViewServices = () => {
 
   // Get all offers list.
   useEffect(() => {
-    if (roleName == "ADMIN") {
+    if (roleName === "ADMIN") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/servicehistory/all`,
@@ -131,7 +131,7 @@ const ViewServices = () => {
         if (data.data.status) {
           toast.success(data.data.message);
           let newOffers = offers.map((allOffer) => {
-            if (allOffer.servicehistoryid == Id) {
+            if (allOffer.servicehistoryid === Id) {
               return { ...allOffer, servicestatus: status };
             } else {
               return allOffer;
@@ -171,7 +171,7 @@ const ViewServices = () => {
               <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Name</CTableHeaderCell>
-                  {roleName == "ADMIN" && (
+                  {roleName === "ADMIN" && (
                     <CTableHeaderCell>Service Provider Name</CTableHeaderCell>
                   )}
                   <CTableHeaderCell>Customer Name</CTableHeaderCell>
@@ -224,7 +224,7 @@ const ViewServices = () => {
                     </CTableDataCell>
 
                     {/* <CTableDataCell>
-                      {item.servicestatus == 4 ? (
+                      {item.servicestatus === 4 ? (
                         <CFormSelect required id="services" name="services">
                           <option key={4} value={4}>
                             Reject

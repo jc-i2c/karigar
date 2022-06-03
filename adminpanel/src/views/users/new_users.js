@@ -150,7 +150,7 @@ const Offers = () => {
       } else if (!gender) {
         setValidated(true);
         setGenderError("Select Gender.");
-      } else if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber == null) {
+      } else if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber === null) {
         setValidated(true);
         setMobileNumberError("Mobile number Invalid.");
       } else {
@@ -179,7 +179,7 @@ const Offers = () => {
       } else if (!gender) {
         setValidated(true);
         setGenderError("Select Gender.");
-      } else if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber == null) {
+      } else if (!/^[6789]\d{9}$/.test(mobileNumber) || mobileNumber === null) {
         setValidated(true);
         setMobileNumberError("Mobile number Invalid.");
       } else {
@@ -192,7 +192,7 @@ const Offers = () => {
   function addNewUsers() {
     let getStatus = validationCheck();
 
-    if (getStatus == false) {
+    if (getStatus === false) {
       if (isEdit) {
         var data = new FormData();
         data.append("emailaddress", emailAddress);
@@ -250,7 +250,7 @@ const Offers = () => {
             } else {
               toast.error(data.data.message);
             }
-            if (data.data.status == false) {
+            if (data.data.status === false) {
               toast.error(data.data.message.confirmpassword);
             }
             setSpinner(false);
@@ -308,6 +308,7 @@ const Offers = () => {
                     >
                       Name
                     </CFormLabel>
+
                     <CFormInput
                       type="text"
                       id="name"

@@ -68,7 +68,7 @@ const ViewServiceProvider = () => {
   }, []);
 
   useEffect(() => {
-    if (roleName == "ADMIN") {
+    if (roleName === "ADMIN") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/serviceprovider/getall`,
@@ -176,7 +176,7 @@ const ViewServiceProvider = () => {
         if (data.data.status) {
           toast.success(data.data.message);
           let newServiceProvider = serviceProvider.map((listOfCustomer) => {
-            if (listOfCustomer.serviceproviderid == serviceProviderId) {
+            if (listOfCustomer.serviceproviderid === serviceProviderId) {
               if (listOfCustomer.isactive) {
                 return { ...listOfCustomer, isactive: false };
               } else {
@@ -231,7 +231,7 @@ const ViewServiceProvider = () => {
             >
               <CTableHead color="dark">
                 <CTableRow>
-                  {roleName == "ADMIN" && (
+                  {roleName === "ADMIN" && (
                     <CTableHeaderCell>Person Name</CTableHeaderCell>
                   )}
                   <CTableHeaderCell>Service Name</CTableHeaderCell>
@@ -253,7 +253,7 @@ const ViewServiceProvider = () => {
               <CTableBody>
                 {serviceProvider.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
-                    {roleName == "ADMIN" && (
+                    {roleName === "ADMIN" && (
                       <CTableDataCell>
                         <div>{item.userid.name ? item.userid.name : ""}</div>
                       </CTableDataCell>
@@ -372,7 +372,7 @@ const ViewServiceProvider = () => {
                         }}
                       />
 
-                      {roleName == "ADMIN" && (
+                      {roleName === "ADMIN" && (
                         <DeleteIcon
                           variant="contained"
                           color="inherit"
@@ -443,9 +443,9 @@ const ViewServiceProvider = () => {
                       detailsData &&
                       detailsData.map((data, index) => {
                         let dataValue = "";
-                        if (data.value == "true") {
+                        if (data.value === "true") {
                           dataValue = "Yes";
-                        } else if (data.value == "false") {
+                        } else if (data.value === "false") {
                           dataValue = "No";
                         } else {
                           dataValue = data.value;

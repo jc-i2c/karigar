@@ -63,7 +63,7 @@ const ViewCustomer = () => {
 
   // Get all customer list
   useEffect(() => {
-    if (roleName == "ADMIN") {
+    if (roleName === "ADMIN") {
       axios
         .post(
           `${process.env.REACT_APP_APIURL}/karigar/user/allcustomer`,
@@ -107,7 +107,7 @@ const ViewCustomer = () => {
         if (data.data.status) {
           toast.success(data.data.message);
           let newCustomerData = customers.map((listOfCustomer) => {
-            if (listOfCustomer.customerid == customerId) {
+            if (listOfCustomer.customerid === customerId) {
               if (listOfCustomer.isactive) {
                 return { ...listOfCustomer, isactive: false };
               } else {
@@ -155,7 +155,7 @@ const ViewCustomer = () => {
   }
 
   function verifyCustomer(userId, status) {
-    if (status == false) {
+    if (status === false) {
       let data = new FormData();
       data.append("userid", userId);
 
@@ -167,7 +167,7 @@ const ViewCustomer = () => {
           if (data.data.status) {
             toast.success(data.data.message);
             let customerStatus = customers.map((listOfCustomer) => {
-              if (listOfCustomer.customerid == userId) {
+              if (listOfCustomer.customerid === userId) {
                 if (listOfCustomer.status) {
                   return { ...listOfCustomer, status: false };
                 } else {
@@ -241,11 +241,11 @@ const ViewCustomer = () => {
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>
-                        {item.gender == 1
+                        {item.gender === 1
                           ? "Male"
-                          : item.gender == 2
-                            ? "Female"
-                            : "-"}
+                          : item.gender === 2
+                          ? "Female"
+                          : "-"}
                       </div>
                     </CTableDataCell>
                     <CTableDataCell>

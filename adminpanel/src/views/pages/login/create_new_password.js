@@ -75,7 +75,7 @@ const AddServices = () => {
       setValidated(true);
       setPasswordMatchError("Password and confirm password does not match");
     } else {
-      if (validated == false) {
+      if (validated === false) {
         // Create new password.
         var data = new FormData();
         data.append("emailaddress", emailAddress);

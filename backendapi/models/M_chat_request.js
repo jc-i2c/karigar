@@ -8,7 +8,7 @@ const chatRequestSchema = new mongoose.Schema({
   },
   serviceprovid: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "serviceprovider",
     required: [true, "Service provider Id is required."],
   },
   chatstatus: {

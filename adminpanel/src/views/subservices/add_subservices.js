@@ -304,7 +304,7 @@ const AddSubServices = () => {
                     {imagePath ? (
                       <img
                         src={imagePath}
-                        alt={imagePath}
+                        alt={"Image not found"}
                         style={{
                           height: "80px",
                           width: "80px",
@@ -316,7 +316,7 @@ const AddSubServices = () => {
                           `${process.env.REACT_APP_PROFILEPIC}` +
                           subServiceImage
                         }
-                        alt={subServiceImage}
+                        alt={"Image not found"}
                         style={{
                           height: "80px",
                           width: "80px",
