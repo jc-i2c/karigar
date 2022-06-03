@@ -13,6 +13,8 @@ const ViewCustomerChat = () => {
   const [customerDetails, setCustomerDetails] = useState("");
   const [typeMessage, setTypeMessage] = useState("");
 
+  console.log(customerDetails, "customerDetails");
+
   useEffect(() => {
     let unmounted = false;
     // get all customer list for service provider.
@@ -125,6 +127,7 @@ const ViewCustomerChat = () => {
   function sendMessage() {
     let sendData = {};
 
+    // sendData.senderid = customerDetails.serviceprovid;
     sendData.senderid = customerDetails.serviceprovid;
     sendData.receiverid = customerDetails.customerid;
     sendData.message = typeMessage && typeMessage;

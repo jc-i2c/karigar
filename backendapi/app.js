@@ -68,18 +68,15 @@ io.on("connection", (socket) => {
   socket.on("onChat", async (getData) => {
     console.log(getData, "getData");
     try {
-      let temp = JSON.parse(getData);
+      let temp = {};
+      if (typeof getData === "string") {
+        temp = JSON.parse(getData);
+      } else {
+        temp = getData;
+      }
+      console.log(temp, "temp");
+      let resData = await sendMessage(temp);
 
-      let data = {};
-      data.senderid = temp.senderid;
-      data.receiverid = temp.receiverid;
-      data.message = temp.message;
-
-      console.log(data, "data");
-
-      let resData = await sendMessage(data);
-
-      console.log(resData, "resData");
       io.emit("onChat", resData);
     } catch (error) {
       socket.emit("error", error.message);

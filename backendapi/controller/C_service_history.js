@@ -787,22 +787,33 @@ const countJob = async (req, res, next) => {
 const getSerProHistoty = async (req, res, next) => {
   try {
     let serProviderId = new mongoose.Types.ObjectId(req.userid);
-
     if (serProviderId) {
-      const getQry = await ServiceHistory.find()
-        .populate({
-          path: "serviceproviderid",
+      let findServiceProvider = await Serviceprovider.find({
+        userid: serProviderId,
+      }).select("_id");
+
+      let finalResult = [];
+      await Promise.all(
+        findServiceProvider.map(async (item) => {
+          let getQry = await ServiceHistory.find()
+            .populate({
+              path: "serviceproviderid",
+            })
+            .populate({
+              path: "customerid",
+              select: "name",
+            })
+            .where({ serviceproviderid: item._id });
+          finalResult = [...finalResult, ...getQry];
         })
-        .populate({
-          path: "customerid",
-          select: "name",
-        })
-        .where({ serviceproviderid: serProviderId });
+      );
+
+      // console.log(finalResult, "finalResult");
 
       let findData = [];
-      if (getQry.length > 0) {
+      if (finalResult.length > 0) {
         let resData = {};
-        getQry.forEach((data) => {
+        finalResult.forEach((data) => {
           resData = data.toObject();
 
           delete resData.__v; // delete person["__v"]
