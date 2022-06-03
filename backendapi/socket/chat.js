@@ -113,6 +113,8 @@ const getAllChatRequest = async (data) => {
         .populate({ path: "customerid", select: "name" })
         .populate({ path: "serviceprovid", select: "name" });
 
+      console.log(getQry, "getQry");
+
       if (getQry.length > 0) {
         let findData = [];
 
@@ -177,7 +179,7 @@ const getAllCusChatRequest = async (data) => {
           customerid: decoded.id,
         })
         .populate({ path: "customerid", select: "name" })
-        .populate({ path: "serviceprovid", select: "name" });
+        .populate({ path: "serviceprovid", select: "name image" });
 
       if (getQry.length > 0) {
         let findData = [];

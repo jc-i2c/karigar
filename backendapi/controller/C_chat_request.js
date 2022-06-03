@@ -143,7 +143,7 @@ const getAllChatRequest = async (req, res, next) => {
         serviceprovid: serviceprovid,
       })
       .populate({ path: "customerid", select: "name" })
-      .populate({ path: "serviceprovid", select: "name" });
+      .populate({ path: "serviceprovid", select: "name image" });
 
     if (getQry.length > 0) {
       let findData = [];

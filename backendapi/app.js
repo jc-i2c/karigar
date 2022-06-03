@@ -62,8 +62,11 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
+  console.log("Socket connection");
+
   // Save message.
   socket.on("onChat", async (getData) => {
+    // console.log(getData, "getData");
     try {
       let data = {};
       data.senderid = getData.senderid;
