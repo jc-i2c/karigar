@@ -23,7 +23,6 @@ const PaymentHistorySchema = new mongoose.Schema({
   paymentstatus: {
     type: Boolean,
     enum: [true, false], // true-success, false-fail
-    required: [true, "Payment status is required."],
   },
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
