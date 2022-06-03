@@ -68,10 +68,12 @@ io.on("connection", (socket) => {
   socket.on("onChat", async (getData) => {
     console.log(getData, "getData");
     try {
+      let temp = JSON.parse(getData);
+
       let data = {};
-      data.senderid = getData.senderid;
-      data.receiverid = getData.receiverid;
-      data.message = getData.message;
+      data.senderid = temp.senderid;
+      data.receiverid = temp.receiverid;
+      data.message = temp.message;
 
       console.log(data, "data");
 
