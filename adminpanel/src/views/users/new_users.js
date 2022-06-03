@@ -194,6 +194,8 @@ const Offers = () => {
 
     if (getStatus === false) {
       if (isEdit) {
+        setSpinner(true);
+
         var data = new FormData();
         data.append("emailaddress", emailAddress);
         data.append("name", name);
@@ -226,6 +228,7 @@ const Offers = () => {
             setSpinner(false);
           });
       } else {
+        setSpinner(true);
         var data = new FormData();
         data.append("emailaddress", emailAddress);
         data.append("name", name);

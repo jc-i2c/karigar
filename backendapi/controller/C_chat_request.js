@@ -193,7 +193,7 @@ const getAllCusChatRequest = async (req, res, next) => {
         customerid: customerid,
       })
       .populate({ path: "customerid", select: "name" })
-      .populate({ path: "serviceprovid", select: "name" });
+      .populate({ path: "serviceprovid", select: "name image" });
 
     if (getQry.length > 0) {
       let findData = [];
