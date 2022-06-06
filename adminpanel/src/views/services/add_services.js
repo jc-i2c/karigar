@@ -72,10 +72,9 @@ const AddServices = () => {
       setValidated(true);
       setServiceImageError("Please provide service image");
     } else {
+      setSpinner(true);
       if (isEdit) {
         // Edit data
-
-        setSpinner(true);
         var data = new FormData();
         data.append("servicesid", servicesId);
         data.append("servicename", servicesName);

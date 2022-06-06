@@ -71,6 +71,8 @@ const AddServices = () => {
       setValidated(true);
       setPasswordMatchError("Password and confirm password does not match");
     } else {
+      setSpinner(true);
+
       // Change password data.
       var data = new FormData();
       data.append("oldpassword", oldPassword);

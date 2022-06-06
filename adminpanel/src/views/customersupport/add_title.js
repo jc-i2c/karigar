@@ -49,10 +49,10 @@ const AddServices = () => {
       setValidated(true);
       setTitleError("Please enter valid customer support title");
     } else {
+      setSpinner(true);
+
       if (isEdit) {
         // Edit data
-
-        setSpinner(true);
         var data = new FormData();
         data.append("custsuptitleid", custSupTitleId);
         data.append("title", title);

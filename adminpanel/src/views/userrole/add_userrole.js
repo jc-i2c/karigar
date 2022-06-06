@@ -100,6 +100,8 @@ const AddUserroles = () => {
       setValidated(true);
       setPermissionError("Please select permission");
     } else {
+      setSpinner(true);
+
       if (isEdit) {
         // Add new userrole
         let insertData = {};

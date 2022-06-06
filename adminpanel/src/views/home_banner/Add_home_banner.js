@@ -82,10 +82,10 @@ const HomeBanner = () => {
       setValidated(true);
       setBannerImageError("Please provide banner image");
     } else {
+      setSpinner(true);
+
       if (isEdit) {
         // Edit new banner
-
-        setSpinner(true);
         var data = new FormData();
         data.append("bannerid", bannerId);
         data.append("bannertitle", bannerTitle);

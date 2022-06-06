@@ -130,6 +130,7 @@ const AddSubServices = () => {
       setValidated(true);
       setServiceImageError("Please provide sub service image.");
     } else {
+      setSpinner(true);
       if (isEdit) {
         // Edit sub services.
         var data = new FormData();

@@ -104,9 +104,9 @@ const AddCustomerSubTitle = () => {
       setValidated(true);
       setDescriptionError("Please enter valid descriptions.");
     } else {
+      setSpinner(true);
       if (isEdit) {
         // Edit data
-        setSpinner(true);
         var data = new FormData();
         data.append("custsuptitleid", title);
         data.append("custsupsubtitleid", subTitleId);

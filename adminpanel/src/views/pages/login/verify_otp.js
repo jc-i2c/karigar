@@ -46,12 +46,12 @@ const AddServices = () => {
 
   //   Forgot password.
   function forgotPassword() {
-    setSpinner(true);
     if (!/^[0-9]{6}$/i.test(otp)) {
       setValidated(true);
       setSpinner(false);
       setOtpError("Please enter valid otp");
     } else {
+      setSpinner(true);
       // Forgot password data.
       var data = new FormData();
       data.append("emailaddress", emailAddress);

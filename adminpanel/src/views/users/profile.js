@@ -94,6 +94,7 @@ const UserProfile = () => {
       setValidated(true);
       setGenderError("Please select gender");
     } else {
+      setSpinner(true);
       // User profile details.
       var data = new FormData();
       data.append("name", name);

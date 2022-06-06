@@ -33,14 +33,6 @@ const AddServices = () => {
   const [conPasswordError, setConPasswordError] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState("");
 
-  useEffect(() => {
-    // if (location.state !== null) {
-    //   setEmailAddress(location.state.emailaddress);
-    // } else {
-    //   navigate("/login");
-    // }
-  }, []);
-
   //   Error state null
   useEffect(() => {
     setValidated(false);
@@ -51,13 +43,11 @@ const AddServices = () => {
 
   //   Create new password.
   function createNewPassword() {
-    setSpinner(true);
     if (
       !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
         newPassword,
       )
     ) {
-      setSpinner(false);
       setValidated(true);
       setNewPasswordError("Please enter strong password");
     }
@@ -66,15 +56,14 @@ const AddServices = () => {
         conPassword,
       )
     ) {
-      setSpinner(false);
       setValidated(true);
       setConPasswordError("Please enter strong password");
     }
     if (newPassword !== conPassword) {
-      setSpinner(false);
       setValidated(true);
       setPasswordMatchError("Password and confirm password does not match");
     } else {
+      setSpinner(true);
       if (validated === false) {
         // Create new password.
         var data = new FormData();

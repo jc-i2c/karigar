@@ -69,6 +69,8 @@ const PrivacyPolicy = () => {
       setValidated(true);
       setPrivacyPolicyError("Please enter valid privacy policy details");
     } else {
+      setSpinner(true);
+
       // Privacy Policy.
       var data = new FormData();
       data.append("privacypolicyid", privacyPolicyId);

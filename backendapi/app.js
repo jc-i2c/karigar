@@ -62,11 +62,11 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("Socket connection");
+  // console.log("Socket connection");
 
   // Save message.
   socket.on("onChat", async (getData) => {
-    console.log(getData, "getData");
+    // console.log(getData, "getData");
     try {
       let temp = {};
       if (typeof getData === "string") {
@@ -74,7 +74,7 @@ io.on("connection", (socket) => {
       } else {
         temp = getData;
       }
-      console.log(temp, "temp");
+      // console.log(temp, "temp");
       let resData = await sendMessage(temp);
 
       io.emit("onChat", resData);

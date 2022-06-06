@@ -50,10 +50,9 @@ const ViewSystemModules = () => {
       setValidated(true);
       setSystemModulesError("Please enter valid system modules name.");
     } else {
+      setSpinner(true);
       if (isEdit) {
         // Edit data
-
-        setSpinner(true);
         var data = new FormData();
         data.append("systemmodulesid", systemModulesId);
         data.append("modulesname", systemModulesName);

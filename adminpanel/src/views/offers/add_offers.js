@@ -300,6 +300,7 @@ const Offers = () => {
       setValidated(true);
       setActualPriceError("Enter valid price (Only Number)");
     } else {
+      setSpinner(true);
       if (isEdit) {
         // Edit offers.
         var data = new FormData();

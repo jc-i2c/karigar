@@ -44,12 +44,12 @@ const AddServices = () => {
 
   //   Reset password.
   function forgotPassword() {
-    setSpinner(true);
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
       setSpinner(false);
       setValidated(true);
       setEmailAddressError("Please enter valid email address");
     } else {
+      setSpinner(true);
       if (validated === false) {
         // Reset password data.
         var data = new FormData();
