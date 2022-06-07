@@ -277,10 +277,10 @@ const sendMessage = async (data) => {
       serviceprovid: senderid,
     });
 
-    if (firstChatReq || secondChatReq) {
+    let chatReqData = firstChatReq ? firstChatReq : secondChatReq;
+    // console.log(chatReqData, "chatReqData");
+    if (chatReqData) {
       // Room code.
-      let chatReqData = firstChatReq ? firstChatReq : secondChatReq;
-
       if (chatReqData.chatstatus === 2 || chatReqData.chatstatus == 2) {
         const getQryRoom = await ChatRoom.findOne().where({
           chatrequestid: chatReqData._id,

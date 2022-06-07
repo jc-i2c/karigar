@@ -170,7 +170,7 @@ const Offers = () => {
       ) {
         setValidated(true);
         setPasswordError(
-          "Password must be strong. At least 8 characters including 1 uppercase, 1 lowwercase, 1 special characters and 1 alphanumeric characters",
+          "Password must be at least 8 characters including 1 uppercase, 1 lowercase, 1 special characters and 1 alphanumeric characters",
         );
       } else if (password !== conPassword) {
         setValidated(true);
