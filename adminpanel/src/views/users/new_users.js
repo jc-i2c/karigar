@@ -169,7 +169,9 @@ const Offers = () => {
         )
       ) {
         setValidated(true);
-        setPasswordError("Password must be strong.");
+        setPasswordError(
+          "Password must be strong. At least 8 characters including 1 uppercase, 1 lowwercase, 1 special characters and 1 alphanumeric characters",
+        );
       } else if (password !== conPassword) {
         setValidated(true);
         setPasswordMitchError("Password and Confirm password does not match.");
@@ -250,6 +252,10 @@ const Offers = () => {
               });
             } else {
               toast.error(data.data.message);
+            }
+            if (data.data.status === false) {
+              if (data.data.message.emailaddress)
+                toast.error("Please enter a valid email");
             }
             if (data.data.status === false) {
               toast.error(data.data.message.confirmpassword);
