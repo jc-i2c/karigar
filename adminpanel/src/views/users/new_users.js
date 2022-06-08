@@ -38,6 +38,10 @@ const Offers = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [userId, setUserId] = useState("");
 
+  const [profilePicture, setProfilePicture] = useState("");
+  const [imagePath, setImagePath] = useState("");
+  const initialState = { alt: "", src: "" };
+
   // Error state
   const [emailError, setEmailError] = useState("");
   const [nameError, setNameError] = useState("");
@@ -104,27 +108,22 @@ const Offers = () => {
       setUserRole(location.state.userroll);
       setMobileNumber(location.state.mobilenumber);
       setGender(location.state.gender);
+      setProfilePicture(location.state.profile_picture);
     }
   }, []);
 
-  // useEffect(() => {
-  //   setEmailError("");
-  //   setNameError("");
-  //   setPasswordError("");
-  //   setConPasswordError("");
-  //   setPasswordMitchError("");
-  //   setUserRoleError("");
-  //   setGenderError("");
-  //   setMobileNumberError("");
-  // }, [
-  //   emailAddress,
-  //   name,
-  //   password,
-  //   conPassword,
-  //   userRole,
-  //   gender,
-  //   mobileNumber,
-  // ]);
+  // Handle image.
+  const fileHandle = (e) => {
+    e.preventDefault();
+    var profilePicture = e.target.files[0];
+    setProfilePicture(profilePicture);
+
+    const { files } = e.target;
+    const fileValue = files.length
+      ? URL.createObjectURL(profilePicture)
+      : initialState;
+    setImagePath(fileValue);
+  };
 
   // Form validation
   function validationCheck() {
@@ -170,7 +169,7 @@ const Offers = () => {
       ) {
         setValidated(true);
         setPasswordError(
-          "Password must be at least 8 characters including 1 uppercase, 1 lowercase, 1 special characters and 1 alphanumeric characters",
+          "Required at least 8 characters including 1 uppercase, 1 lowercase, 1 special characters and 1 alphanumeric characters",
         );
       } else if (password !== conPassword) {
         setValidated(true);
@@ -197,6 +196,7 @@ const Offers = () => {
     if (getStatus === false) {
       setSpinner(true);
       if (isEdit) {
+        console.log(profilePicture, "profilePicture");
         var data = new FormData();
         data.append("emailaddress", emailAddress);
         data.append("name", name);
@@ -204,6 +204,8 @@ const Offers = () => {
         data.append("mobilenumber", mobileNumber);
         data.append("gender", gender);
         data.append("userid", userId);
+        data.append("profile_picture", profilePicture);
+
         axios
           .post(
             `${process.env.REACT_APP_APIURL}/karigar/user/edituserdata`,
@@ -476,6 +478,52 @@ const Offers = () => {
 
                     {mobileNumberError && (
                       <p className="text-danger">{mobileNumberError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="Profile picture"
+                      className="col-sm-4 col-form-label"
+                    >
+                      Profile picture
+                    </CFormLabel>
+
+                    <CFormInput
+                      type="file"
+                      placeholder="Profile picture"
+                      autoComplete="profilepicture"
+                      id="profilepicture"
+                      required
+                      onChange={(e) => {
+                        fileHandle(e);
+                      }}
+                    />
+                  </CCol>
+
+                  <CCol className="mb-3">
+                    {imagePath ? (
+                      <img
+                        src={imagePath}
+                        alt={"Image not found"}
+                        style={{
+                          height: "80px",
+                          width: "80px",
+                        }}
+                      />
+                    ) : profilePicture ? (
+                      <img
+                        src={
+                          `${process.env.REACT_APP_PROFILEPIC}` + profilePicture
+                        }
+                        alt={"Image not found"}
+                        style={{
+                          height: "80px",
+                          width: "80px",
+                        }}
+                      />
+                    ) : (
+                      ""
                     )}
                   </CCol>
 

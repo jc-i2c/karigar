@@ -61,21 +61,6 @@ const changeStatus = async (getData) => {
         });
 
         const insertQry = await chatRoom.save();
-
-        // if (insertQry) {
-        //   console.log("Chat room created");
-        //   // return res.send({
-        //   //   status: true,
-        //   //   message: `Chat room created.`,
-        //   //   data: insertQry,
-        //   // });
-        // } else {
-        //   console.log("Chat room not created.");
-        //   // return res.send({
-        //   //   status: false,
-        //   //   message: `Chat room not created.`,
-        //   // });
-        // }
       } else {
         console.log("Chat room already available.");
       }

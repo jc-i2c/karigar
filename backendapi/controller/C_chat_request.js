@@ -1,5 +1,6 @@
 var moment = require("moment");
 const ChatRequest = require("../models/M_chat_request");
+const Chatroom = require("../models/M_chat_room");
 
 const { chatReqStatusVal } = require("../helper/joivalidation");
 
@@ -187,35 +188,46 @@ const getAllChatRequest = async (req, res, next) => {
 const getAllCusChatRequest = async (req, res, next) => {
   try {
     const { customerid } = req.body;
-    console.log(customerid, "customerid");
 
     let getQry = await ChatRequest.find()
       .where({
         customerid: customerid,
       })
       .populate({ path: "customerid", select: "name" })
-      .populate({ path: "serviceprovid", select: "name image" });
+      .populate({ path: "serviceprovid", select: "name profile_picture" });
 
     if (getQry.length > 0) {
       let findData = [];
-      let resData = {};
 
-      getQry.forEach((data) => {
-        resData = data.toObject();
+      await Promise.all(
+        getQry.map(async (data) => {
+          let resData = {};
+          resData = data.toObject();
 
-        delete resData.updatedAt; // delete person["updatedAt"]
-        delete resData.__v; // delete person["__v"]
+          // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+          let createDate = resData.createdAt
+            .toISOString()
+            .replace(/T/, " ")
+            .replace(/\..+/, "");
 
-        // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-        createDate = resData.createdAt
-          .toISOString()
-          .replace(/T/, " ")
-          .replace(/\..+/, "");
+          resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-        resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
+          delete resData.updatedAt; // delete person["updatedAt"]
+          delete resData.__v; // delete person["__v"]
 
-        findData.push(resData);
-      });
+          let findRoom = await Chatroom.findOne({
+            chatrequestid: resData._id,
+          }).select("lastmsg msgtime");
+
+          resData = {
+            ...resData,
+            lastmsg: findRoom.lastmsg,
+            msgtime: findRoom.msgtime,
+          };
+
+          findData = [...findData, resData];
+        })
+      );
 
       return res.send({
         status: true,

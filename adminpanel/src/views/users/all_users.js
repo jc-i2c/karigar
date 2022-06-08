@@ -64,6 +64,7 @@ const AllUsers = () => {
               userroll: record.userroll,
               createdAt: record.createdAt,
               updatedAt: record.updatedAt,
+              profile_picture: record.profile_picture,
             });
           });
           setAllUsers(records);
@@ -319,6 +320,7 @@ const AllUsers = () => {
                               userroll: item.userroll._id,
                               mobilenumber: item.mobilenumber,
                               gender: item.gender,
+                              profile_picture: item.profile_picture,
                             },
                           });
                         }}

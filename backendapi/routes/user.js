@@ -4,6 +4,7 @@ var multipart = require("connect-multiparty");
 var multipartMiddleware = multipart();
 const auth = require("../middleware/auth");
 const userrollauth = require("../middleware/userrollauth");
+const { upload } = require("../middleware/uploadimage");
 
 const {
   userSignUp,
@@ -77,7 +78,7 @@ router.post(
   "/edituserdata",
   auth,
   userrollauth,
-  multipartMiddleware,
+  upload.single("profile_picture"),
   adminEditUserData
 );
 

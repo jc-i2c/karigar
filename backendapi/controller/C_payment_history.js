@@ -1,6 +1,11 @@
 const PaymentHistory = require("../models/M_payment_history");
 const ServiceHistory = require("../models/M_service_history");
 const ChatRequest = require("../models/M_chat_request");
+const Serviceprovider = require("../models/M_serviceprovider");
+const ChatRoom = require("../models/M_chat_room");
+const Chat = require("../models/M_chat");
+var moment = require("moment");
+const mongoose = require("mongoose");
 
 // Create payment history API.
 const createPayment = async (req, res, next) => {
@@ -12,6 +17,9 @@ const createPayment = async (req, res, next) => {
       transactionid,
       paymentstatus,
     } = req.body;
+
+    let getTime = new Date();
+    getTime = moment(getTime).format("hh:mm A");
 
     const getQry = await ServiceHistory.findById(servicehistoryid);
 
@@ -28,35 +36,120 @@ const createPayment = async (req, res, next) => {
 
       const createHistory = await createPaymentHistory.save();
 
+      // find service provider id (means user who is providing the service booked)
+      const providerId = await Serviceprovider.findById(
+        getQry.serviceproviderid
+      ).select("userid");
+
+      // set chatRequest to true
+      // add default message in chat table
       if (createHistory) {
         const getQry1 = await ChatRequest.findOne().where({
           customerid: customerid,
-          serviceprovid: serviceProvider,
+          serviceprovid: providerId.userid,
         });
 
-        const getQry2 = await ChatRequest.findOne().where({
-          customerid: serviceProvider,
-          serviceprovid: customerid,
-        });
-
-        let findData = getQry1 ? getQry1 : getQry2;
-
-        if (!findData) {
+        if (!getQry1) {
           var chatRequest = new ChatRequest({
             customerid: customerid,
-            serviceprovid: serviceProvider,
+            serviceprovid: providerId.userid,
             chatstatus: 2,
           });
 
-          const createChat = await chatRequest.save();
+          const createChatRequest = await chatRequest.save();
 
-          // console.log(createChat, "createChat");
+          // create room and add default message
+
+          const chatrequestid = createChatRequest._id;
+          // const { userid, otheruserid, chatrequestid } = req.body;
+
+          const findRoom = await ChatRoom.findOne().where({
+            chatrequestid: new mongoose.Types.ObjectId(chatrequestid),
+          });
+
+          if (!findRoom) {
+            var chatRoom = new ChatRoom({
+              userid: customerid,
+              otheruserid: providerId.userid,
+              chatrequestid: chatrequestid,
+              lastmsg: "Service booked successfully",
+              msgtime: getTime,
+            });
+
+            const createChatRoom = await chatRoom.save();
+
+            if (createChatRoom) {
+              // Craete default message.
+
+              var chatCreate = new Chat({
+                chatroomid: createChatRoom._id,
+                senderid: providerId.userid,
+                receiverid: customerid,
+                message: "Service booked successfully",
+              });
+
+              const createdChat = await chatCreate.save();
+
+              return res.send({
+                status: true,
+                message: `Payment completed.`,
+              });
+            }
+          }
+        } else {
+          // we have chat request over here but we don't that there is a room exist or not.
+          // it's because user might have requested for chat before booking service and
+          // service provide might reject to chat. that can prevent room creation.
+          const chatrequestid = getQry1._id;
+
+          const findRoom = await ChatRoom.findOne().where({
+            chatrequestid: new mongoose.Types.ObjectId(chatrequestid),
+          });
+
+          if (!findRoom) {
+            var chatRoom = new ChatRoom({
+              userid: customerid,
+              otheruserid: providerId.userid,
+              chatrequestid: chatrequestid,
+              lastmsg: "Service booked successfully",
+              msgtime: getTime,
+            });
+
+            const createChatRoom = await chatRoom.save();
+
+            if (createChatRoom) {
+              // Craete default message.
+              var chatCreate = new Chat({
+                chatroomid: createChatRoom._id,
+                senderid: providerId.userid,
+                receiverid: customerid,
+                message: "Service booked successfully",
+              });
+
+              const createdChat = await chatCreate.save();
+
+              return res.send({
+                status: true,
+                message: `Payment completed.`,
+              });
+            }
+          } else {
+            // create new chat with default message for new services.
+            var chatCreate = new Chat({
+              chatroomid: findRoom._id,
+              senderid: providerId.userid,
+              receiverid: customerid,
+              message: "Service booked successfully",
+            });
+
+            const createdChat = await chatCreate.save();
+
+            return res.send({
+              status: true,
+              message: `Payment completed.`,
+            });
+          }
         }
-
-        return res.send({
-          status: true,
-          message: `Payment completed.`,
-        });
       } else {
         return res.send({
           status: false,

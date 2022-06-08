@@ -1058,6 +1058,7 @@ const getAllServiceProvider = async (req, res, next) => {
 const adminEditUserData = async (req, res, next) => {
   try {
     const userId = req.body.userid;
+
     const { emailaddress, name, userroll, mobilenumber, gender } = req.body;
 
     // Joi validation.
@@ -1074,12 +1075,16 @@ const adminEditUserData = async (req, res, next) => {
         message: errorMsg,
       });
     } else {
+      if (req.file) {
+        var userProfile = req.file.filename;
+      }
       const updateQry = {
         emailaddress: emailaddress,
         name: name,
         userroll: userroll,
         mobilenumber: mobilenumber,
         gender: gender,
+        profile_picture: userProfile,
       };
 
       const result = await User.findByIdAndUpdate(userId, {
@@ -1092,6 +1097,7 @@ const adminEditUserData = async (req, res, next) => {
           message: `User profile details updated.`,
         });
       } else {
+        removeFile(userProfile);
         return res.send({
           status: false,
           message: `User profile details not updated.`,
