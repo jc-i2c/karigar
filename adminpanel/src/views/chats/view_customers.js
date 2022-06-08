@@ -13,8 +13,6 @@ const ViewCustomerChat = () => {
   const [customerDetails, setCustomerDetails] = useState("");
   const [typeMessage, setTypeMessage] = useState("");
 
-  console.log(customerDetails, "customerDetails");
-
   useEffect(() => {
     let unmounted = false;
     // get all customer list for service provider.

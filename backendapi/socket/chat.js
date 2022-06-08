@@ -1,7 +1,6 @@
 const ChatRequest = require("../models/M_chat_request");
 const ChatRoom = require("../models/M_chat_room");
 const Chat = require("../models/M_chat");
-const Serviceprovider = require("../models/M_serviceprovider");
 var moment = require("moment");
 
 const jwt = require("jsonwebtoken");
@@ -129,59 +128,36 @@ const getAllChatRequest = async (data) => {
 
       const decoded = jwt.verify(token, config.TOKEN_KEY);
 
-      let findServiceProvider = await Serviceprovider.find({
-        userid: decoded.id,
-      }).select("_id");
-
-      let chatList = [];
-      await Promise.all(
-        findServiceProvider.map(async (item) => {
-          const result = await ChatRequest.find({ serviceprovid: item._id })
-            .populate({ path: "customerid", select: "name" })
-            .populate({ path: "serviceprovid", select: "name" });
-          chatList = [...chatList, ...result];
+      const getQry = await ChatRequest.find()
+        .where({
+          serviceprovid: decoded.id,
         })
-      );
+        .populate({ path: "customerid", select: "name" })
+        .populate({ path: "serviceprovid", select: "name image" });
 
-      if (chatList.length > 0) {
+      if (getQry.length > 0) {
         let findData = [];
 
         await Promise.all(
-          chatList.map(async (list) => {
+          getQry.map(async (data) => {
             let resData = {};
-            resData = list.toObject();
+            resData = data.toObject();
 
-            delete resData.updatedAt; // delete person["updatedAt"]
-            delete resData.__v; // delete person["__v"]
+            let findRoom = await ChatRoom.findOne({
+              chatrequestid: resData._id,
+            }).select("lastmsg msgtime");
 
-            // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-            createDate = resData.createdAt
-              .toISOString()
-              .replace(/T/, " ")
-              .replace(/\..+/, "");
+            resData = {
+              ...resData,
+              lastmsg: findRoom.lastmsg,
+              msgtime: findRoom.msgtime,
+            };
 
-            resData.createdAt = moment(createDate).format(
-              "DD-MM-YYYY HH:MM:SS"
-            );
-
-            let findLastMsg = await ChatRoom.find()
-              .where({
-                chatrequestid: resData._id,
-              })
-              .select("lastmsg msgtime");
-
-            if (findLastMsg.length > 0) {
-              findLastMsg.map(async (msgList) => {
-                resData.lastmsg = msgList.lastmsg;
-                resData.msgtime = msgList.msgtime;
-              });
-            }
-
-            return findData.push(resData);
+            findData = [...findData, resData];
           })
         );
 
-        if (findData) {
+        if (findData.length > 0) {
           return findData;
         }
       }

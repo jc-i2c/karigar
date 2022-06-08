@@ -69,9 +69,10 @@ const createPayment = async (req, res, next) => {
 
           if (!findRoom) {
             var chatRoom = new ChatRoom({
+              chatrequestid: chatrequestid,
               userid: customerid,
               otheruserid: providerId.userid,
-              chatrequestid: chatrequestid,
+              sendby: providerId.userid,
               lastmsg: "Service booked successfully",
               msgtime: getTime,
             });
@@ -86,6 +87,7 @@ const createPayment = async (req, res, next) => {
                 senderid: providerId.userid,
                 receiverid: customerid,
                 message: "Service booked successfully",
+                msgtime: getTime,
               });
 
               const createdChat = await chatCreate.save();
@@ -108,9 +110,10 @@ const createPayment = async (req, res, next) => {
 
           if (!findRoom) {
             var chatRoom = new ChatRoom({
+              chatrequestid: chatrequestid,
               userid: customerid,
               otheruserid: providerId.userid,
-              chatrequestid: chatrequestid,
+              sendby: providerId.userid,
               lastmsg: "Service booked successfully",
               msgtime: getTime,
             });
@@ -124,6 +127,7 @@ const createPayment = async (req, res, next) => {
                 senderid: providerId.userid,
                 receiverid: customerid,
                 message: "Service booked successfully",
+                msgtime: getTime,
               });
 
               const createdChat = await chatCreate.save();
@@ -140,6 +144,7 @@ const createPayment = async (req, res, next) => {
               senderid: providerId.userid,
               receiverid: customerid,
               message: "Service booked successfully",
+              msgtime: getTime,
             });
 
             const createdChat = await chatCreate.save();
