@@ -51,17 +51,13 @@ function Login() {
   const loginAPi = (e) => {
     e.preventDefault();
 
-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email) || !email) {
       setValidated(true);
-      setEmailError("Please enter valid email");
+      setEmailError("Please enter valid emailaddress.");
     }
-    if (
-      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/i.test(
-        password,
-      )
-    ) {
+    if (!password || password == null) {
       setValidated(true);
-      setPasswordError("Password must be strong");
+      setPasswordError("Please enter valid password.");
     } else {
       if (validated === false) {
         setSpinner(true);

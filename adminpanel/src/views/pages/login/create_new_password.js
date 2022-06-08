@@ -33,6 +33,14 @@ const AddServices = () => {
   const [conPasswordError, setConPasswordError] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState("");
 
+  useEffect(() => {
+    if (location.state !== null) {
+      setEmailAddress(location.state.emailaddress);
+    } else {
+      navigate("/forgotpassword");
+    }
+  }, []);
+
   //   Error state null
   useEffect(() => {
     setValidated(false);
@@ -49,7 +57,9 @@ const AddServices = () => {
       )
     ) {
       setValidated(true);
-      setNewPasswordError("Please enter strong password");
+      setNewPasswordError(
+        "Required at least 8 characters including 1 uppercase, 1 lowercase, 1 special characters and 1 alphanumeric characters",
+      );
     }
     if (
       !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
@@ -57,7 +67,9 @@ const AddServices = () => {
       )
     ) {
       setValidated(true);
-      setConPasswordError("Please enter strong password");
+      setConPasswordError(
+        "Required at least 8 characters including 1 uppercase, 1 lowercase, 1 special characters and 1 alphanumeric characters",
+      );
     }
     if (newPassword !== conPassword) {
       setValidated(true);

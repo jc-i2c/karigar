@@ -183,7 +183,7 @@ const getAllCusChatRequest = async (data) => {
           customerid: decoded.id,
         })
         .populate({ path: "customerid", select: "name" })
-        .populate({ path: "serviceprovid", select: "name image" });
+        .populate({ path: "serviceprovid", select: "name profile_picture" });
 
       if (getQry.length > 0) {
         let findData = [];

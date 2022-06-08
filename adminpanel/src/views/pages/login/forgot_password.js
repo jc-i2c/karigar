@@ -21,8 +21,6 @@ import {
 const AddServices = () => {
   const navigate = useNavigate();
 
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
-
   const [validated, setValidated] = useState(false);
   const [spinner, setSpinner] = useState(false);
 

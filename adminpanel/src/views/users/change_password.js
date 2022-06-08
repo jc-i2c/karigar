@@ -43,13 +43,9 @@ const AddServices = () => {
 
   //   Change password.
   function changePassword() {
-    if (
-      !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
-        oldPassword,
-      )
-    ) {
+    if (!oldPassword) {
       setValidated(true);
-      setOldPasswordError("Please enter strong password");
+      setOldPasswordError("Please enter old password.");
     }
     if (
       !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
@@ -57,7 +53,9 @@ const AddServices = () => {
       )
     ) {
       setValidated(true);
-      setNewPasswordError("Please enter strong password");
+      setNewPasswordError(
+        "Required at least 8 characters including 1 uppercase, 1 lowercase, 1 special characters and 1 alphanumeric characters",
+      );
     }
     if (
       !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
@@ -65,7 +63,9 @@ const AddServices = () => {
       )
     ) {
       setValidated(true);
-      setConPasswordError("Please enter strong password");
+      setConPasswordError(
+        "Required at least 8 characters including 1 uppercase, 1 lowercase, 1 special characters and 1 alphanumeric characters",
+      );
     }
     if (newPassword !== conPassword) {
       setValidated(true);
@@ -169,6 +169,9 @@ const AddServices = () => {
                     {newPasswordError && (
                       <p className="text-danger">{newPasswordError}</p>
                     )}
+                    {passwordMatchError && (
+                      <p className="text-danger">{passwordMatchError}</p>
+                    )}
                   </CCol>
 
                   <CCol md={4}>
@@ -192,9 +195,6 @@ const AddServices = () => {
                       <p className="text-danger">{conPasswordError}</p>
                     )}
                   </CCol>
-                  {passwordMatchError && (
-                    <p className="text-danger">{passwordMatchError}</p>
-                  )}
 
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                     {spinner ? (

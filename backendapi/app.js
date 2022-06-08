@@ -66,7 +66,6 @@ io.on("connection", (socket) => {
 
   // Save message.
   socket.on("onChat", async (getData) => {
-    // console.log(getData, "getData");
     try {
       let temp = {};
       if (typeof getData === "string") {
@@ -86,6 +85,7 @@ io.on("connection", (socket) => {
   try {
     socket.on("getMessage", async (data) => {
       let resData = await createChatRoom(data);
+
       io.emit("getMessage", resData);
     });
   } catch (error) {

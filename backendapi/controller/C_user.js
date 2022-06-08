@@ -173,150 +173,143 @@ const userLogin = async (req, res, next) => {
       // Find users
       const findUser = await User.findOne({ emailaddress: emailaddress });
 
-      // Compare password with database.
-      const passVerify = await bcrypt.compare(password, findUser.password);
+      if (findUser) {
+        // Compare password with database.
+        const passVerify = await bcrypt.compare(password, findUser.password);
 
-      // Find userrole
-      let getRoleData = await Userrole.findById(findUser.userroll);
+        // Find userrole
+        let getRoleData = await Userrole.findById(findUser.userroll);
 
-      if (findUser.deleted == false && passVerify && getRoleData) {
-        // Check user is verify.
-        if (findUser.status == 1) {
-          // Check user is active or not.
-          if (findUser.isactive == true) {
-            if (req.body.customer_key === getRoleData.roletag) {
-              // Create token
-              const token = jwt.sign(
-                {
-                  id: findUser._id,
-                  userroll: findUser.userroll,
-                  roletag: getRoleData.roletag,
-                },
-                process.env.TOKEN_KEY
-              );
+        if (findUser.deleted == false && passVerify && getRoleData) {
+          // Check user is verify.
+          if (findUser.status == 1) {
+            // Check user is active or not.
+            if (findUser.isactive == true) {
+              if (req.body.customer_key === getRoleData.roletag) {
+                // Create token
+                const token = jwt.sign(
+                  {
+                    id: findUser._id,
+                    userroll: findUser.userroll,
+                    roletag: getRoleData.roletag,
+                  },
+                  process.env.TOKEN_KEY
+                );
 
-              let userData = findUser.toObject();
+                let userData = findUser.toObject();
 
-              // // Set user gender.
-              // if (userData.gender == 1) {
-              //   userData.gender = "male";
-              // } else if (userData.gender == 2) {
-              //   userData.gender = "female";
-              // }
+                // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+                createDate = userData.createdAt
+                  .toISOString()
+                  .replace(/T/, " ")
+                  .replace(/\..+/, "");
 
-              // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-              createDate = userData.createdAt
-                .toISOString()
-                .replace(/T/, " ")
-                .replace(/\..+/, "");
+                userData.createdAt = moment(createDate).format(
+                  "DD-MM-YYYY HH:MM:SS"
+                );
 
-              userData.createdAt = moment(createDate).format(
-                "DD-MM-YYYY HH:MM:SS"
-              );
+                // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+                updateDate = userData.updatedAt
+                  .toISOString()
+                  .replace(/T/, " ")
+                  .replace(/\..+/, "");
 
-              // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-              updateDate = userData.updatedAt
-                .toISOString()
-                .replace(/T/, " ")
-                .replace(/\..+/, "");
+                userData.updatedAt = moment(updateDate).format(
+                  "DD-MM-YYYY HH:MM:SS"
+                );
 
-              userData.updatedAt = moment(updateDate).format(
-                "DD-MM-YYYY HH:MM:SS"
-              );
+                userData.userrole = getRoleData.roletag;
 
-              userData.userrole = getRoleData.roletag;
+                delete userData.status;
+                delete userData.isactive;
+                delete userData.password;
+                delete userData.otp;
+                delete userData.userroll;
+                delete userData.__v;
+                delete userData.createdAt;
+                delete userData.updatedAt;
 
-              delete userData.status;
-              delete userData.isactive;
-              delete userData.password;
-              delete userData.otp;
-              delete userData.userroll;
-              delete userData.__v;
-              delete userData.createdAt;
-              delete userData.updatedAt;
+                return res.send({
+                  status: true,
+                  message: `Login successfully`,
+                  userdata: userData,
+                  token: token,
+                });
+              } else if (
+                req.body.customer_key == null ||
+                req.body.customer_key == undefined
+              ) {
+                // Create token
+                const token = jwt.sign(
+                  {
+                    id: findUser._id,
+                    userroll: findUser.userroll,
+                    roletag: getRoleData.roletag,
+                  },
+                  process.env.TOKEN_KEY
+                );
 
-              return res.send({
-                status: true,
-                message: `Login successfully`,
-                userdata: userData,
-                token: token,
-              });
-            } else if (
-              req.body.customer_key == null ||
-              req.body.customer_key == undefined
-            ) {
-              // Create token
-              const token = jwt.sign(
-                {
-                  id: findUser._id,
-                  userroll: findUser.userroll,
-                  roletag: getRoleData.roletag,
-                },
-                process.env.TOKEN_KEY
-              );
+                let userData = findUser.toObject();
 
-              let userData = findUser.toObject();
+                // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+                createDate = userData.createdAt
+                  .toISOString()
+                  .replace(/T/, " ")
+                  .replace(/\..+/, "");
 
-              // // Set user gender.
-              // if (userData.gender == 1) {
-              //   userData.gender = "male";
-              // } else if (userData.gender == 2) {
-              //   userData.gender = "female";
-              // }
+                userData.createdAt = moment(createDate).format(
+                  "DD-MM-YYYY HH:MM:SS"
+                );
 
-              // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-              createDate = userData.createdAt
-                .toISOString()
-                .replace(/T/, " ")
-                .replace(/\..+/, "");
+                // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+                updateDate = userData.updatedAt
+                  .toISOString()
+                  .replace(/T/, " ")
+                  .replace(/\..+/, "");
 
-              userData.createdAt = moment(createDate).format(
-                "DD-MM-YYYY HH:MM:SS"
-              );
+                userData.updatedAt = moment(updateDate).format(
+                  "DD-MM-YYYY HH:MM:SS"
+                );
 
-              // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-              updateDate = userData.updatedAt
-                .toISOString()
-                .replace(/T/, " ")
-                .replace(/\..+/, "");
+                userData.userrole = getRoleData.roletag;
 
-              userData.updatedAt = moment(updateDate).format(
-                "DD-MM-YYYY HH:MM:SS"
-              );
+                delete userData.status;
+                delete userData.isactive;
+                delete userData.password;
+                delete userData.otp;
+                delete userData.userroll;
+                delete userData.__v;
+                delete userData.createdAt;
+                delete userData.updatedAt;
 
-              userData.userrole = getRoleData.roletag;
-
-              delete userData.status;
-              delete userData.isactive;
-              delete userData.password;
-              delete userData.otp;
-              delete userData.userroll;
-              delete userData.__v;
-              delete userData.createdAt;
-              delete userData.updatedAt;
-
-              return res.send({
-                status: true,
-                message: `Login successfully`,
-                userdata: userData,
-                token: token,
-              });
+                return res.send({
+                  status: true,
+                  message: `Login successfully`,
+                  userdata: userData,
+                  token: token,
+                });
+              } else {
+                return res.send({
+                  status: false,
+                  message: `Wrong credentials`,
+                });
+              }
             } else {
               return res.send({
                 status: false,
-                message: `Wrong credentials`,
+                message: `You are not activated. Please contact to admin`,
               });
             }
           } else {
             return res.send({
               status: false,
-              message: `You are not activated. Please contact to admin`,
+              message: `User not verified. First, you need to verify your account`,
             });
           }
         } else {
           return res.send({
             status: false,
-            message: `User not verified. First, you need to verify your account`,
+            message: `Wrong credentials`,
           });
         }
       } else {
