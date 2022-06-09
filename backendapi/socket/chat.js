@@ -38,7 +38,6 @@ const createChatReq = async (data) => {
 // Change chat request status API.
 const changeStatus = async (getData) => {
   try {
-    console.log(getData, "getData");
     let data = {
       chatrequestid: getData.chatreqid,
       chatstatus: getData.status,
@@ -50,8 +49,6 @@ const changeStatus = async (getData) => {
         chatrequestid: new mongoose.Types.ObjectId(getData.chatreqid),
       });
 
-      console.log(findRoom, "findRoom");
-
       if (findRoom == null || findRoom == undefined) {
         var chatRoom = new ChatRoom({
           userid: getData.customerid,
@@ -59,9 +56,9 @@ const changeStatus = async (getData) => {
           chatrequestid: getData.chatreqid,
         });
 
-        const insertQry = await chatRoom.save();
+        await chatRoom.save();
       } else {
-        console.log("Chat room already available.");
+        // console.log("Chat room already available.");
       }
     }
 
@@ -220,13 +217,21 @@ const getAllCusChatRequest = async (data) => {
 // Get all message based on room Id API.
 const sendMessage = async (data) => {
   try {
+    let dataObj = data;
+    let roomId = null;
+    let response = {};
+
+    if (typeof dataObj === "string") {
+      dataObj = JSON.parse(dataObj);
+    }
+
     // Chat request code.
     let getTime = new Date();
     getTime = moment(getTime).format("hh:mm A");
 
-    let senderid = data.senderid;
-    let receiverid = data.receiverid;
-    let message = data.message;
+    let senderid = dataObj.senderid;
+    let receiverid = dataObj.receiverid;
+    let message = dataObj.message;
 
     const firstChatReq = await ChatRequest.findOne().where({
       customerid: senderid,
@@ -239,7 +244,7 @@ const sendMessage = async (data) => {
     });
 
     let chatReqData = firstChatReq ? firstChatReq : secondChatReq;
-    // console.log(chatReqData, "chatReqData");
+
     if (chatReqData) {
       // Room code.
       if (chatReqData.chatstatus === 2 || chatReqData.chatstatus == 2) {
@@ -248,6 +253,7 @@ const sendMessage = async (data) => {
         });
 
         if (getQryRoom) {
+          roomId = getQryRoom._id;
           // Update last msg into CHATROOM API.
           await ChatRoom.findOneAndUpdate(
             { _id: getQryRoom._id },
@@ -267,8 +273,12 @@ const sendMessage = async (data) => {
 
             const chatCraeteQry = await chatCreate.save();
 
+            response = {
+              chatCraeteQry,
+              roomId,
+            };
             if (chatCraeteQry) {
-              return chatCraeteQry;
+              return response;
             }
           }
         } else {
@@ -285,6 +295,7 @@ const sendMessage = async (data) => {
             msgtime: getTime,
           });
 
+          roomId = chatRoom._id;
           const roomCraeteQry = await chatRoom.save();
 
           if (roomCraeteQry) {
@@ -298,8 +309,13 @@ const sendMessage = async (data) => {
 
             const chatCraeteQry = await chatCreate.save();
 
+            response = {
+              chatCraeteQry,
+              roomId,
+            };
+
             if (chatCraeteQry) {
-              return chatCraeteQry;
+              return response;
             }
           }
         }
@@ -323,6 +339,7 @@ const sendMessage = async (data) => {
           msgtime: getTime,
         });
 
+        roomId = chatRoom._id;
         const roomCraeteQry = await chatRoom.save();
 
         if (roomCraeteQry) {
@@ -337,20 +354,24 @@ const sendMessage = async (data) => {
 
           const chatCraeteQry = await chatCreate.save();
 
+          response = {
+            chatCraeteQry,
+            roomId,
+          };
           if (chatCraeteQry) {
-            return chatCraeteQry;
+            return response;
           }
         }
       }
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw new Error(error.message);
   }
 };
 
 // Create chat room and get all old chat API.
-const createChatRoom = async (data) => {
+const createChatRoom = async (data, joinRoom) => {
   try {
     let dataObj = data;
 
@@ -365,6 +386,7 @@ const createChatRoom = async (data) => {
     });
 
     if (findRoom) {
+      joinRoom(findRoom._id);
       const getQry = await Chat.find().where({
         chatroomid: findRoom._id,
       });
@@ -394,6 +416,7 @@ const createChatRoom = async (data) => {
         sendby: serviceprovid,
       });
 
+      joinRoom(chatRoom._id);
       await chatRoom.save();
     }
   } catch (error) {

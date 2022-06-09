@@ -67,64 +67,57 @@ io.on("connection", (socket) => {
   // Save message. // Send message
   socket.on("onChat", async (getData) => {
     try {
-      console.log(getData, "BEFORE");
-
-      let temp = {};
-      if (typeof getData === "string") {
-        temp = JSON.parse(getData);
-      } else {
-        temp = getData;
-      }
-      // console.log(temp, "temp");
-      let resData = await sendMessage(temp);
-
-      io.emit("onChat", resData);
+      let { chatCraeteQry, roomId } = await sendMessage(getData);
+      io.to(roomId.toString()).emit("onChat", chatCraeteQry);
     } catch (error) {
       socket.emit("error", error.message);
     }
   });
 
-  try {
-    socket.on("getMessage", async (data) => {
-      let resData = await createChatRoom(data);
+  socket.on("getMessage", async (data) => {
+    try {
+      const joinRoom = (roomid) => {
+        socket.join(roomid.toString());
+      };
+      let resData = await createChatRoom(data, joinRoom);
 
       io.emit("getMessage", resData);
-    });
-  } catch (error) {
-    socket.emit("error", error.message);
-  }
+    } catch (error) {
+      socket.emit("error", error.message);
+    }
+  });
 
   // Change status accept or reject.
-  try {
-    socket.on("changestatus", async (data) => {
+  socket.on("changestatus", async (data) => {
+    try {
       let resData = await changeStatus(data);
       socket.emit("changestatus", resData);
-    });
-  } catch (error) {
-    socket.emit("error", error.message);
-  }
+    } catch (error) {
+      socket.emit("error", error.message);
+    }
+  });
 
   // get all chat customer.
-  try {
-    socket.on("getCusChat", async (token) => {
+  socket.on("getCusChat", async (token) => {
+    try {
       let resData = await getAllChatRequest(token);
 
       socket.emit("getCusChat", resData);
-    });
-  } catch (error) {
-    socket.emit("error", error.message);
-  }
+    } catch (error) {
+      socket.emit("error", error.message);
+    }
+  });
 
   // get all chat service provider.
-  try {
-    socket.on("getSerProChat", async (token) => {
+  socket.on("getSerProChat", async (token) => {
+    try {
       let resData = await getAllCusChatRequest(token);
 
       socket.emit("getSerProChat", resData);
-    });
-  } catch (error) {
-    socket.emit("error", error.message);
-  }
+    } catch (error) {
+      socket.emit("error", error.message);
+    }
+  });
 });
 
 // Create server and port number defined.

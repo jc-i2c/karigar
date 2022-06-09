@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { CCard, CCardHeader, CCol, CRow } from "@coreui/react";
 
@@ -10,71 +10,42 @@ const ViewCustomerChat = () => {
 
   const [cutomerList, setCutomerList] = useState([]);
   const [getAllMessage, setGetAllMessage] = useState([]);
-  const [customerDetails, setCustomerDetails] = useState("");
+  const [customerDetails, setCustomerDetails] = useState({});
   const [typeMessage, setTypeMessage] = useState("");
+
+  const messageListRef = React.useRef(getAllMessage);
+  const allCustomerRef = React.useRef(cutomerList);
+  const custDetailRef = React.useRef(customerDetails);
+
+  const setMessageList = (data) => {
+    messageListRef.current = data;
+    setGetAllMessage(data);
+  };
+
+  const setAllCutomerList = (data) => {
+    allCustomerRef.current = data;
+    setCutomerList(data);
+  };
+
+  const CustDetailRef = (data) => {
+    custDetailRef.current = data;
+    setCustomerDetails(data);
+  };
 
   useEffect(() => {
     let unmounted = false;
     // get all customer list for service provider.
     if (token) {
       socket.emit("getCusChat", token);
-
-      socket.on("getCusChat", function (data) {
-        if (data !== null) {
-          const records = [];
-          data.map((record) => {
-            records.push({
-              chatrequestid: record._id,
-              customerid: record.customerid._id,
-              customername: record.customerid.name,
-              serviceprovid: record.serviceprovid._id,
-              serviceprovname: record.serviceprovid.name,
-              chatstatus: record.chatstatus,
-              lastmsg: record.lastmsg,
-              msgtime: record.msgtime,
-            });
-          });
-          setCutomerList(records);
-        }
-      });
-    } else {
-      console.log("Token is required");
     }
 
-    // // get all service provider list for customer.
-    // if (token) {
-    //   socket.emit(
-    //     "getSerProChat",
-    //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNTk0MGZiYjNlNzE2MTk2YTVkNGM3NCIsInVzZXJyb2xsIjoiNjI3YTI0MDljNDNkNjkxNzFkZWFhM2JhIiwicm9sZXRhZyI6IkNVU1RPTUVSIiwiaWF0IjoxNjUzNzE0NjE1fQ.anlc1Y0nEBP94ErWuDS4YMDh9LCNU-Prpm1STE_KFu8",
-    //   );
-
-    //   socket.on("getSerProChat", function (data) {
-    //     if (data) {
-    //       console.log(data, "data");
-    //       // const records = [];
-    //       // data.map((record) => {
-    //       //   records.push({
-    //       //     chatrequestid: record._id,
-    //       //     customerid: record.customerid._id,
-    //       //     customername: record.customerid.name,
-    //       //     serviceprovid: record.serviceprovid._id,
-    //       //     serviceprovname: record.serviceprovid.name,
-    //       //     chatstatus: record.chatstatus,
-    //       //   });
-    //       // });
-    //       // setCutomerList(records);
-    //     }
-    //   });
-    // } else {
-    //   console.log("Token is required");
-    // }
     return () => {
       unmounted = true;
     };
   }, []);
 
   useEffect(() => {
-    if (customerDetails) {
+    if (Object.keys(customerDetails).length > 0) {
       if (customerDetails.chatstatus == "2") {
         let data = {};
         data.chatrequestid = customerDetails.chatrequestid;
@@ -82,11 +53,6 @@ const ViewCustomerChat = () => {
         data.serviceprovid = customerDetails.serviceprovid;
 
         socket.emit("getMessage", data);
-
-        socket.on("getMessage", function (data) {
-          console.log(data, "data");
-          setGetAllMessage(data);
-        });
       }
     }
   }, [customerDetails]);
@@ -123,6 +89,51 @@ const ViewCustomerChat = () => {
     });
   }
 
+  useEffect(() => {
+    socket.on("getCusChat", function (data) {
+      if (data !== null) {
+        const records = [];
+        data.map((record) => {
+          records.push({
+            chatrequestid: record._id,
+            customerid: record.customerid._id,
+            customername: record.customerid.name,
+            serviceprovid: record.serviceprovid._id,
+            serviceprovname: record.serviceprovid.name,
+            chatstatus: record.chatstatus,
+            lastmsg: record.lastmsg,
+            msgtime: record.msgtime,
+          });
+        });
+        allCustomerRef.current = records;
+        setAllCutomerList(allCustomerRef.current);
+      }
+    });
+
+    socket.on("getMessage", function (data) {
+      setMessageList(data);
+    });
+
+    socket.on("onChat", function (resData) {
+      messageListRef.current = [...messageListRef.current, resData];
+      setMessageList(messageListRef.current);
+
+      allCustomerRef.current = allCustomerRef.current.map((cusList) => {
+        if (custDetailRef.current.chatrequestid === cusList.chatrequestid) {
+          return {
+            ...cusList,
+            lastmsg: resData.message,
+            msgtime: resData.msgtime,
+          };
+        } else {
+          return cusList;
+        }
+      });
+
+      setAllCutomerList(allCustomerRef.current);
+    });
+  }, [socket]);
+
   // Send message
   function sendMessage() {
     let sendData = {};
@@ -133,22 +144,6 @@ const ViewCustomerChat = () => {
     sendData.message = typeMessage && typeMessage;
 
     socket.emit("onChat", sendData);
-
-    socket.on("onChat", function (resData) {
-      let lastMsg = cutomerList.map((cusList) => {
-        if (customerDetails.chatrequestid === cusList.chatrequestid) {
-          return { ...cusList, lastmsg: typeMessage, msgtime: resData.msgtime };
-        } else {
-          return cusList;
-        }
-      });
-      setCutomerList(lastMsg);
-      if (getAllMessage.length > 0) {
-        return setGetAllMessage([...getAllMessage, resData]);
-      } else {
-        return setGetAllMessage([resData]);
-      }
-    });
     setTypeMessage("");
   }
 
@@ -179,8 +174,8 @@ const ViewCustomerChat = () => {
                                   }`}
                                   key={index}
                                   onClick={() => {
-                                    setCustomerDetails("");
-                                    setCustomerDetails(item);
+                                    custDetailRef.current = item;
+                                    CustDetailRef(custDetailRef.current);
                                   }}
                                 >
                                   <div className="container">
@@ -220,7 +215,7 @@ const ViewCustomerChat = () => {
                           <h5>{customerDetails.customername}</h5>
                         </div>
                       </div>
-                      {customerDetails.chatstatus == "2" ? (
+                      {customerDetails.chatstatus === "2" ? (
                         <ul className="list-unstyled">
                           {getAllMessage &&
                             getAllMessage.map((msg, index) => {
@@ -253,7 +248,7 @@ const ViewCustomerChat = () => {
                                       <div className="d-flex">
                                         <div className="card-text">
                                           <p className="p-1 mb-0">
-                                            {msg.message + " " + msg.createdAt}
+                                            {msg.message + " " + msg.msgtime}
                                           </p>
                                         </div>
                                       </div>
@@ -293,6 +288,8 @@ const ViewCustomerChat = () => {
                             </div>
                           </li>
                         </ul>
+                      ) : Object.keys(customerDetails).length < 1 ? (
+                        ""
                       ) : (
                         <div className="card-body">
                           <p className="card-text">
