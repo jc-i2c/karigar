@@ -85,6 +85,7 @@ io.on("connection", (socket) => {
   try {
     socket.on("getMessage", async (data) => {
       let resData = await createChatRoom(data);
+      console.log(resData, "resData");
 
       io.emit("getMessage", resData);
     });

@@ -80,9 +80,11 @@ const ViewCustomerChat = () => {
         data.chatrequestid = customerDetails.chatrequestid;
         data.customerid = customerDetails.customerid;
         data.serviceprovid = customerDetails.serviceprovid;
+
         socket.emit("getMessage", data);
 
         socket.on("getMessage", function (data) {
+          console.log(data, "data");
           setGetAllMessage(data);
         });
       }
