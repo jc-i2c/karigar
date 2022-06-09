@@ -86,16 +86,7 @@ io.on("connection", (socket) => {
 
   try {
     socket.on("getMessage", async (data) => {
-      let temp = {};
-
-      if (typeof getData === "string") {
-        temp = JSON.parse(data);
-      } else {
-        temp = data;
-      }
-
-      let resData = await createChatRoom(temp);
-      console.log(resData, "resData");
+      let resData = await createChatRoom(data);
 
       io.emit("getMessage", resData);
     });

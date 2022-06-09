@@ -352,8 +352,13 @@ const sendMessage = async (data) => {
 // Create chat room and get all old chat API.
 const createChatRoom = async (data) => {
   try {
-    const { customerid, serviceprovid, chatrequestid } = data;
-    console.log(data, "data");
+    let dataObj = data;
+
+    if (typeof dataObj === "string") {
+      dataObj = JSON.parse(dataObj);
+    }
+
+    const { customerid, serviceprovid, chatrequestid } = dataObj;
 
     const findRoom = await ChatRoom.findOne().where({
       chatrequestid: new mongoose.Types.ObjectId(chatrequestid),
