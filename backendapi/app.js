@@ -64,9 +64,11 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   // console.log("Socket connection");
 
-  // Save message.
+  // Save message. // Send message
   socket.on("onChat", async (getData) => {
     try {
+      console.log(getData, "BEFORE");
+
       let temp = {};
       if (typeof getData === "string") {
         temp = JSON.parse(getData);
@@ -84,7 +86,15 @@ io.on("connection", (socket) => {
 
   try {
     socket.on("getMessage", async (data) => {
-      let resData = await createChatRoom(data);
+      let temp = {};
+
+      if (typeof getData === "string") {
+        temp = JSON.parse(data);
+      } else {
+        temp = data;
+      }
+
+      let resData = await createChatRoom(temp);
       console.log(resData, "resData");
 
       io.emit("getMessage", resData);

@@ -353,6 +353,7 @@ const sendMessage = async (data) => {
 const createChatRoom = async (data) => {
   try {
     const { customerid, serviceprovid, chatrequestid } = data;
+    console.log(data, "data");
 
     const findRoom = await ChatRoom.findOne().where({
       chatrequestid: new mongoose.Types.ObjectId(chatrequestid),
