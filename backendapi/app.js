@@ -62,7 +62,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  // console.log("Socket connection");
+  console.log("Socket connection");
 
   // Save message. // Send message
   socket.on("onChat", async (getData) => {
@@ -76,12 +76,15 @@ io.on("connection", (socket) => {
 
   socket.on("getMessage", async (data) => {
     try {
+      let currentRoomId = null;
       const joinRoom = (roomid) => {
+        currentRoomId = roomid.toString();
         socket.join(roomid.toString());
       };
       let resData = await createChatRoom(data, joinRoom);
 
-      io.emit("getMessage", resData);
+      io.to(currentRoomId).emit("getMessage", resData);
+      // io.emit("getMessage", resData);
     } catch (error) {
       socket.emit("error", error.message);
     }

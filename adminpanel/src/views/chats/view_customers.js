@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { CCard, CCardHeader, CCol, CRow } from "@coreui/react";
 
+import { CForm } from "@coreui/react";
+
 import io from "socket.io-client";
 const socket = io.connect(process.env.REACT_APP_APIURL);
 
@@ -13,9 +15,9 @@ const ViewCustomerChat = () => {
   const [customerDetails, setCustomerDetails] = useState({});
   const [typeMessage, setTypeMessage] = useState("");
 
-  const messageListRef = React.useRef(getAllMessage);
-  const allCustomerRef = React.useRef(cutomerList);
-  const custDetailRef = React.useRef(customerDetails);
+  const messageListRef = useRef(getAllMessage);
+  const allCustomerRef = useRef(cutomerList);
+  const customerDetailRef = useRef(customerDetails);
 
   const setMessageList = (data) => {
     messageListRef.current = data;
@@ -27,8 +29,8 @@ const ViewCustomerChat = () => {
     setCutomerList(data);
   };
 
-  const CustDetailRef = (data) => {
-    custDetailRef.current = data;
+  const CustomerDetailRef = (data) => {
+    customerDetailRef.current = data;
     setCustomerDetails(data);
   };
 
@@ -93,7 +95,7 @@ const ViewCustomerChat = () => {
     socket.on("getCusChat", function (data) {
       if (data !== null) {
         const records = [];
-        data.map((record) => {
+        data.map((record, index) => {
           records.push({
             chatrequestid: record._id,
             customerid: record.customerid._id,
@@ -102,7 +104,7 @@ const ViewCustomerChat = () => {
             serviceprovname: record.serviceprovid.name,
             chatstatus: record.chatstatus,
             lastmsg: record.lastmsg,
-            msgtime: record.msgtime,
+            // msgtime: record.msgtime,
           });
         });
         allCustomerRef.current = records;
@@ -119,11 +121,11 @@ const ViewCustomerChat = () => {
       setMessageList(messageListRef.current);
 
       allCustomerRef.current = allCustomerRef.current.map((cusList) => {
-        if (custDetailRef.current.chatrequestid === cusList.chatrequestid) {
+        if (customerDetailRef.current.chatrequestid === cusList.chatrequestid) {
           return {
             ...cusList,
             lastmsg: resData.message,
-            msgtime: resData.msgtime,
+            // msgtime: resData.msgtime,
           };
         } else {
           return cusList;
@@ -174,8 +176,10 @@ const ViewCustomerChat = () => {
                                   }`}
                                   key={index}
                                   onClick={() => {
-                                    custDetailRef.current = item;
-                                    CustDetailRef(custDetailRef.current);
+                                    customerDetailRef.current = item;
+                                    CustomerDetailRef(
+                                      customerDetailRef.current,
+                                    );
                                   }}
                                 >
                                   <div className="container">
@@ -188,7 +192,7 @@ const ViewCustomerChat = () => {
                                       </div>
                                       <div className="col">
                                         <p className="mb-0 d-flex justify-content-end">
-                                          {item.msgtime && item.msgtime}
+                                          {/* {item.msgtime && item.msgtime} */}
                                         </p>
                                       </div>
                                     </div>
@@ -206,131 +210,135 @@ const ViewCustomerChat = () => {
                     </div>
                   </div>
                 </div>
-
                 {customerDetails && (
                   <div className="col-md-6 col-lg-7 col-xl-8">
-                    <div className="card">
-                      <div className="card-title">
-                        <div className="card-header bg-light d-flex justify-content-between align-items-center">
-                          <h5>{customerDetails.customername}</h5>
+                    <CForm className="row g-3" noValidate>
+                      <div className="card">
+                        <div className="card-title">
+                          <div className="card-header bg-light d-flex justify-content-between align-items-center">
+                            <h5>{customerDetails.customername}</h5>
+                          </div>
                         </div>
-                      </div>
-                      {customerDetails.chatstatus === "2" ? (
-                        <ul className="list-unstyled">
-                          {getAllMessage &&
-                            getAllMessage.map((msg, index) => {
-                              if (
-                                msg.receiverid == customerDetails.customerid
-                              ) {
-                                return (
-                                  <li
-                                    className="d-flex justify-content-end mb-1"
-                                    key={index}
-                                  >
-                                    <div className="card bg-light">
-                                      <div className="d-flex">
-                                        <div className="card-text">
-                                          <p className="p-1 mb-0">
-                                            {msg.message + " " + msg.msgtime}
-                                          </p>
+                        {customerDetails.chatstatus == 2 ? (
+                          <ul className="list-unstyled">
+                            {getAllMessage &&
+                              getAllMessage.map((msg, index) => {
+                                if (
+                                  msg.receiverid == customerDetails.customerid
+                                ) {
+                                  return (
+                                    <li
+                                      className="d-flex justify-content-end mb-1"
+                                      key={index}
+                                    >
+                                      <div className="card bg-light">
+                                        <div className="d-flex">
+                                          <div className="card-text">
+                                            <p className="p-1 mb-0">
+                                              {msg.message}
+                                              {/* {msg.message + " " + msg.msgtime} */}
+                                            </p>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </li>
-                                );
-                              } else {
-                                return (
-                                  <li
-                                    className="d-flex justify-content-start mb-1"
-                                    key={index}
-                                  >
-                                    <div className="card">
-                                      <div className="d-flex">
-                                        <div className="card-text">
-                                          <p className="p-1 mb-0">
-                                            {msg.message + " " + msg.msgtime}
-                                          </p>
+                                    </li>
+                                  );
+                                } else {
+                                  return (
+                                    <li
+                                      className="d-flex justify-content-start mb-1"
+                                      key={index}
+                                    >
+                                      <div className="card">
+                                        <div className="d-flex">
+                                          <div className="card-text">
+                                            <p className="p-1 mb-0">
+                                              {/* {msg.message + " " + msg.msgtime} */}
+                                              {msg.message}
+                                            </p>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </li>
-                                );
-                              }
-                            })}
+                                    </li>
+                                  );
+                                }
+                              })}
 
-                          <li>
-                            <br />
-                            <div className="form-outline">
-                              <textarea
-                                placeholder="Type message"
-                                className="form-control"
-                                id="textAreaExample2"
-                                rows="2"
-                                value={typeMessage ? typeMessage : ""}
-                                onChange={(e) => {
-                                  setTypeMessage(e.target.value);
-                                }}
-                              />
-                            </div>
-                            <br />
-                            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <li>
+                              <br />
+                              <div className="form-outline">
+                                <input
+                                  type="text"
+                                  id="messages"
+                                  name="messages"
+                                  placeholder="Type message"
+                                  className="form-control"
+                                  value={typeMessage ? typeMessage : ""}
+                                  onChange={(e) => {
+                                    setTypeMessage(e.target.value);
+                                  }}
+                                />
+                              </div>
+                              <br />
+                              <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button
+                                  type="submit"
+                                  className="btn btn-outline-primary"
+                                  disabled={!typeMessage}
+                                  onClick={() => {
+                                    setTypeMessage("");
+                                    sendMessage();
+                                  }}
+                                >
+                                  Send
+                                </button>
+                              </div>
+                            </li>
+                          </ul>
+                        ) : Object.keys(customerDetails).length < 1 ? (
+                          ""
+                        ) : (
+                          <div className="card-body">
+                            <p className="card-text">
+                              {customerDetails.customername} have been sent you
+                              request!
+                            </p>
+                            <div
+                              className="btn-group mr-2"
+                              role="group"
+                              aria-label="First group"
+                            >
                               <button
                                 type="button"
                                 className="btn btn-outline-primary"
-                                disabled={!typeMessage}
                                 onClick={() => {
-                                  setTypeMessage("");
-                                  sendMessage();
+                                  changeStatus(
+                                    customerDetails.customerid,
+                                    customerDetails.serviceprovid,
+                                    customerDetails.chatrequestid,
+                                    "2",
+                                  );
                                 }}
                               >
-                                Send
+                                Accept
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-outline-danger"
+                                onClick={() => {
+                                  changeStatus(
+                                    customerDetails.chatrequestid,
+                                    "3",
+                                  );
+                                }}
+                              >
+                                Reject
                               </button>
                             </div>
-                          </li>
-                        </ul>
-                      ) : Object.keys(customerDetails).length < 1 ? (
-                        ""
-                      ) : (
-                        <div className="card-body">
-                          <p className="card-text">
-                            {customerDetails.customername} have been sent you
-                            request!
-                          </p>
-                          <div
-                            className="btn-group mr-2"
-                            role="group"
-                            aria-label="First group"
-                          >
-                            <button
-                              type="button"
-                              className="btn btn-outline-primary"
-                              onClick={() => {
-                                changeStatus(
-                                  customerDetails.customerid,
-                                  customerDetails.serviceprovid,
-                                  customerDetails.chatrequestid,
-                                  "2",
-                                );
-                              }}
-                            >
-                              Accept
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-outline-danger"
-                              onClick={() => {
-                                changeStatus(
-                                  customerDetails.chatrequestid,
-                                  "3",
-                                );
-                              }}
-                            >
-                              Reject
-                            </button>
                           </div>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    </CForm>
                   </div>
                 )}
               </div>
