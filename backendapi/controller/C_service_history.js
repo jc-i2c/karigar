@@ -89,41 +89,44 @@ const getAllServiceHistory = async (req, res, next) => {
 
         let findData = [];
         if (getQry.length > 0) {
-            let resData = {};
-            getQry.forEach((data) => {
-                resData = data.toObject();
+            await Promise.all(
+                getQry.map(async (data) => {
+                    let resData = {};
+                    resData = data.toObject();
 
-                delete resData.__v; // delete person["__v"]
+                    delete resData.__v; // delete person["__v"]
 
-                // Set payment status.
-                if (resData.paymentstatus) {
-                    resData.paymentstatus = "Completed";
-                } else {
-                    resData.paymentstatus = "Pending";
-                }
+                    let findPaymentStatus = await Paymenthistory.findOne().where({ servicehistoryid: resData._id }).select("paymentstatus");
 
-                // Servicedate date convert into date and time (DD/MM/YYYY) format
-                var serviceDate = resData.servicedate.toISOString().slice(0, 10);
-                resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
+                    if (findPaymentStatus) {
+                        resData.paymentstatus = findPaymentStatus.paymentstatus;
+                    } else {
+                        resData.paymentstatus = false;
+                    }
 
-                // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-                createDate = resData.createdAt
-                    .toISOString()
-                    .replace(/T/, " ")
-                    .replace(/\..+/, "");
+                    // Servicedate date convert into date and time (DD/MM/YYYY) format
+                    var serviceDate = resData.servicedate.toISOString().slice(0, 10);
+                    resData.servicedate = moment(serviceDate).format("DD-MM-YYYY");
 
-                resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
+                    // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+                    createDate = resData.createdAt
+                        .toISOString()
+                        .replace(/T/, " ")
+                        .replace(/\..+/, "");
 
-                // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-                updateDate = resData.updatedAt
-                    .toISOString()
-                    .replace(/T/, " ")
-                    .replace(/\..+/, "");
+                    resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
 
-                resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
+                    // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+                    updateDate = resData.updatedAt
+                        .toISOString()
+                        .replace(/T/, " ")
+                        .replace(/\..+/, "");
 
-                findData.push(resData);
-            });
+                    resData.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
+
+                    findData.push(resData);
+                })
+            );
 
             return res.send({
                 status: true,
@@ -369,8 +372,8 @@ const getServiceSerProvider = async (req, res, next) => {
 
             if (getQry.length > 0) {
                 let findData = [];
-                let resData = {};
-                getQry.forEach((data) => {
+                getQry.map((data) => {
+                    let resData = {};
                     resData = data.toObject();
 
                     delete resData.__v; // delete person["__v"]
@@ -530,8 +533,8 @@ const customerBookService = async (req, res, next) => {
 
             if (getQry.length > 0) {
                 let findData = [];
-                let resData = {};
-                getQry.forEach((data) => {
+                getQry.map((data) => {
+                    let resData = {};
                     resData = data.toObject();
 
                     delete resData.updatedAt; // delete person["updatedAt"]
@@ -625,7 +628,7 @@ const getServiceStatus = async (req, res, next) => {
                         }).populate({ path: "userid", select: "name mobilenumber" });
 
                         let objectData = [];
-                        for (let index = 0; index <= 4; index++) {
+                        for (let index = 0; index <= 3; index++) {
                             if (index == 0) {
                                 var title = "Booking request sent";
                             } else if (index == 1) {
@@ -819,8 +822,11 @@ const getSerProHistoty = async (req, res, next) => {
 
                         let findPaymentStatus = await Paymenthistory.findOne().where({ servicehistoryid: resData._id }).select("paymentstatus");
 
-                        if (findPaymentStatus.paymentstatus)
+                        if (findPaymentStatus) {
                             resData.paymentstatus = findPaymentStatus.paymentstatus;
+                        } else {
+                            resData.paymentstatus = false;
+                        }
 
                         // Servicedate date convert into date and time (DD/MM/YYYY) format
                         let serviceDate = new Date(resData.servicedate);
@@ -909,20 +915,25 @@ const Upcoming = async (req, res, next) => {
 
             let findData = [];
             if (getQry.length > 0) {
-                let resData = {};
-                getQry.forEach((data) => {
+                await Promise.all(getQry.map(async (data) => {
+                    let resData = {};
                     resData = data.toObject();
 
-                    // Servicedate date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-                    var serviceDate = resData.servicedate
-                        .toISOString()
-                        .replace(/T/, " ")
-                        .replace(/\..+/, "");
+                    let findPaymentStatus = await Paymenthistory.findOne().where({ servicehistoryid: resData._id }).select("paymentstatus");
+                    // console.log(findPaymentStatus, "findPaymentStatus");
+                    if (findPaymentStatus) {
+                        if (findPaymentStatus.paymentstatus) {
+                            // Servicedate date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
+                            var serviceDate = resData.servicedate
+                                .toISOString()
+                                .replace(/T/, " ")
+                                .replace(/\..+/, "");
 
-                    resData.servicedate = moment(serviceDate).format("MMM-DD-YYYY");
-
-                    findData.push(resData);
-                });
+                            resData.servicedate = moment(serviceDate).format("MMM-DD-YYYY");
+                            findData.push(resData);
+                        }
+                    }
+                }));
 
                 return res.send({
                     status: true,
@@ -971,8 +982,8 @@ const History = async (req, res, next) => {
 
             let findData = [];
             if (getQry.length > 0) {
-                let resData = {};
-                getQry.forEach((data) => {
+                getQry.map((data) => {
+                    let resData = {};
                     resData = data.toObject();
 
                     // Servicedate date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
