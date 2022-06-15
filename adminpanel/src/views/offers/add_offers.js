@@ -125,7 +125,6 @@ const Offers = () => {
   // Get all sub services.
   useEffect(() => {
     if (servicesId && roleName) {
-      console.log(servicesId, "-------", roleName, "----", "serviceId");
       if (roleName == "ADMIN") {
         var data = new FormData();
         data.append("servicesid", servicesId);
@@ -156,7 +155,6 @@ const Offers = () => {
             console.log(error, "error");
           });
       } else {
-        // console.log("YES SERVICE PROVIDER");
         var data = new FormData();
         data.append("servicesid", servicesId);
 
@@ -190,7 +188,6 @@ const Offers = () => {
   // Get all service provider.
   useEffect(() => {
     if (subServicesId && roleName) {
-      console.log(subServicesId, "subserviceId");
       if (roleName == "ADMIN") {
         var data = new FormData();
         data.append("subserviceid", subServicesId);

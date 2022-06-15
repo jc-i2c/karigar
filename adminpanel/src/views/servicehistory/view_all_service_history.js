@@ -90,6 +90,8 @@ const ViewServices = () => {
           if (data.data.data) {
             const records = [];
             data.data.data.map((record) => {
+              console.log(record, "record");
+              
               records.push({
                 servicehistoryid: record._id,
                 name: record.name,
@@ -153,7 +155,7 @@ const ViewServices = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
-            <div>Service Historys</div>
+            <div>Service histories</div>
           </CCardHeader>
 
           <CCardBody>
@@ -170,7 +172,7 @@ const ViewServices = () => {
             >
               <CTableHead color="dark">
                 <CTableRow>
-                  <CTableHeaderCell>Name</CTableHeaderCell>
+                  {/* <CTableHeaderCell>Name</CTableHeaderCell> */}
                   {roleName === "ADMIN" && (
                     <CTableHeaderCell>Service Provider Name</CTableHeaderCell>
                   )}
@@ -178,7 +180,7 @@ const ViewServices = () => {
                   <CTableHeaderCell>Address Type</CTableHeaderCell>
                   <CTableHeaderCell>Service Date</CTableHeaderCell>
                   <CTableHeaderCell>Service Time</CTableHeaderCell>
-                  {/* <CTableHeaderCell>Service Status</CTableHeaderCell> */}
+                  <CTableHeaderCell>Service Status</CTableHeaderCell>
                   <CTableHeaderCell>Payment Status</CTableHeaderCell>
                   {/* <CTableHeaderCell>CreatedAt</CTableHeaderCell> */}
                   {/* <CTableHeaderCell>UpdatedAt</CTableHeaderCell> */}
@@ -187,9 +189,9 @@ const ViewServices = () => {
               <CTableBody>
                 {offers.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
-                    <CTableDataCell>
+                    {/* <CTableDataCell>
                       <div>{item.name ? item.name : ""}</div>
-                    </CTableDataCell>
+                    </CTableDataCell> */}
 
                     {roleName === "ADMIN" && (
                       <CTableDataCell>
@@ -210,8 +212,8 @@ const ViewServices = () => {
                         {item.addresstype === 1
                           ? "OFFICE"
                           : item.addresstype === 2
-                          ? "HOME"
-                          : ""}
+                            ? "HOME"
+                            : ""}
                       </div>
                     </CTableDataCell>
 
@@ -223,44 +225,49 @@ const ViewServices = () => {
                       {item.sessiontime ? item.sessiontime : ""}
                     </CTableDataCell>
 
-                    {/* <CTableDataCell>
-                      {item.servicestatus === 4 ? (
-                        <CFormSelect required id="services" name="services">
-                          <option key={4} value={4}>
-                            Reject
-                          </option>
-                        </CFormSelect>
-                      ) : (
-                        <CFormSelect
-                          required
-                          id="services"
-                          name="services"
-                          value={item.servicestatus}
-                          onChange={(e) => {
-                            changeStatus(item.servicehistoryid, e.target.value);
-                          }}
-                        >
-                          <option key={0} value={0}>
-                            Booking_request_sent
-                          </option>
-                          <option key={1} value={1}>
-                            Accept
-                          </option>
-                          <option key={2} value={2}>
-                            Job_started
-                          </option>
-                          <option key={3} value={3}>
-                            Job_Completed
-                          </option>
-                          <option key={4} value={4}>
-                            Reject
-                          </option>
-                        </CFormSelect>
-                      )}
-                    </CTableDataCell> */}
+                    {
+                      <CTableDataCell style={{ width: "170px" }}>
+                        {item.servicestatus === 4 ? (
+                          <CFormSelect required id="services" name="services">
+                            <option key={4} value={4}>
+                              Reject
+                            </option>
+                          </CFormSelect>
+                        ) : (
+                          <CFormSelect
+                            required
+                            id="services"
+                            name="services"
+                            value={item.servicestatus}
+                            onChange={(e) => {
+                              changeStatus(
+                                item.servicehistoryid,
+                                e.target.value,
+                              );
+                            }}
+                          >
+                            <option key={0} value={0}>
+                              Requested
+                            </option>
+                            <option key={1} value={1}>
+                              Accept
+                            </option>
+                            <option key={2} value={2}>
+                              Job_started
+                            </option>
+                            <option key={3} value={3}>
+                              Job_Completed
+                            </option>
+                            {/* <option key={4} value={4}>
+                              Reject
+                            </option> */}
+                          </CFormSelect>
+                        )}
+                      </CTableDataCell>
+                    }
 
                     <CTableDataCell>
-                      <div>{item.paymentstatus ? item.paymentstatus : ""}</div>
+                      <div>{item.paymentstatus ? "Completed" : "Not Completed"}</div>
                     </CTableDataCell>
 
                     {/* <CTableDataCell>

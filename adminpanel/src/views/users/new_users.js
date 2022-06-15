@@ -196,7 +196,6 @@ const Offers = () => {
     if (getStatus === false) {
       setSpinner(true);
       if (isEdit) {
-        console.log(profilePicture, "profilePicture");
         var data = new FormData();
         data.append("emailaddress", emailAddress);
         data.append("name", name);

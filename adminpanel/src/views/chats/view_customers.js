@@ -137,7 +137,9 @@ const ViewCustomerChat = () => {
   }, [socket]);
 
   // Send message
-  function sendMessage() {
+  function sendMessage(e) {
+    e.preventDefault();
+    setTypeMessage("");
     let sendData = {};
 
     // sendData.senderid = customerDetails.serviceprovid;
@@ -212,7 +214,13 @@ const ViewCustomerChat = () => {
                 </div>
                 {customerDetails && (
                   <div className="col-md-6 col-lg-7 col-xl-8">
-                    <CForm className="row g-3" noValidate>
+                    <CForm
+                      className="row g-3"
+                      noValidate
+                      onSubmit={(e) => {
+                        sendMessage(e);
+                      }}
+                    >
                       <div className="card">
                         <div className="card-title">
                           <div className="card-header bg-light d-flex justify-content-between align-items-center">
@@ -285,10 +293,6 @@ const ViewCustomerChat = () => {
                                   type="submit"
                                   className="btn btn-outline-primary"
                                   disabled={!typeMessage}
-                                  onClick={() => {
-                                    setTypeMessage("");
-                                    sendMessage();
-                                  }}
                                 >
                                   Send
                                 </button>

@@ -105,6 +105,7 @@ const userSignUp = async (req, res, next) => {
               name: name,
               emailaddress: emailaddress,
               password: password,
+              mobilenumber: req.body.mobilenumber,
               otp: genOtp,
               userroll: getRole._id, // default customer
               deleted: false,
