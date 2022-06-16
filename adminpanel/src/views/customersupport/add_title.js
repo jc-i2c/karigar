@@ -44,7 +44,9 @@ const AddServices = () => {
     }
   }, [custSupTitleId]);
 
-  function addServices() {
+  function addServices(e) {
+    e.preventDefault();
+
     if (!/^[a-zA-Z]/i.test(title)) {
       setValidated(true);
       setTitleError("Please enter valid customer support title");
@@ -157,12 +159,7 @@ const AddServices = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          addServices();
-                        }}
-                      >
+                      <CButton color="primary" type="submit">
                         Submit
                       </CButton>
                     )}

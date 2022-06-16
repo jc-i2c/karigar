@@ -127,8 +127,8 @@ const ViewAllUserRoles = () => {
               <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Userrole Name</CTableHeaderCell>
-                  <CTableHeaderCell>CreateAT</CTableHeaderCell>
-                  <CTableHeaderCell>UpdateAT</CTableHeaderCell>
+                  {/* <CTableHeaderCell>CreateAT</CTableHeaderCell>
+                  <CTableHeaderCell>UpdateAT</CTableHeaderCell> */}
                   {/* <CTableHeaderCell>View</CTableHeaderCell> */}
                   <CTableHeaderCell>Action</CTableHeaderCell>
                   {/* <CTableHeaderCell>Delete</CTableHeaderCell> */}
@@ -140,12 +140,12 @@ const ViewAllUserRoles = () => {
                     <CTableDataCell>
                       <div>{item.rolename}</div>
                     </CTableDataCell>
-                    <CTableDataCell>
+                    {/* <CTableDataCell>
                       <div>{item.createdAt}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.updatedAt}</div>
-                    </CTableDataCell>
+                    </CTableDataCell> */}
 
                     <CTableDataCell>
                       <EditIcon

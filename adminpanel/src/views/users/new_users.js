@@ -190,7 +190,9 @@ const Offers = () => {
   }
 
   // Add new users and edit users.
-  function addNewUsers() {
+  function addNewUsers(e) {
+    e.preventDefault();
+
     let getStatus = validationCheck();
 
     if (getStatus === false) {
@@ -532,12 +534,7 @@ const Offers = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          addNewUsers();
-                        }}
-                      >
+                      <CButton type="submit" color="primary">
                         Submit
                       </CButton>
                     )}

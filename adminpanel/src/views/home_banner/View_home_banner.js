@@ -132,8 +132,8 @@ const ViewCustomer = () => {
                   <CTableHeaderCell>Banner Title</CTableHeaderCell>
                   <CTableHeaderCell>Banner Sub Title</CTableHeaderCell>
                   <CTableHeaderCell>Banner Image</CTableHeaderCell>
-                  <CTableHeaderCell>CreateAT</CTableHeaderCell>
-                  <CTableHeaderCell>UpdateAT</CTableHeaderCell>
+                  {/* <CTableHeaderCell>CreateAT</CTableHeaderCell>
+                  <CTableHeaderCell>UpdateAT</CTableHeaderCell> */}
                   <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
@@ -163,12 +163,12 @@ const ViewCustomer = () => {
                         )}
                       </div>
                     </CTableDataCell>
-                    <CTableDataCell>
+                    {/* <CTableDataCell>
                       <div>{item.createdAt}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.updatedAt}</div>
-                    </CTableDataCell>
+                    </CTableDataCell> */}
 
                     <CTableDataCell>
                       <EditIcon

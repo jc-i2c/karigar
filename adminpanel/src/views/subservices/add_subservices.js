@@ -117,7 +117,9 @@ const AddSubServices = () => {
     setImagePath(fileValue);
   };
 
-  function addSubServices() {
+  function addSubServices(e) {
+    e.preventDefault();
+
     if (!serviceId) {
       setValidated(true);
       setServiceError("Please select services");
@@ -334,12 +336,7 @@ const AddSubServices = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          addSubServices();
-                        }}
-                      >
+                      <CButton color="primary" type="submit">
                         Submit
                       </CButton>
                     )}

@@ -44,7 +44,9 @@ const AddServices = () => {
   }, [oldPassword, newPassword, conPassword]);
 
   //   Change password.
-  function changePassword() {
+  function changePassword(e) {
+    e.preventDefault();
+    
     if (!oldPassword) {
       setValidated(true);
       setOldPasswordError("Please enter old password.");
@@ -71,6 +73,8 @@ const AddServices = () => {
       if (newPassword !== conPassword) {
         setValidated(true);
         setPasswordMatchError("Password and confirm password does not match");
+      } else if (oldPassword == newPassword) {
+        toast.error("Old password and New password must be different.");
       } else {
         setSpinner(true);
 
@@ -98,6 +102,9 @@ const AddServices = () => {
             } else {
               if (data.data.message.confirmpassword) {
                 toast.warning(data.data.message.confirmpassword);
+              }
+              if (data.data.message.oldpassword) {
+                toast.warning(data.data.message.oldpassword);
               } else {
                 toast.warning(data.data.message);
               }
@@ -204,12 +211,7 @@ const AddServices = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          changePassword();
-                        }}
-                      >
+                      <CButton type="submit" color="primary">
                         Submit
                       </CButton>
                     )}

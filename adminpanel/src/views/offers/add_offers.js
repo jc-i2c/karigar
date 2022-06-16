@@ -276,7 +276,9 @@ const Offers = () => {
   }, []);
 
   // Add and edit offers.
-  function addOffers() {
+  function addOffers(e) {
+    e.preventDefault();
+
     if (!servicesId) {
       setValidated(true);
       setServicesError("Please select services");
@@ -543,12 +545,7 @@ const Offers = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          addOffers();
-                        }}
-                      >
+                      <CButton color="primary" type="submit">
                         Submit
                       </CButton>
                     )}

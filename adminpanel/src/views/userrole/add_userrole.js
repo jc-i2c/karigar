@@ -87,7 +87,9 @@ const AddUserroles = () => {
     }
   }, [userroleId]);
 
-  function addUserrole() {
+  function addUserrole(e) {
+    e.preventDefault();
+
     if (!/^[a-zA-Z]/i.test(userRoleName)) {
       setValidated(true);
       setUserroleError("Please enter valid userrole name");
@@ -298,12 +300,7 @@ const AddUserroles = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          addUserrole();
-                        }}
-                      >
+                      <CButton color="primary" type="submit">
                         Submit
                       </CButton>
                     )}

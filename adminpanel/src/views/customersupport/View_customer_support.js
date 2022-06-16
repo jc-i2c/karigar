@@ -134,8 +134,8 @@ const ViewCustomerSupport = () => {
                 <CTableRow>
                   <CTableHeaderCell>Customer Support Title</CTableHeaderCell>
                   <CTableHeaderCell>View Sub Title</CTableHeaderCell>
-                  <CTableHeaderCell>CreateAT</CTableHeaderCell>
-                  <CTableHeaderCell>UpdateAT</CTableHeaderCell>
+                  {/* <CTableHeaderCell>CreateAT</CTableHeaderCell>
+                  <CTableHeaderCell>UpdateAT</CTableHeaderCell> */}
                   <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>
@@ -158,12 +158,12 @@ const ViewCustomerSupport = () => {
                       />
                     </CTableDataCell>
 
-                    <CTableDataCell>
+                    {/* <CTableDataCell>
                       <div>{item.createdAt}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.updatedAt}</div>
-                    </CTableDataCell>
+                    </CTableDataCell> */}
 
                     <CTableDataCell>
                       <EditIcon

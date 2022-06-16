@@ -91,7 +91,9 @@ const AddCustomerSubTitle = () => {
     setValidated(false);
   }, [title, subTitle, description]);
 
-  function addSubTitle() {
+  function addSubTitle(e) {
+    e.preventDefault();
+
     if (!title) {
       setValidated(true);
       setTitleError("Please select customer support title.");
@@ -271,12 +273,7 @@ const AddCustomerSubTitle = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          addSubTitle();
-                        }}
-                      >
+                      <CButton color="primary" type="submit">
                         Submit
                       </CButton>
                     )}

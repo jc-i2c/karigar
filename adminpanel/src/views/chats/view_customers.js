@@ -168,44 +168,45 @@ const ViewCustomerChat = () => {
                       <ul className="list-unstyled mb-0">
                         {cutomerList
                           ? cutomerList.map((item, index) => {
-                            return (
-                              <li
-                                className={`${item.customerid ===
-                                  customerDetails.customerid
-                                  ? "p-1 border-bottom bg-light"
-                                  : "p-1 border-bottom"
+                              return (
+                                <li
+                                  className={`${
+                                    item.customerid ===
+                                    customerDetails.customerid
+                                      ? "p-1 border-bottom bg-light"
+                                      : "p-1 border-bottom"
                                   }`}
-                                key={index}
-                                onClick={() => {
-                                  customerDetailRef.current = item;
-                                  CustomerDetailRef(
-                                    customerDetailRef.current,
-                                  );
-                                }}
-                              >
-                                <div className="container">
-                                  <div className="row">
-                                    <div className="col-md-auto">
-                                      <p className="fw-bold mb-0">
-                                        {item.customername &&
-                                          item.customername}
-                                      </p>
+                                  key={index}
+                                  onClick={() => {
+                                    customerDetailRef.current = item;
+                                    CustomerDetailRef(
+                                      customerDetailRef.current,
+                                    );
+                                  }}
+                                >
+                                  <div className="container">
+                                    <div className="row">
+                                      <div className="col-md-auto">
+                                        <p className="fw-bold mb-0">
+                                          {item.customername &&
+                                            item.customername}
+                                        </p>
+                                      </div>
+                                      <div className="col">
+                                        <p className="mb-0 d-flex justify-content-end">
+                                          {/* {item.msgtime && item.msgtime} */}
+                                        </p>
+                                      </div>
                                     </div>
                                     <div className="col">
-                                      <p className="mb-0 d-flex justify-content-end">
-                                        {/* {item.msgtime && item.msgtime} */}
+                                      <p className="w-100 small text">
+                                        {item.lastmsg ? item.lastmsg : " "}
                                       </p>
                                     </div>
                                   </div>
-                                  <div className="col">
-                                    <p className="w-100 small text">
-                                      {item.lastmsg ? item.lastmsg : " "}
-                                    </p>
-                                  </div>
-                                </div>
-                              </li>
-                            );
-                          })
+                                </li>
+                              );
+                            })
                           : ""}
                       </ul>
                     </div>

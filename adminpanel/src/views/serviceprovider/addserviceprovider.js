@@ -219,7 +219,9 @@ const ServiceProvider = () => {
   ]);
 
   // Service provider create & edit.
-  function serviceProvider() {
+  function serviceProvider(e) {
+    e.preventDefault();
+
     if (!servicesProviderId) {
       setValidated(true);
       setServiceProviderError("Please select service provider");
@@ -713,12 +715,7 @@ const ServiceProvider = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          serviceProvider();
-                        }}
-                      >
+                      <CButton color="primary" type="submit">
                         Submit
                       </CButton>
                     )}

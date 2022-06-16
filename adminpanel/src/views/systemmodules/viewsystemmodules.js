@@ -91,8 +91,8 @@ const ViewSystemModules = () => {
               <CTableHead color="dark">
                 <CTableRow>
                   <CTableHeaderCell>Modules Name</CTableHeaderCell>
-                  <CTableHeaderCell>CreateAT</CTableHeaderCell>
-                  <CTableHeaderCell>UpdateAT</CTableHeaderCell>
+                  {/* <CTableHeaderCell>CreateAT</CTableHeaderCell>
+                  <CTableHeaderCell>UpdateAT</CTableHeaderCell> */}
                   {/* <CTableHeaderCell>Edit</CTableHeaderCell> */}
                 </CTableRow>
               </CTableHead>
@@ -103,12 +103,12 @@ const ViewSystemModules = () => {
                       <div>{item.modulesname}</div>
                     </CTableDataCell>
 
-                    <CTableDataCell>
+                    {/* <CTableDataCell>
                       <div>{item.createdAt}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.updatedAt}</div>
-                    </CTableDataCell>
+                    </CTableDataCell> */}
 
                     {/* <CTableDataCell>
                       <EditIcon

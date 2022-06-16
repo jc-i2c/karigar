@@ -69,7 +69,9 @@ const HomeBanner = () => {
     setImagePath(fileValue);
   };
 
-  function addBanner() {
+  function addBanner(e) {
+    e.preventDefault();
+
     if (!/^[a-zA-Z]/i.test(bannerTitle)) {
       setValidated(true);
       setBannerTitleError("Please enter valid banner title");
@@ -269,12 +271,7 @@ const HomeBanner = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          addBanner();
-                        }}
-                      >
+                      <CButton type="submit" color="primary">
                         Submit
                       </CButton>
                     )}

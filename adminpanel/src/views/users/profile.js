@@ -98,7 +98,9 @@ const UserProfile = () => {
   }
 
   // User profile details.
-  function userProfiledetails() {
+  function userProfiledetails(e) {
+    e.preventDefault();
+
     let getStatus = validationCheck();
     // console.log(getStatus, "getStatus");
 
@@ -274,12 +276,7 @@ const UserProfile = () => {
                         <span className="visually-hidden"> Loading... </span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          userProfiledetails();
-                        }}
-                      >
+                      <CButton type="submit" color="primary">
                         Submit
                       </CButton>
                     )}

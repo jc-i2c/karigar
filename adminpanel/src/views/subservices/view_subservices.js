@@ -213,8 +213,8 @@ const ViewSubServices = () => {
                   <CTableHeaderCell>Service Name</CTableHeaderCell>
                   <CTableHeaderCell>Sub Service Name</CTableHeaderCell>
                   <CTableHeaderCell>Sub Service Image</CTableHeaderCell>
-                  <CTableHeaderCell>CreateAT</CTableHeaderCell>
-                  <CTableHeaderCell>UpdateAT</CTableHeaderCell>
+                  {/* <CTableHeaderCell>CreateAT</CTableHeaderCell>
+                  <CTableHeaderCell>UpdateAT</CTableHeaderCell> */}
 
                   {roleName === "ADMIN" && (
                     <CTableHeaderCell>Action</CTableHeaderCell>
@@ -262,12 +262,12 @@ const ViewSubServices = () => {
                       </div>
                     </CTableDataCell>
 
-                    <CTableDataCell>
+                    {/* <CTableDataCell>
                       <div>{item.createdAt}</div>
                     </CTableDataCell>
                     <CTableDataCell>
                       <div>{item.updatedAt}</div>
-                    </CTableDataCell>
+                    </CTableDataCell> */}
 
                     {roleName === "ADMIN" && (
                       <CTableDataCell>

@@ -64,7 +64,9 @@ const PrivacyPolicy = () => {
   }, [privacyPolicy]);
 
   // Privacy Policy Details.
-  function PrivacyPolicyDetails() {
+  function PrivacyPolicyDetails(e) {
+    e.preventDefault();
+
     if (!/^[a-zA-Z]/i.test(privacyPolicy)) {
       setValidated(true);
       setPrivacyPolicyError("Please enter valid privacy policy details");
@@ -145,12 +147,7 @@ const PrivacyPolicy = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          PrivacyPolicyDetails();
-                        }}
-                      >
+                      <CButton color="primary" type="submit">
                         Submit
                       </CButton>
                     )}

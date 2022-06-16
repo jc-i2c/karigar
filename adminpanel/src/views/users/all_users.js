@@ -207,8 +207,8 @@ const AllUsers = () => {
                   <CTableHeaderCell>Gender</CTableHeaderCell>
                   <CTableHeaderCell>Mobile Number</CTableHeaderCell>
                   <CTableHeaderCell>Userrole</CTableHeaderCell>
-                  <CTableHeaderCell>CreateAT</CTableHeaderCell>
-                  <CTableHeaderCell>UpdateAT</CTableHeaderCell>
+                  {/* <CTableHeaderCell>CreateAT</CTableHeaderCell>
+                  <CTableHeaderCell>UpdateAT</CTableHeaderCell> */}
                   <CTableHeaderCell>Verified</CTableHeaderCell>
                   <CTableHeaderCell>Status</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>
@@ -245,13 +245,13 @@ const AllUsers = () => {
                       </div>
                     </CTableDataCell>
 
-                    <CTableDataCell>
+                    {/* <CTableDataCell>
                       <div>{item.createdAt ? item.createdAt : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
                       <div>{item.updatedAt ? item.updatedAt : ""}</div>
-                    </CTableDataCell>
+                    </CTableDataCell> */}
 
                     <CTableDataCell>
                       {item.userroll.rolename === "admin" ? (

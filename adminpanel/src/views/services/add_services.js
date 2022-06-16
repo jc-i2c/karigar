@@ -63,7 +63,9 @@ const AddServices = () => {
     setImagePath(fileValue);
   };
 
-  function addServices() {
+  function addServices(e) {
+    e.preventDefault();
+
     if (!/^[a-zA-Z]/i.test(servicesName)) {
       setValidated(true);
       setServiceNameError("Please enter valid services name");
@@ -229,12 +231,7 @@ const AddServices = () => {
                         <span className="visually-hidden">Loading...</span>
                       </div>
                     ) : (
-                      <CButton
-                        color="primary"
-                        onClick={() => {
-                          addServices();
-                        }}
-                      >
+                      <CButton type="submit" color="primary">
                         Submit
                       </CButton>
                     )}
