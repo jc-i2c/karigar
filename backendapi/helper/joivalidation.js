@@ -451,6 +451,7 @@ const adminUpdateUserDataVal = (data) => {
         userroll: Joi.string().required().label("Userrole"),
         mobilenumber: Joi.string().length(10).required().label("Mobile number"),
         gender: Joi.string().length(1).required().label("Gender"),
+        profile_picture: Joi.allow().label("Profile picture"),
     });
     return adminUpdateUserDataVal.validate(data, {
         abortEarly: false,

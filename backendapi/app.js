@@ -104,7 +104,6 @@ io.on("connection", (socket) => {
   socket.on("getCusChat", async (token) => {
     try {
       let resData = await getAllChatRequest(token);
-
       socket.emit("getCusChat", resData);
     } catch (error) {
       socket.emit("error", error.message);
