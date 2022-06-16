@@ -72,8 +72,8 @@ const getAllServices = async (req, res, next) => {
 
     if (getQry.length > 0) {
       let findData = [];
-      let resData = {};
       getQry.forEach((data) => {
+        let resData = {};
         resData = data.toObject();
 
         // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
@@ -83,6 +83,11 @@ const getAllServices = async (req, res, next) => {
           .replace(/\..+/, "");
 
         resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
+
+        // var fomatted_date = moment(resData.updatedAt).format(
+        //   "DD-MM-YYYY hh:mm:ss"
+        // );
+        // console.log(fomatted_date, "fomatted_date");
 
         // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = resData.updatedAt

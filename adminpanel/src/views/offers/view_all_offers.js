@@ -189,7 +189,7 @@ const ViewOffers = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
-            <div>Offers List</div>
+            <div>Offers</div>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"

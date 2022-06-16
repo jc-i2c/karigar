@@ -153,7 +153,7 @@ const ViewServices = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
-            <div>Service histories</div>
+            <div>Service Histories</div>
           </CCardHeader>
 
           <CCardBody>
@@ -210,8 +210,8 @@ const ViewServices = () => {
                         {item.addresstype === 1
                           ? "OFFICE"
                           : item.addresstype === 2
-                            ? "HOME"
-                            : ""}
+                          ? "HOME"
+                          : ""}
                       </div>
                     </CTableDataCell>
 
@@ -265,7 +265,9 @@ const ViewServices = () => {
                     }
 
                     <CTableDataCell>
-                      <div>{item.paymentstatus ? "Completed" : "Not Completed"}</div>
+                      <div>
+                        {item.paymentstatus ? "Completed" : "Not Completed"}
+                      </div>
                     </CTableDataCell>
 
                     {/* <CTableDataCell>

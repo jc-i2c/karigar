@@ -175,7 +175,7 @@ const ViewSubServices = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
-            <div>Sub Services List</div>
+            <div>Sub Services</div>
             {roleName === "ADMIN" && (
               <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                 <CButton

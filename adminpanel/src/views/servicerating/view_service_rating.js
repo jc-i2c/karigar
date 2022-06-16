@@ -153,7 +153,7 @@ const ViewServiceRating = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
-            <div>Service Rating List</div>
+            <div>Service Rating</div>
           </CCardHeader>
           <CCardBody>
             <CTable

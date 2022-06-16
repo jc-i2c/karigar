@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,7 +20,8 @@ import {
 const AddServices = () => {
   const navigate = useNavigate();
 
-  const [token, setToken] = useState(localStorage.getItem("karigar_token"));
+  const token = localStorage.getItem("karigar_token");
+
   const [validated, setValidated] = useState(false);
   const [spinner, setSpinner] = useState(false);
 
@@ -39,6 +40,7 @@ const AddServices = () => {
     setOldPasswordError("");
     setNewPasswordError("");
     setConPasswordError("");
+    setPasswordMatchError("");
   }, [oldPassword, newPassword, conPassword]);
 
   //   Change password.
@@ -47,8 +49,11 @@ const AddServices = () => {
       setValidated(true);
       setOldPasswordError("Please enter old password.");
     }
-    if (
-      !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
+    if (!newPassword) {
+      setValidated(true);
+      setNewPasswordError("Please enter new password.");
+    } else if (
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,}$/i.test(
         newPassword,
       )
     ) {
@@ -57,56 +62,53 @@ const AddServices = () => {
         "Required at least 8 characters including 1 uppercase, 1 lowercase, 1 special characters and 1 alphanumeric characters",
       );
     }
-    if (
-      !/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/i.test(
-        conPassword,
-      )
-    ) {
+    if (!conPassword) {
+      setPasswordMatchError("");
       setValidated(true);
-      setConPasswordError(
-        "Required at least 8 characters including 1 uppercase, 1 lowercase, 1 special characters and 1 alphanumeric characters",
-      );
+      setConPasswordError("Please enter confirm password.");
     }
-    if (newPassword !== conPassword) {
-      setValidated(true);
-      setPasswordMatchError("Password and confirm password does not match");
-    } else {
-      setSpinner(true);
+    if (conPassword) {
+      if (newPassword !== conPassword) {
+        setValidated(true);
+        setPasswordMatchError("Password and confirm password does not match");
+      } else {
+        setSpinner(true);
 
-      // Change password data.
-      var data = new FormData();
-      data.append("oldpassword", oldPassword);
-      data.append("newpassword", newPassword);
-      data.append("confirmpassword", conPassword);
+        // Change password data.
+        var data = new FormData();
+        data.append("oldpassword", oldPassword);
+        data.append("newpassword", newPassword);
+        data.append("confirmpassword", conPassword);
 
-      axios
-        .post(
-          `${process.env.REACT_APP_APIURL}/karigar/user/changepassword`,
-          data,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        )
-        .then((data) => {
-          if (data.data.status) {
-            toast.success(data.data.message, {
-              onClose: () => {
-                navigate(-1);
-              },
-            });
-          } else {
-            if (data.data.message.confirmpassword) {
-              toast.warning(data.data.message.confirmpassword);
+        axios
+          .post(
+            `${process.env.REACT_APP_APIURL}/karigar/user/changepassword`,
+            data,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          )
+          .then((data) => {
+            if (data.data.status) {
+              toast.success(data.data.message, {
+                onClose: () => {
+                  navigate(-1);
+                },
+              });
             } else {
-              toast.warning(data.data.message);
+              if (data.data.message.confirmpassword) {
+                toast.warning(data.data.message.confirmpassword);
+              } else {
+                toast.warning(data.data.message);
+              }
             }
-          }
-          setSpinner(false);
-        })
-        .catch((error) => {
-          console.log(error, "error");
-          setSpinner(false);
-        });
+            setSpinner(false);
+          })
+          .catch((error) => {
+            console.log(error, "error");
+            setSpinner(false);
+          });
+      }
     }
   }
 
@@ -128,18 +130,18 @@ const AddServices = () => {
 
                   <CCol md={4}>
                     <CFormLabel
-                      htmlFor="password"
+                      htmlFor="oldpassword"
                       className="col-sm-12 col-form-label"
                     >
                       Old Password
                     </CFormLabel>
 
                     <CFormInput
+                      required
                       type="password"
                       id="oldpassword"
-                      placeholder="Old Password"
+                      placeholder="Enter old password"
                       autoComplete="oldpassword"
-                      required
                       onChange={(e) => {
                         setOldPassword(e.target.value);
                       }}
@@ -157,11 +159,11 @@ const AddServices = () => {
                       New Password
                     </CFormLabel>
                     <CFormInput
+                      required
                       type="password"
                       id="newpassword"
-                      placeholder="New Password"
+                      placeholder="Enter new password"
                       autoComplete="newpassword"
-                      required
                       onChange={(e) => {
                         setNewPassword(e.target.value);
                       }}
@@ -179,12 +181,12 @@ const AddServices = () => {
                       htmlFor="password"
                       className="col-sm-12 col-form-label"
                     >
-                      Confirm password
+                      Confirm Password
                     </CFormLabel>
                     <CFormInput
                       type="password"
                       id="conpassword"
-                      placeholder="Confirm password"
+                      placeholder="Enter confirm password"
                       autoComplete="conpassword"
                       required
                       onChange={(e) => {

@@ -40,7 +40,7 @@ const UserProfile = () => {
   const [mobileNumberError, setMobileNumberError] = useState("");
   const [genderError, setGenderError] = useState("");
 
-  // Get User Profile.
+  // Get user profile.
   useEffect(() => {
     let unmounted = false;
 
@@ -67,35 +67,44 @@ const UserProfile = () => {
     };
   }, []);
 
-  // Error state empty.
   useEffect(() => {
+    setNameError("");
+    setMobileNumberError("");
+    setGenderError("");
+  }, [name, mobileNumber, gender]);
+
+  // Check validation.
+  function validationCheck() {
     setNameError("");
     setEmailAdressError("");
     setMobileNumberError("");
     setGenderError("");
-    setValidated(false);
-  }, [name, emailAddress, mobileNumber]);
 
-  // User profile details.
-  function userProfiledetails() {
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(emailAddress)) {
       setValidated(true);
       setEmailAdressError("Please enter valid email address");
-    }
-    if (!/^[a-zA-Z]/i.test(name)) {
+    } else if (!/^(?=.{1,40}$)[a-zA-Z]+(?:[\s][a-zA-Z]+)*$/i.test(name)) {
       setValidated(true);
       setNameError("Please enter valid name");
-    }
-    if (!/^[6-9]\d{9}$/i.test(mobileNumber)) {
+    } else if (!/^[6-9]\d{9}$/i.test(mobileNumber)) {
       setValidated(true);
       setMobileNumberError("Please enter valid mobile number");
-    }
-    if (!gender) {
+    } else if (!gender) {
       setValidated(true);
       setGenderError("Please select gender");
     } else {
+      return false;
+    }
+  }
+
+  // User profile details.
+  function userProfiledetails() {
+    let getStatus = validationCheck();
+    // console.log(getStatus, "getStatus");
+
+    if (getStatus === false) {
       setSpinner(true);
-      // User profile details.
+
       var data = new FormData();
       data.append("name", name);
       data.append("gender", gender);
@@ -141,9 +150,7 @@ const UserProfile = () => {
                   validated={validated}
                   onSubmit={userProfiledetails}
                 >
-                  <h3>My Profile</h3>
-                  <hr />
-
+                  <h3> My Profile </h3> <hr />
                   <CCol md={6}>
                     <CFormLabel
                       htmlFor="emailaddress"
@@ -162,12 +169,10 @@ const UserProfile = () => {
                         value={emailAddress && emailAddress}
                       />
                     }
-
                     {emailAdressError && (
-                      <p className="text-danger">{emailAdressError}</p>
+                      <p className="text-danger"> {emailAdressError} </p>
                     )}
                   </CCol>
-
                   <CCol md={6}>
                     <CFormLabel
                       htmlFor="name"
@@ -186,9 +191,8 @@ const UserProfile = () => {
                         setName(e.target.value);
                       }}
                     />
-                    {nameError && <p className="text-danger">{nameError}</p>}
+                    {nameError && <p className="text-danger"> {nameError} </p>}
                   </CCol>
-
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="mobilenumber"
@@ -198,20 +202,24 @@ const UserProfile = () => {
                     </CFormLabel>
                     <CFormInput
                       required
-                      type="number"
+                      type="text"
                       id="mobilenumber"
-                      placeholder="Mobile Number"
-                      autoComplete="mobilenumber"
+                      maxLength="10"
+                      minLength="10"
+                      placeholder="Enter mobile number"
                       value={mobileNumber ? mobileNumber : ""}
                       onChange={(e) => {
-                        setMobileNumber(e.target.value);
+                        var numberReg = /^[0-9]*$/;
+                        if (numberReg.test(e.target.value)) {
+                          setMobileNumber(e.target.value);
+                        }
                       }}
                     />
+
                     {mobileNumberError && (
                       <p className="text-danger">{mobileNumberError}</p>
                     )}
                   </CCol>
-
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="userrole"
@@ -219,7 +227,6 @@ const UserProfile = () => {
                     >
                       Userrole
                     </CFormLabel>
-
                     <CFormSelect
                       required
                       id="gender"
@@ -232,15 +239,13 @@ const UserProfile = () => {
                       <option value="" disabled>
                         Gender
                       </option>
-                      <option value="1">Male</option>
-                      <option value="2">Female</option>
+                      <option value="1"> Male </option>
+                      <option value="2"> Female </option>
                     </CFormSelect>
-
                     {genderError && (
-                      <p className="text-danger">{genderError}</p>
+                      <p className="text-danger"> {genderError} </p>
                     )}
                   </CCol>
-
                   <CCol md={4}>
                     <CFormLabel
                       htmlFor="Role"
@@ -259,16 +264,14 @@ const UserProfile = () => {
                         value={role && role}
                       />
                     }
-
                     {emailAdressError && (
-                      <p className="text-danger">{emailAdressError}</p>
+                      <p className="text-danger"> {emailAdressError} </p>
                     )}
                   </CCol>
-
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                     {spinner ? (
                       <div className="spinner-border" role="status">
-                        <span className="visually-hidden">Loading...</span>
+                        <span className="visually-hidden"> Loading... </span>
                       </div>
                     ) : (
                       <CButton
@@ -280,7 +283,6 @@ const UserProfile = () => {
                         Submit
                       </CButton>
                     )}
-
                     <CButton color="primary" onClick={() => navigate(-1)}>
                       Back
                     </CButton>

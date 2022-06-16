@@ -54,6 +54,7 @@ const createHomeBanner = async (req, res, next) => {
       }
     } else {
       removeFile(bannerImage);
+
       return res.send({
         status: false,
         message: `Banner image is required`,

@@ -200,7 +200,7 @@ const ViewServiceProvider = () => {
       <CCol xs>
         <CCard className="mb-4">
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
-            <div>Service Provider Info</div>
+            <div>Service Provider Information</div>
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
               <CButton
                 color="primary"
