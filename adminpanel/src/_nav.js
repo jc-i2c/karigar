@@ -49,6 +49,13 @@ _nav = [
   },
   {
     component: CNavItem,
+    name: "Service Rating",
+    to: "/servicerating",
+    id: "627a27259fab5c7699e3fd95",
+    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: "Users",
     to: "/users",
     id: "627a26ee9fab5c7699e3fd85",
@@ -67,13 +74,6 @@ _nav = [
     to: "/privacypolicy",
     id: "627a271b9fab5c7699e3fd92",
     icon: <CIcon icon={cilLockLocked} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: "Service Rating",
-    to: "/servicerating",
-    id: "627a27259fab5c7699e3fd95",
-    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
