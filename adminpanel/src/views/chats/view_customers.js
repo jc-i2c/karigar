@@ -242,7 +242,10 @@ const ViewCustomerChat = () => {
                                       <div className="card bg-light">
                                         <div className="d-flex">
                                           <div className="card-text">
-                                            <p className="p-1 mb-0">
+                                            <p
+                                              className="p-1 mb-0"
+                                              style={{ maxWidth: "550px" }}
+                                            >
                                               {msg.message}
                                               {/* {msg.message + " " + msg.msgtime} */}
                                             </p>
@@ -260,9 +263,12 @@ const ViewCustomerChat = () => {
                                       <div className="card">
                                         <div className="d-flex">
                                           <div className="card-text">
-                                            <p className="p-1 mb-0">
-                                              {/* {msg.message + " " + msg.msgtime} */}
+                                            <p
+                                              className="p-1 mb-0"
+                                              style={{ maxWidth: "550px" }}
+                                            >
                                               {msg.message}
+                                              {/* {msg.message + " " + msg.msgtime} */}
                                             </p>
                                           </div>
                                         </div>

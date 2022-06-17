@@ -178,7 +178,9 @@ const ViewServices = () => {
                   <CTableHeaderCell>Address Type</CTableHeaderCell>
                   <CTableHeaderCell>Service Date</CTableHeaderCell>
                   <CTableHeaderCell>Service Time</CTableHeaderCell>
-                  <CTableHeaderCell>Service Status</CTableHeaderCell>
+                  {roleName === "SERVICEPROVIDER" && (
+                    <CTableHeaderCell>Service Status</CTableHeaderCell>
+                  )}
                   <CTableHeaderCell>Payment Status</CTableHeaderCell>
                   {/* <CTableHeaderCell>CreatedAt</CTableHeaderCell> */}
                   {/* <CTableHeaderCell>UpdatedAt</CTableHeaderCell> */}
@@ -223,7 +225,7 @@ const ViewServices = () => {
                       {item.sessiontime ? item.sessiontime : ""}
                     </CTableDataCell>
 
-                    {
+                    {roleName === "SERVICEPROVIDER" && (
                       <CTableDataCell style={{ width: "170px" }}>
                         {item.servicestatus === 4 ? (
                           <CFormSelect required id="services" name="services">
@@ -262,7 +264,7 @@ const ViewServices = () => {
                           </CFormSelect>
                         )}
                       </CTableDataCell>
-                    }
+                    )}
 
                     <CTableDataCell>
                       <div>
