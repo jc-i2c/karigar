@@ -136,18 +136,18 @@ const ViewOffers = () => {
       )
       .then((data) => {
         if (data.data.status) {
-          toast.success(data.data.message);
-          let newOfferData = offers.map((offerList) => {
-            if (offerList.offerid === offerId) {
-              if (offerList.isactive) {
-                return { ...offerList, isactive: false };
+          let statusMsg = "";
+          setOffers((prevUserList) => {
+            return prevUserList.map((item) => {
+              if (item.offerid === offerId) {
+                statusMsg = !item.isactive;
+                return { ...item, isactive: !item.isactive };
               } else {
-                return { ...offerList, isactive: true };
+                return item;
               }
-            }
-            return offerList;
+            });
           });
-          setOffers(newOfferData);
+          toast.success(statusMsg ? "Offer Activated" : "Offer Deactivated");
         } else {
           toast.error(data.data.message);
         }
@@ -223,7 +223,7 @@ const ViewOffers = () => {
                   <CTableHeaderCell>Service Provider Name</CTableHeaderCell>
                   <CTableHeaderCell>Current Price</CTableHeaderCell>
                   <CTableHeaderCell>Actual Price</CTableHeaderCell>
-                  <CTableHeaderCell>is_Active</CTableHeaderCell>
+                  <CTableHeaderCell>Status</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>

@@ -174,18 +174,34 @@ const ViewServiceProvider = () => {
       )
       .then((data) => {
         if (data.data.status) {
-          toast.success(data.data.message);
-          let newServiceProvider = serviceProvider.map((listOfCustomer) => {
-            if (listOfCustomer.serviceproviderid === serviceProviderId) {
-              if (listOfCustomer.isactive) {
-                return { ...listOfCustomer, isactive: false };
+          // toast.success(data.data.message);
+          // let newServiceProvider = serviceProvider.map((listOfCustomer) => {
+          //   if (listOfCustomer.serviceproviderid === serviceProviderId) {
+          //     if (listOfCustomer.isactive) {
+          //       return { ...listOfCustomer, isactive: false };
+          //     } else {
+          //       return { ...listOfCustomer, isactive: true };
+          //     }
+          //   }
+          //   return listOfCustomer;
+          // });
+          // setServiceProvider(newServiceProvider);
+          let statusMsg = "";
+          setServiceProvider((prevUserList) => {
+            return prevUserList.map((item) => {
+              if (item.serviceproviderid === serviceProviderId) {
+                statusMsg = !item.isactive;
+                return { ...item, isactive: !item.isactive };
               } else {
-                return { ...listOfCustomer, isactive: true };
+                return item;
               }
-            }
-            return listOfCustomer;
+            });
           });
-          setServiceProvider(newServiceProvider);
+          toast.success(
+            statusMsg
+              ? "Service provider Activated"
+              : "Service provider Deactivated",
+          );
         } else {
           toast.error(data.data.message);
         }
@@ -246,7 +262,7 @@ const ViewServiceProvider = () => {
                   <CTableHeaderCell className="text-center">
                     Service Details
                   </CTableHeaderCell>
-                  <CTableHeaderCell>Is_Active</CTableHeaderCell>
+                  <CTableHeaderCell>Status</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>
                 </CTableRow>
               </CTableHead>

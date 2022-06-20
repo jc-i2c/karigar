@@ -105,18 +105,20 @@ const ViewCustomer = () => {
       )
       .then((data) => {
         if (data.data.status) {
-          toast.success(data.data.message);
-          let newCustomerData = customers.map((listOfCustomer) => {
-            if (listOfCustomer.customerid === customerId) {
-              if (listOfCustomer.isactive) {
-                return { ...listOfCustomer, isactive: false };
+          let statusMsg = "";
+          setCustomers((prevUserList) => {
+            return prevUserList.map((item) => {
+              if (item.customerid === customerId) {
+                statusMsg = !item.isactive;
+                return { ...item, isactive: !item.isactive };
               } else {
-                return { ...listOfCustomer, isactive: true };
+                return item;
               }
-            }
-            return listOfCustomer;
+            });
           });
-          setCustomers(newCustomerData);
+          toast.success(
+            statusMsg ? "Customer Activated" : "Customer Deactivated",
+          );
         } else {
           toast.error(data.data.message);
         }

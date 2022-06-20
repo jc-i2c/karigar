@@ -82,18 +82,22 @@ const ViewServiceProvider = () => {
       )
       .then((data) => {
         if (data.data.status) {
-          toast.success(data.data.message);
-          let newCustomerData = serviceProvider.map((serviceProviderList) => {
-            if (serviceProviderList.serviceproviderid === serviceProviderId) {
-              if (serviceProviderList.isactive) {
-                return { ...serviceProviderList, isactive: false };
+          let statusMsg = "";
+          setServiceProvider((prevUserList) => {
+            return prevUserList.map((item) => {
+              if (item.serviceproviderid === serviceProviderId) {
+                statusMsg = !item.isactive;
+                return { ...item, isactive: !item.isactive };
               } else {
-                return { ...serviceProviderList, isactive: true };
+                return item;
               }
-            }
-            return serviceProviderList;
+            });
           });
-          setServiceProvider(newCustomerData);
+          toast.success(
+            statusMsg
+              ? "Service provider Activated"
+              : "Service provider Deactivated",
+          );
         } else {
           toast.error(data.data.message);
         }
