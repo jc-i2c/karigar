@@ -400,6 +400,7 @@ const verifyOtp = async (req, res, next) => {
 const updateProfile = async (req, res, next) => {
   try {
     const userId = res.user._id;
+
     const {
       name,
       gender,
@@ -700,55 +701,21 @@ const activeDeactive = async (req, res, next) => {
 };
 
 // Get customer profile details API.
-const customerProfile = async (req, res, next) => {
+const profileDetails = async (req, res, next) => {
   try {
-    let userprofiledetails = res.user;
+    let profileData = {};
 
-    if (userprofiledetails) {
-      let data = userprofiledetails.toObject();
+    profileData.emailaddress = res.user.emailaddress;
+    profileData.name = res.user.name;
+    profileData.mobilenumber = res.user.mobilenumber;
+    profileData.userroll = res.user.userroll.rolename;
+    profileData.gender = res.user.gender;
 
-      // Set user status verify or not.
-      if (data.status) {
-        data.status = "user_verified";
-      } else {
-        data.status = "user_not_verified";
-      }
-
-      // Set user is active or not.
-      if (data.isactive) {
-        data.isactive = "yes";
-      } else {
-        data.isactive = "no";
-      }
-
-      // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-      createDate = data.createdAt
-        .toISOString()
-        .replace(/T/, " ")
-        .replace(/\..+/, "");
-
-      data.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
-
-      // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
-      updateDate = data.updatedAt
-        .toISOString()
-        .replace(/T/, " ")
-        .replace(/\..+/, "");
-
-      data.updatedAt = moment(updateDate).format("DD-MM-YYYY HH:MM:SS");
-
-      delete data.password; // delete data["password"]
-      delete data.otp; // delete data["otp"]
-      delete data.__v; // delete data["__v"]
-      delete data.status; // delete data["status"]
-      delete data.isactive; // delete data["isactive"]
-      delete data.createdAt; // delete data["createdAt"]
-      delete data.updatedAt; // delete data["updatedAt"]
-
+    if (profileData) {
       return res.send({
         status: true,
         message: `User profile details found into system.`,
-        data: data,
+        data: profileData,
       });
     } else {
       return res.send({
@@ -1180,7 +1147,7 @@ module.exports = {
   resetPassword,
   activeDeactive,
   createNewPassword,
-  customerProfile,
+  profileDetails,
   getAllUsers,
   saveLocation,
   getUserLocation,

@@ -231,8 +231,6 @@ const ViewServiceProvider = () => {
                           setOpenAlertBox(true);
                           setDeleteTitle(item.emailaddress);
                           setDeleteItemId(item.serviceproviderid);
-
-                          // deleteCustomer(item.serviceproviderid);
                         }}
                       />
                     </CTableDataCell>

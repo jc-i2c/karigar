@@ -62,8 +62,8 @@ const AllUsers = () => {
               isactive: record.isactive,
               mobilenumber: record.mobilenumber,
               userroll: record.userroll,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
+              // createdAt: record.createdAt,
+              // updatedAt: record.updatedAt,
               profile_picture: record.profile_picture,
             });
           });
@@ -218,7 +218,7 @@ const AllUsers = () => {
                 {allUsers.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
                     <CTableDataCell>
-                      <div>{item.emailaddress ? item.emailaddress : ""}</div>
+                      <div>{item.emailaddress ? item.emailaddress : "-"}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
@@ -241,7 +241,7 @@ const AllUsers = () => {
 
                     <CTableDataCell>
                       <div>
-                        {item.userroll.rolename ? item.userroll.rolename : ""}
+                        {item.userroll.rolename ? item.userroll.rolename : "-"}
                       </div>
                     </CTableDataCell>
 

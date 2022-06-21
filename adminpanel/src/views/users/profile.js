@@ -57,11 +57,12 @@ const UserProfile = () => {
         setName(data.data.data.name);
         setMobileNumber(data.data.data.mobilenumber);
         setGender(data.data.data.gender);
-        setRole(data.data.data.userroll.rolename);
+        setRole(data.data.data.userroll);
       })
       .catch((error) => {
         console.log(error, "error");
       });
+
     return () => {
       unmounted = true;
     };
@@ -224,10 +225,10 @@ const UserProfile = () => {
                   </CCol>
                   <CCol md={4}>
                     <CFormLabel
-                      htmlFor="userrole"
+                      htmlFor="gender"
                       className="col-sm-12 col-form-label"
                     >
-                      Userrole
+                      Gender
                     </CFormLabel>
                     <CFormSelect
                       required
@@ -253,7 +254,7 @@ const UserProfile = () => {
                       htmlFor="Role"
                       className="col-sm-12 col-form-label"
                     >
-                      Role
+                      User Role
                     </CFormLabel>
                     {
                       <CFormInput
