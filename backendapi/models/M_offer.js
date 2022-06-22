@@ -15,10 +15,10 @@ const OfferSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Current price is required."],
   },
-  actualprice: {
-    type: Number,
-    required: [true, "Actual  price is required."],
-  },
+  // actualprice: {
+  //   type: Number,
+  //   required: [true, "Actual  price is required."],
+  // },
   isactive: {
     type: Boolean,
     enum: [true, false],

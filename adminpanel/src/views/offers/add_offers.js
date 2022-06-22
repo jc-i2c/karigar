@@ -23,9 +23,7 @@ const Offers = () => {
   const location = useLocation();
 
   const token = localStorage.getItem("karigar_token");
-
   const [validated, setValidated] = useState(false);
-
   const [spinner, setSpinner] = useState(false);
 
   const [isEdit, setIsEdit] = useState(false);
@@ -207,6 +205,8 @@ const Offers = () => {
                 records.push({
                   serviceproviderid: record._id,
                   serviceprovidername: record.name,
+                  actualprice: record.actualprice,
+                  currentprice: record.currentprice,
                 });
               });
               setAllServiceProvider(records);
@@ -235,6 +235,7 @@ const Offers = () => {
               records.push({
                 serviceproviderid: data.data.data._id,
                 serviceprovidername: data.data.data.name,
+                actualprice: data.data.data.price,
               });
               setAllServiceProvider(records);
             }
@@ -302,12 +303,13 @@ const Offers = () => {
       setSpinner(true);
       if (isEdit) {
         // Edit offers.
+        // console.log(actualPrice, currentPrice);
         var data = new FormData();
         data.append("offerid", offerId);
         data.append("subserviceid", subServicesId);
         data.append("serviceproviderid", servicesProviderId);
-        data.append("currentprice", currentPrice);
         data.append("actualprice", actualPrice);
+        data.append("currentprice", currentPrice);
 
         axios
           .post(`${process.env.REACT_APP_APIURL}/karigar/offer/update`, data, {
@@ -358,6 +360,23 @@ const Offers = () => {
             setSpinner(false);
           });
       }
+    }
+  }
+
+  // Set default price into textbox
+  function setDefaultPrice(servicesProviderId) {
+    if (servicesProviderId) {
+      let priceData = allServiceProvider?.filter(
+        (obj) => obj?.serviceproviderid === servicesProviderId,
+      );
+
+      setActualPrice(
+        priceData[0].actualprice
+          ? priceData[0].actualprice
+          : priceData[0].currentprice,
+      );
+    } else {
+      setActualPrice("");
     }
   }
 
@@ -468,6 +487,7 @@ const Offers = () => {
                       onChange={(e) => {
                         setServicesProviderId("");
                         setServicesProviderId(e.target.value);
+                        setDefaultPrice(e.target.value);
                       }}
                     >
                       <option value="" disabled>
@@ -494,13 +514,41 @@ const Offers = () => {
                       htmlFor="text"
                       className="col-sm-12 col-form-label"
                     >
+                      Actual Price
+                    </CFormLabel>
+                    <CFormInput
+                      required
+                      type="text"
+                      disabled="off"
+                      id="actualPrice"
+                      placeholder="Actual Price"
+                      autoComplete="actualPrice"
+                      value={actualPrice}
+                      onChange={(e) => {
+                        // var actualReg = /^[0-9]*\.?[0-9]*$/;
+                        // if (actualReg.test(e.target.value)) {
+                        //   setActualPrice(e.target.value);
+                        // }
+                      }}
+                    />
+                    {actualPriceError && (
+                      <p className="text-danger">{actualPriceError}</p>
+                    )}
+                  </CCol>
+
+                  <CCol md={4}>
+                    <CFormLabel
+                      htmlFor="text"
+                      className="col-sm-12 col-form-label"
+                    >
                       Current Price
                     </CFormLabel>
                     <CFormInput
+                      required
+                      type="text"
                       id="currentprice"
                       placeholder="Current Price"
                       autoComplete="currentprice"
-                      required
                       value={currentPrice ? currentPrice : ""}
                       onChange={(e) => {
                         var currentReg = /^[0-9]*\.?[0-9]*$/;
@@ -511,31 +559,6 @@ const Offers = () => {
                     />
                     {currentPriceError && (
                       <p className="text-danger">{currentPriceError}</p>
-                    )}
-                  </CCol>
-
-                  <CCol md={4}>
-                    <CFormLabel
-                      htmlFor="text"
-                      className="col-sm-12 col-form-label"
-                    >
-                      Actual Price
-                    </CFormLabel>
-                    <CFormInput
-                      id="actualPrice"
-                      placeholder="Actual Price"
-                      autoComplete="actualPrice"
-                      required
-                      value={actualPrice}
-                      onChange={(e) => {
-                        var actualReg = /^[0-9]*\.?[0-9]*$/;
-                        if (actualReg.test(e.target.value)) {
-                          setActualPrice(e.target.value);
-                        }
-                      }}
-                    />
-                    {actualPriceError && (
-                      <p className="text-danger">{actualPriceError}</p>
                     )}
                   </CCol>
 

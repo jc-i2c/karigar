@@ -80,8 +80,8 @@ const ViewOffers = () => {
                 subservicename: record.subserviceid.subservicename,
                 serviceproviderid: record.serviceproviderid._id,
                 serviceprovidername: record.serviceproviderid.name,
-                actualprice: record.actualprice,
                 currentprice: record.currentprice,
+                actualprice: record.serviceproviderid.price,
                 isactive: record.isactive,
               });
             });
@@ -110,8 +110,8 @@ const ViewOffers = () => {
                 subservicename: record.subserviceid.subservicename,
                 serviceproviderid: record.serviceproviderid._id,
                 serviceprovidername: record.serviceproviderid.name,
-                actualprice: record.actualprice,
                 currentprice: record.currentprice,
+                actualprice: record.serviceproviderid.price,
                 isactive: record.isactive,
               });
             });

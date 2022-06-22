@@ -8,14 +8,19 @@ const { updateOfferVal } = require("../helper/joivalidation");
 // Create offer API.
 const createOffer = async (req, res, next) => {
   try {
-    const { subserviceid, serviceproviderid, currentprice, actualprice } =
-      req.body;
+    const {
+      subserviceid,
+      serviceproviderid,
+      currentprice,
+      // actualprice
+    } = req.body;
 
     const findSubService = await SubServices.findById({ _id: subserviceid });
     if (findSubService) {
       const findSubServiceProv = await ServiceProvider.findById({
         _id: serviceproviderid,
       });
+
       if (findSubServiceProv) {
         const getQry = await Offer.findOne().where({
           subserviceid: subserviceid,
@@ -34,7 +39,7 @@ const createOffer = async (req, res, next) => {
             subserviceid: subserviceid,
             serviceproviderid: serviceproviderid,
             currentprice: currentprice,
-            actualprice: actualprice,
+            // actualprice: actualprice,
           });
 
           const insertQry = await offerData.save();
@@ -79,7 +84,7 @@ const updateOffer = async (req, res, next) => {
         subserviceid: req.body.subserviceid,
         serviceproviderid: req.body.serviceproviderid,
         currentprice: req.body.currentprice,
-        actualprice: req.body.actualprice,
+        // actualprice: req.body.actualprice,
       };
 
       // Joi validation.
@@ -100,7 +105,7 @@ const updateOffer = async (req, res, next) => {
           subserviceid: data.subserviceid,
           serviceproviderid: data.serviceproviderid,
           currentprice: data.currentprice,
-          actualprice: data.actualprice,
+          // actualprice: data.actualprice,
         };
 
         const result = await Offer.findByIdAndUpdate(data.offerid, {
@@ -143,6 +148,7 @@ const getAllOffer = async (req, res, next) => {
         path: "serviceproviderid",
         select: "name",
       });
+
     if (findQry.length > 0) {
       return res.send({
         status: true,
@@ -293,7 +299,7 @@ const getAllOfferAdmin = async (req, res, next) => {
       })
       .populate({
         path: "serviceproviderid",
-        select: "name",
+        select: "name price",
       })
       .where({ deleted: false });
 
@@ -315,6 +321,7 @@ const getAllOfferAdmin = async (req, res, next) => {
 
           newObj.servicesid = subServices.servicesid;
           newObj.servicename = servicesData.servicename;
+          delete newObj.actualprice;
 
           data.push(newObj);
         })
@@ -344,7 +351,7 @@ const userOffer = async (req, res, next) => {
 
     if (userId) {
       let findQry = await Offer.find({ deleted: false })
-        .select("currentprice actualprice isactive")
+        .select("currentprice isactive") // actualprice
         .populate({
           path: "subserviceid",
           select: "subservicename",
@@ -352,21 +359,20 @@ const userOffer = async (req, res, next) => {
         })
         .populate({
           path: "serviceproviderid",
-          select: "name userid",
+          select: "userid name price",
         });
 
       let findData = [];
 
       if (findQry.length > 0) {
-        let resData = {};
         findQry.forEach((data) => {
+          let resData = {};
           resData = data.toObject();
 
           let userIdData = resData.serviceproviderid.userid.toString();
 
           if (userIdData == userId) {
             delete resData.__v; // delete person["__v"]
-
             findData.push(resData);
           }
         });

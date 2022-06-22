@@ -197,12 +197,11 @@ const getAllProvider = async (req, res, next) => {
                 serviceproviderid: objectData._id,
                 isactive: true,
               })
-              .select("currentprice actualprice");
+              .select("currentprice");
 
             if (findOffer) {
-              delete objectData.price;
               objectData.currentprice = findOffer.currentprice;
-              objectData.actualprice = findOffer.actualprice;
+              objectData.actualprice = objectData.price;
               return objectData;
             } else {
               objectData.currentprice = objectData.price;
@@ -259,15 +258,16 @@ const getSingleProvider = async (req, res, next) => {
             serviceproviderid: getQry._id,
             isactive: true,
           })
-          .select("currentprice actualprice");
+          .select("currentprice");
 
         if (findOffer) {
-          delete getQry.price;
-          getQry.currentprice = findOffer.currentprice;
-          getQry.actualprice = findOffer.actualprice;
+          objectData.currentprice = findOffer.currentprice;
+          objectData.actualprice = objectData.price;
+          return objectData;
         } else {
-          getQry.currentprice = getQry.price;
-          delete getQry.price;
+          objectData.currentprice = objectData.price;
+          delete objectData.price;
+          return objectData;
         }
 
         // Count jobs based on service provider API.
@@ -419,12 +419,12 @@ const getAllProviderList = async (req, res, next) => {
                 serviceproviderid: objectData._id,
                 isactive: true,
               })
-              .select("currentprice actualprice");
+              .select("currentprice");
 
             if (findOffer) {
-              delete objectData.price;
               objectData.currentprice = findOffer.currentprice;
-              objectData.actualprice = findOffer.actualprice;
+              objectData.actualprice = objectData.price;
+              delete objectData.price;
               return objectData;
             } else {
               objectData.currentprice = objectData.price;
@@ -433,6 +433,8 @@ const getAllProviderList = async (req, res, next) => {
             }
           })
         );
+
+        // console.log(serviceProvider, "serviceProvider");
 
         return res.send({
           status: true,
@@ -802,7 +804,7 @@ const getProviderList = async (req, res, next) => {
       subserviceid: subServiceId,
       userid: userId,
       deleted: false,
-    }).select("name");
+    }).select("name price");
 
     if (findQry) {
       return res.send({
@@ -862,9 +864,8 @@ const searchServiceProvider = async (req, res, next) => {
               .select("currentprice actualprice");
 
             if (findOffer) {
-              delete objectData.price;
               objectData.currentprice = findOffer.currentprice;
-              objectData.actualprice = findOffer.actualprice;
+              objectData.actualprice = objectData.price;
               return objectData;
             } else {
               objectData.currentprice = objectData.price;
