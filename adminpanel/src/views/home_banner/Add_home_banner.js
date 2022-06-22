@@ -72,11 +72,11 @@ const HomeBanner = () => {
   function addBanner(e) {
     e.preventDefault();
 
-    if (!/^[a-zA-Z]/i.test(bannerTitle)) {
+    if (!bannerTitle) {
       setValidated(true);
       setBannerTitleError("Please enter valid banner title");
     }
-    if (!/^[a-zA-Z]/i.test(bannerSubTitle)) {
+    if (!bannerSubTitle) {
       setValidated(true);
       setBannerSubTitleError("Please enter valid banner sub title");
     }

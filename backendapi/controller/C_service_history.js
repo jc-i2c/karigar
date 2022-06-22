@@ -23,7 +23,7 @@ const createServiceHistory = async (req, res, next) => {
       address: req.body.address,
       name: req.body.name,
       servicedate: req.body.servicedate,
-      servicestatus: req.body.servicestatus,
+      // servicestatus: req.body.servicestatus,
       bookingdate: bookingdate,
     };
 
@@ -49,8 +49,8 @@ const createServiceHistory = async (req, res, next) => {
         name: data.name,
         servicedate: data.servicedate,
         sessiontime: req.body.sessiontime,
-        servicestatus: data.servicestatus,
         bookingdate: data.bookingdate,
+        servicestatus: 0,
       });
 
       const insertQry = await createServiceHistory.save();
@@ -85,7 +85,8 @@ const getAllServiceHistory = async (req, res, next) => {
       .populate({
         path: "customerid",
         select: "name",
-      });
+      })
+      .sort({ createdAt: -1 });
 
     let findData = [];
     if (getQry.length > 0) {
@@ -116,7 +117,7 @@ const getAllServiceHistory = async (req, res, next) => {
             .replace(/T/, " ")
             .replace(/\..+/, "");
 
-          resData.createdAt = moment(createDate).format("DD-MM-YYYY HH:MM:SS");
+          resData.createdAt = moment(createDate).format("MM-DD-YYYY HH:MM:SS");
 
           // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
           updateDate = resData.updatedAt

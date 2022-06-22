@@ -23,9 +23,10 @@ import {
 
 const ViewServices = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("karigar_token");
-  const [offers, setOffers] = useState([]);
 
+  const token = localStorage.getItem("karigar_token");
+
+  const [serviceHistory, setServiceHistory] = useState([]);
   const [roleName, setRoleName] = useState("");
 
   // Identify user type.
@@ -46,7 +47,18 @@ const ViewServices = () => {
       });
   }, []);
 
-  // Get all offers list.
+  useEffect(() => {
+    const updated = serviceHistory.sort((a, b) => {
+      const date1 = new Date(a.createdAt);
+      const date2 = new Date(b.createdAt);
+      // console.log(date1, date2);
+      return date2 - date1;
+    });
+
+    console.log(updated, "updated");
+  }, [serviceHistory]);
+
+  // Get all service histories list.
   useEffect(() => {
     if (roleName === "ADMIN") {
       axios
@@ -69,15 +81,15 @@ const ViewServices = () => {
                 sessiontime: record.sessiontime,
                 servicestatus: record.servicestatus,
                 paymentstatus: record.paymentstatus,
-                // createdAt: record.createdAt,
-                // updatedAt: record.updatedAt,
+                createdAt: record.createdAt,
+                updatedAt: record.updatedAt,
               });
             });
-            setOffers(records);
+            setServiceHistory(records);
           }
         })
         .catch((error) => {
-          console.log(error, "error");
+          console.log(error.message, "error");
         });
     } else {
       axios
@@ -104,7 +116,7 @@ const ViewServices = () => {
                 // updatedAt: record.updatedAt,
               });
             });
-            setOffers(records);
+            setServiceHistory(records);
           }
         })
         .catch((error) => {
@@ -130,7 +142,7 @@ const ViewServices = () => {
       .then((data) => {
         if (data.data.status) {
           toast.success(data.data.message);
-          let newOffers = offers.map((allOffer) => {
+          let newOffers = serviceHistory.map((allOffer) => {
             if (allOffer.servicehistoryid === Id) {
               return { ...allOffer, servicestatus: status };
             } else {
@@ -138,7 +150,7 @@ const ViewServices = () => {
             }
           });
 
-          setOffers(newOffers);
+          setServiceHistory(newOffers);
         } else {
           toast.warning(data.data.message);
         }
@@ -187,7 +199,7 @@ const ViewServices = () => {
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {offers.map((item, index) => (
+                {serviceHistory.map((item, index) => (
                   <CTableRow v-for="item in tableItems" key={index}>
                     {/* <CTableDataCell>
                       <div>{item.name ? item.name : ""}</div>
