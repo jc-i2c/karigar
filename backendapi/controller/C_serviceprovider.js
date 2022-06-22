@@ -261,13 +261,12 @@ const getSingleProvider = async (req, res, next) => {
           .select("currentprice");
 
         if (findOffer) {
-          objectData.currentprice = findOffer.currentprice;
-          objectData.actualprice = objectData.price;
-          return objectData;
+          getQry.currentprice = findOffer.currentprice;
+          getQry.actualprice = getQry.price;
+          delete getQry.price;
         } else {
-          objectData.currentprice = objectData.price;
-          delete objectData.price;
-          return objectData;
+          getQry.currentprice = getQry.price;
+          delete getQry.price;
         }
 
         // Count jobs based on service provider API.
