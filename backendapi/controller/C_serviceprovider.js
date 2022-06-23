@@ -433,8 +433,6 @@ const getAllProviderList = async (req, res, next) => {
           })
         );
 
-        // console.log(serviceProvider, "serviceProvider");
-
         return res.send({
           status: true,
           message: `${getQry.length} Service provider found into system.`,

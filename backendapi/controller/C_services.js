@@ -87,7 +87,6 @@ const getAllServices = async (req, res, next) => {
         // var fomatted_date = moment(resData.updatedAt).format(
         //   "DD-MM-YYYY hh:mm:ss"
         // );
-        // console.log(fomatted_date, "fomatted_date");
 
         // updatedAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         updateDate = resData.updatedAt

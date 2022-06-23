@@ -251,8 +251,8 @@ const getAll = async (req, res, next) => {
 
     let findData = [];
     if (findQry.length > 0) {
-      let resData = {};
       findQry.forEach((data) => {
+        let resData = {};
         resData = data.toObject();
 
         delete resData.__v; // delete person["__v"]

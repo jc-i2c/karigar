@@ -1,5 +1,16 @@
 const mongoose = require("mongoose");
 
+const serviceDateTimeSchema = new mongoose.Schema(
+  {
+    booking_request_sent: { type: String },
+    accept: { type: String },
+    job_started: { type: String },
+    job_completed: { type: String },
+    reject: { type: String },
+  },
+  { _id: false }
+);
+
 const ServiceHistorySchema = new mongoose.Schema({
   serviceproviderid: {
     type: mongoose.Schema.Types.ObjectId,
@@ -42,6 +53,9 @@ const ServiceHistorySchema = new mongoose.Schema({
   bookingdate: {
     type: String,
     required: [true, "booking date is required."], // 14 March 10:00 PM
+  },
+  service_date_time: {
+    type: serviceDateTimeSchema,
   },
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },

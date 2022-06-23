@@ -41,6 +41,11 @@ const createServiceHistory = async (req, res, next) => {
         message: errorMsg,
       });
     } else {
+      let currentDateTime = new Date();
+      currentDateTime = moment(currentDateTime).format("DD MMM, hh:mm A");
+
+      let ObjDateTime = { booking_request_sent: currentDateTime };
+
       let createServiceHistory = new ServiceHistory({
         serviceproviderid: data.serviceproviderid,
         customerid: data.customerid,
@@ -51,6 +56,7 @@ const createServiceHistory = async (req, res, next) => {
         sessiontime: req.body.sessiontime,
         bookingdate: data.bookingdate,
         servicestatus: 0,
+        service_date_time: ObjDateTime,
       });
 
       const insertQry = await createServiceHistory.save();
@@ -482,15 +488,43 @@ const changeServiceStatus = async (req, res, next) => {
       const getQry = await ServiceHistory.findById(serviceHistoryId);
 
       if (getQry) {
-        let bookingdate = new Date();
-        bookingdate = moment(bookingdate).format("DD MMM, hh:mm A");
+        let currentDateTime = new Date();
+        currentDateTime = moment(currentDateTime).format("DD MMM, hh:mm A");
+
+        // 0-BOOKING_REQUEST_SENT(PENDING), 1-ACCEPT, 2-JOB_STARTED 3-JOB_COMPLETED 4-REJECT
+        if (data.servicestatus == 0) {
+          var serviceDateTime = {
+            ...getQry?.service_date_time?._doc,
+            booking_request_sent: currentDateTime,
+          };
+        } else if (data.servicestatus == 1) {
+          var serviceDateTime = {
+            ...getQry?.service_date_time?._doc,
+            accept: currentDateTime,
+          };
+        } else if (data.servicestatus == 2) {
+          var serviceDateTime = {
+            ...getQry?.service_date_time?._doc,
+            job_started: currentDateTime,
+          };
+        } else if (data.servicestatus == 3) {
+          var serviceDateTime = {
+            ...getQry?.service_date_time?._doc,
+            job_completed: currentDateTime,
+          };
+        } else if (data.servicestatus == 4) {
+          var serviceDateTime = {
+            ...getQry?.service_date_time?._doc,
+            reject: currentDateTime,
+          };
+        }
 
         let updateQry = await ServiceHistory.findByIdAndUpdate(
           serviceHistoryId,
           {
             $set: {
               servicestatus: data.servicestatus,
-              bookingdate: bookingdate,
+              service_date_time: serviceDateTime,
             },
           }
         );
@@ -615,7 +649,7 @@ const getServiceStatus = async (req, res, next) => {
 
       if (mongoose.isValidObjectId(serviceHistoryId)) {
         let getQry = await ServiceHistory.findById(serviceHistoryId).select(
-          "serviceproviderid servicestatus bookingdate"
+          "serviceproviderid servicestatus bookingdate service_date_time"
         );
         if (getQry == null) {
           return res.send({
@@ -635,24 +669,39 @@ const getServiceStatus = async (req, res, next) => {
 
             let objectData = [];
             for (let index = 0; index <= 3; index++) {
+              var title = "";
+              var bookingdate = "";
               if (index == 0) {
-                var title = "Booking request sent";
+                title = "Booking request sent";
+                bookingdate = resData.service_date_time.booking_request_sent
+                  ? resData.service_date_time.booking_request_sent
+                  : null;
               } else if (index == 1) {
-                var title = "Accepted";
+                title = "Accepted";
+                bookingdate = resData.service_date_time.accept
+                  ? resData.service_date_time.accept
+                  : null;
               } else if (index == 2) {
-                var title = "Job started";
+                title = "Job started";
+                bookingdate = resData.service_date_time.job_started
+                  ? resData.service_date_time.job_started
+                  : null;
               } else if (index == 3) {
-                var title = "Job completed";
+                title = "Job completed";
+                bookingdate = resData.service_date_time.job_completed
+                  ? resData.service_date_time.job_completed
+                  : null;
               }
               // else if (index == 4) {
-              //   var title = "Reject";
+              // title = "Reject";
+              // title = "Reject";
               // }
 
               let newObject = {
                 _id: resData._id,
                 servicestatus: false,
                 title: title,
-                bookingdate: resData.bookingdate,
+                bookingdate: bookingdate,
               };
               if (index <= resData.servicestatus) {
                 newObject = { ...newObject, servicestatus: true };
@@ -929,7 +978,6 @@ const Upcoming = async (req, res, next) => {
             let findPaymentStatus = await Paymenthistory.findOne()
               .where({ servicehistoryid: resData._id })
               .select("paymentstatus");
-            // console.log(findPaymentStatus, "findPaymentStatus");
             if (findPaymentStatus) {
               if (findPaymentStatus.paymentstatus) {
                 // Servicedate date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
