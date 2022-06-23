@@ -629,7 +629,9 @@ const getServiceStatus = async (req, res, next) => {
 
             let findProfile = await Serviceprovider.findOne({
               _id: resData.serviceproviderid,
-            }).populate({ path: "userid", select: "name mobilenumber" });
+            })
+              .populate({ path: "userid", select: "name mobilenumber" })
+              .select("_id userid ");
 
             let objectData = [];
             for (let index = 0; index <= 3; index++) {
@@ -661,7 +663,7 @@ const getServiceStatus = async (req, res, next) => {
             return res.send({
               status: true,
               message: `Customer service status found into system.`,
-              serviceproviderdetails: findProfile.userid,
+              serviceproviderdetails: findProfile,
               data: objectData,
             });
           } else {

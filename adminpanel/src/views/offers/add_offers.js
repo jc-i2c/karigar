@@ -303,7 +303,6 @@ const Offers = () => {
       setSpinner(true);
       if (isEdit) {
         // Edit offers.
-        // console.log(actualPrice, currentPrice);
         var data = new FormData();
         data.append("offerid", offerId);
         data.append("subserviceid", subServicesId);
@@ -318,6 +317,7 @@ const Offers = () => {
           .then((data) => {
             if (data.data.status) {
               toast.success(data.data.message, {
+                autoClose: 2000,
                 onClose: () => {
                   navigate(-1);
                 },
@@ -541,13 +541,13 @@ const Offers = () => {
                       htmlFor="text"
                       className="col-sm-12 col-form-label"
                     >
-                      Current Price
+                      Offer Price
                     </CFormLabel>
                     <CFormInput
                       required
                       type="text"
                       id="currentprice"
-                      placeholder="Current Price"
+                      placeholder="Offer Price"
                       autoComplete="currentprice"
                       value={currentPrice ? currentPrice : ""}
                       onChange={(e) => {

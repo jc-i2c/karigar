@@ -12,7 +12,6 @@ const {
 } = require("../helper/joivalidation");
 
 const { removeFile } = require("../helper/removefile");
-const { filter } = require("lodash");
 
 // Create new sub services API.
 const createSubServices = async (req, res, next) => {

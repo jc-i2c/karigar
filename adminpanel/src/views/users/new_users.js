@@ -491,11 +491,11 @@ const Offers = () => {
                     </CFormLabel>
 
                     <CFormInput
+                      // required
                       type="file"
                       placeholder="Profile picture"
                       autoComplete="profilepicture"
                       id="profilepicture"
-                      required
                       onChange={(e) => {
                         fileHandle(e);
                       }}

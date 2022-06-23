@@ -315,7 +315,7 @@ const getServiceRating = async (req, res, next) => {
       findQry.forEach((data) => {
         resData = data.toObject();
 
-        let checkId = resData.serviceproviderid.userid.toString();
+        let checkId = resData?.serviceproviderid?.userid.toString();
 
         if (checkId === serviceProviderId) {
           delete resData.__v; // delete person["__v"]

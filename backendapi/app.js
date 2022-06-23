@@ -54,8 +54,6 @@ const {
 
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const { error, log } = require("console");
-const { forEach, split } = require("lodash");
 
 const io = new Server(server, {
   cors: {

@@ -221,7 +221,7 @@ const ViewOffers = () => {
                   <CTableHeaderCell>Service Name</CTableHeaderCell>
                   <CTableHeaderCell>Sub Service Name</CTableHeaderCell>
                   <CTableHeaderCell>Service Provider Name</CTableHeaderCell>
-                  <CTableHeaderCell>Current Price</CTableHeaderCell>
+                  <CTableHeaderCell>Offer Price</CTableHeaderCell>
                   <CTableHeaderCell>Actual Price</CTableHeaderCell>
                   <CTableHeaderCell>Status</CTableHeaderCell>
                   <CTableHeaderCell>Action</CTableHeaderCell>
