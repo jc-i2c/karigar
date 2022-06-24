@@ -186,7 +186,7 @@ const getAllCusChatRequest = async (data) => {
         let findData = [];
         let resData = {};
 
-        getQry.forEach((data) => {
+        getQry.map((data) => {
           resData = data.toObject();
 
           delete resData.updatedAt; // delete person["updatedAt"]

@@ -740,7 +740,7 @@ const getAllUsers = async (req, res, next) => {
     if (getQry.length > 0 && getQry.length > -1) {
       let findData = [];
       let resData = {};
-      getQry.forEach((data) => {
+      getQry.map((data) => {
         resData = data.toObject();
 
         // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
@@ -917,7 +917,7 @@ const getAllCustomer = async (req, res, next) => {
     if (getQry.length > 0 && getQry.length > -1) {
       let findData = [];
       let resData = {};
-      getQry.forEach((data) => {
+      getQry.map((data) => {
         resData = data.toObject();
 
         // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
@@ -972,7 +972,7 @@ const getAllServiceProvider = async (req, res, next) => {
     if (getQry.length > 0 && getQry.length > -1) {
       let findData = [];
       let resData = {};
-      getQry.forEach((data) => {
+      getQry.map((data) => {
         resData = data.toObject();
 
         // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format

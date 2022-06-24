@@ -104,7 +104,7 @@ const ViewCustomerChat = () => {
             serviceprovname: record.serviceprovid.name,
             chatstatus: record.chatstatus,
             lastmsg: record.lastmsg,
-            // msgtime: record.msgtime,
+            msgtime: record.msgtime,
           });
         });
         allCustomerRef.current = records;
@@ -125,7 +125,7 @@ const ViewCustomerChat = () => {
           return {
             ...cusList,
             lastmsg: resData.message,
-            // msgtime: resData.msgtime,
+            msgtime: resData.msgtime,
           };
         } else {
           return cusList;
@@ -194,7 +194,7 @@ const ViewCustomerChat = () => {
                                       </div>
                                       <div className="col">
                                         <p className="mb-0 d-flex justify-content-end">
-                                          {/* {item.msgtime && item.msgtime} */}
+                                          {item.msgtime && item.msgtime}
                                         </p>
                                       </div>
                                     </div>
@@ -246,8 +246,8 @@ const ViewCustomerChat = () => {
                                               className="p-1 mb-0"
                                               style={{ maxWidth: "550px" }}
                                             >
-                                              {msg.message}
-                                              {/* {msg.message + " " + msg.msgtime} */}
+                                              {/* {msg.message} */}
+                                              {msg.message + " " + msg.msgtime}
                                             </p>
                                           </div>
                                         </div>
@@ -267,8 +267,8 @@ const ViewCustomerChat = () => {
                                               className="p-1 mb-0"
                                               style={{ maxWidth: "550px" }}
                                             >
-                                              {msg.message}
-                                              {/* {msg.message + " " + msg.msgtime} */}
+                                              {/* {msg.message} */}
+                                              {msg.message + " " + msg.msgtime}
                                             </p>
                                           </div>
                                         </div>

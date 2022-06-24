@@ -72,7 +72,7 @@ const getAllServices = async (req, res, next) => {
 
     if (getQry.length > 0) {
       let findData = [];
-      getQry.forEach((data) => {
+      getQry.map((data) => {
         let resData = {};
         resData = data.toObject();
 
@@ -206,7 +206,8 @@ const deleteServices = async (req, res, next) => {
                 // removeFile(allServices.serviceimage);
               })
               .catch((error) => {
-                console.log(error.message);
+                // console.log(error.message);
+                next(error);
               });
           })
         );
@@ -326,7 +327,7 @@ const topFiveServices = async (req, res, next) => {
     if (getQry.length > 0) {
       let findData = [];
       let resData = {};
-      getQry.forEach((data) => {
+      getQry.map((data) => {
         resData = data.toObject();
 
         delete resData.__v; // delete person["__v"]

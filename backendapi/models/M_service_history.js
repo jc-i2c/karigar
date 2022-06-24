@@ -38,7 +38,7 @@ const ServiceHistorySchema = new mongoose.Schema({
   },
   servicedate: {
     type: Date,
-    required: [true, "Service date is required."], // 14-03-2022
+    required: [true, "Service date is required."], // 2022-03-12
   },
   sessiontime: {
     type: String,

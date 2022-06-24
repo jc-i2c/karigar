@@ -203,7 +203,7 @@ const countRate = async (req, res, next) => {
       let averageRate = 0;
       let totalCnt = countRate.length;
 
-      countRate.forEach((rate) => {
+      countRate.map((rate) => {
         averageRate = averageRate + rate.rate;
       });
 
@@ -251,7 +251,7 @@ const getAll = async (req, res, next) => {
 
     let findData = [];
     if (findQry.length > 0) {
-      findQry.forEach((data) => {
+      findQry.map((data) => {
         let resData = {};
         resData = data.toObject();
 
@@ -311,8 +311,8 @@ const getServiceRating = async (req, res, next) => {
 
     let findData = [];
     if (findQry.length > 0) {
-      let resData = {};
-      findQry.forEach((data) => {
+      findQry.map((data) => {
+        let resData = {};
         resData = data.toObject();
 
         let checkId = resData?.serviceproviderid?.userid.toString();

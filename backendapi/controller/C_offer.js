@@ -365,7 +365,7 @@ const userOffer = async (req, res, next) => {
       let findData = [];
 
       if (findQry.length > 0) {
-        findQry.forEach((data) => {
+        findQry.map((data) => {
           let resData = {};
           resData = data.toObject();
 

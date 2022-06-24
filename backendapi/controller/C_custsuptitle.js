@@ -43,7 +43,7 @@ const getAllCusSupTitle = async (req, res, next) => {
 
     if (findQry.length > 0) {
       let resData = {};
-      findQry.forEach((data) => {
+      findQry.map((data) => {
         resData = data.toObject();
 
         delete resData.__v; // delete person["__v"]

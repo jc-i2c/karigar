@@ -291,7 +291,7 @@ const getSingleProvider = async (req, res, next) => {
           let averageRate = 0;
           let totalCnt = countRate.length;
 
-          countRate.forEach((rate) => {
+          countRate.map((rate) => {
             averageRate = averageRate + rate.rate;
           });
 

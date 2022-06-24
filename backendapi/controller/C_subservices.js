@@ -90,7 +90,7 @@ const getAllSubServices = async (req, res, next) => {
     let findData = [];
     if (getQry.length > 0) {
       let resData = {};
-      getQry.forEach((data) => {
+      getQry.map((data) => {
         resData = data.toObject();
         // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
         createDate = resData.createdAt
@@ -142,7 +142,7 @@ const getSubServices = async (req, res, next) => {
       let findData = [];
       if (getQry.length > 0) {
         let resData = {};
-        getQry.forEach((data) => {
+        getQry.map((data) => {
           resData = data.toObject();
 
           // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
@@ -402,7 +402,7 @@ const searchSubServices = async (req, res, next) => {
       let findData = [];
       if (getQry.length > 0) {
         let resData = {};
-        getQry.forEach((data) => {
+        getQry.map((data) => {
           resData = data.toObject();
 
           // createdAt date convert into date and time ("DD-MM-YYYY HH:MM:SS") format
@@ -493,7 +493,7 @@ const searchAllServices = async (req, res, next) => {
               ratingcount = ratingCount.length;
 
               if (ratingCount.length > 0) {
-                ratingCount.forEach((rate) => {
+                ratingCount.map((rate) => {
                   averagerate = averagerate + rate.rate;
                 });
 
