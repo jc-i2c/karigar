@@ -353,6 +353,6 @@ const ViewCustomer = () => {
   );
 };
 
-<ToastContainer />;
+<ToastContainer autoClose={`${process.env.REACT_APP_TOASTMESSAGETIME}`} />;
 
 export default ViewCustomer;

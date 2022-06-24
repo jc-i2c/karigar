@@ -167,7 +167,6 @@ const ViewServices = () => {
           <CCardHeader className="mb-0 border fs-4 d-flex justify-content-between">
             <div>Service Histories</div>
           </CCardHeader>
-
           <CCardBody>
             <CTable
               align="middle"
@@ -302,7 +301,9 @@ const ViewServices = () => {
               </CButton>
             </div>
           </CCardBody>
-          <ToastContainer />
+          <ToastContainer
+            autoClose={`${process.env.REACT_APP_TOASTMESSAGETIME}`}
+          />
         </CCard>
       </CCol>
     </CRow>

@@ -280,7 +280,9 @@ const ViewServiceProvider = () => {
               </CButton>
             </div>
           </CCardBody>
-          <ToastContainer />
+          <ToastContainer
+            autoClose={`${process.env.REACT_APP_TOASTMESSAGETIME}`}
+          />
         </CCard>
       </CCol>
     </CRow>

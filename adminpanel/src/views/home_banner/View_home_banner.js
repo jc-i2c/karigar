@@ -237,7 +237,9 @@ const ViewCustomer = () => {
             {/* ---------------------Close Delete Dialog Box---------------------------------- */}
             <br />
           </CCardBody>
-          <ToastContainer />
+          <ToastContainer
+            autoClose={`${process.env.REACT_APP_TOASTMESSAGETIME}`}
+          />
         </CCard>
       </CCol>
     </CRow>

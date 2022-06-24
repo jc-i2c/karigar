@@ -497,21 +497,35 @@ const changeServiceStatus = async (req, res, next) => {
             ...getQry?.service_date_time?._doc,
             booking_request_sent: currentDateTime,
           };
+
+          delete serviceDateTime.accept;
+          delete serviceDateTime.job_started;
+          delete serviceDateTime.job_completed;
+          delete serviceDateTime.reject;
         } else if (data.servicestatus == 1) {
           var serviceDateTime = {
             ...getQry?.service_date_time?._doc,
             accept: currentDateTime,
           };
+
+          delete serviceDateTime.job_started;
+          delete serviceDateTime.job_completed;
+          delete serviceDateTime.reject;
         } else if (data.servicestatus == 2) {
           var serviceDateTime = {
             ...getQry?.service_date_time?._doc,
             job_started: currentDateTime,
           };
+
+          delete serviceDateTime.job_completed;
+          delete serviceDateTime.reject;
         } else if (data.servicestatus == 3) {
           var serviceDateTime = {
             ...getQry?.service_date_time?._doc,
             job_completed: currentDateTime,
           };
+
+          delete serviceDateTime.reject;
         } else if (data.servicestatus == 4) {
           var serviceDateTime = {
             ...getQry?.service_date_time?._doc,

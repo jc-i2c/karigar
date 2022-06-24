@@ -281,7 +281,9 @@ const HomeBanner = () => {
                     </CButton>
                   </div>
                 </CForm>
-                <ToastContainer />
+                <ToastContainer
+                  autoClose={`${process.env.REACT_APP_TOASTMESSAGETIME}`}
+                />
               </CCardBody>
             </CCard>
           </CCol>

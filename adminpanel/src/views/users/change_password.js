@@ -46,7 +46,7 @@ const AddServices = () => {
   //   Change password.
   function changePassword(e) {
     e.preventDefault();
-    
+
     if (!oldPassword) {
       setValidated(true);
       setOldPasswordError("Please enter old password.");
@@ -221,7 +221,9 @@ const AddServices = () => {
                     </CButton>
                   </div>
                 </CForm>
-                <ToastContainer />
+                <ToastContainer
+                  autoClose={`${process.env.REACT_APP_TOASTMESSAGETIME}`}
+                />
               </CCardBody>
             </CCard>
           </CCol>
