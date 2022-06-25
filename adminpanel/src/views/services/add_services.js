@@ -67,7 +67,6 @@ const AddServices = () => {
     e.preventDefault();
 
     if (!/^[a-zA-Z]/i.test(servicesName)) {
-      console.log("Hello service");
       setValidated(true);
       setServiceNameError("Please enter valid services name");
     }

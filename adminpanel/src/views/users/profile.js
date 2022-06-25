@@ -103,8 +103,6 @@ const UserProfile = () => {
     e.preventDefault();
 
     let getStatus = validationCheck();
-    // console.log(getStatus, "getStatus");
-
     if (getStatus === false) {
       setSpinner(true);
 

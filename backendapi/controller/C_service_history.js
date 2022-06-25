@@ -60,7 +60,6 @@ const createServiceHistory = async (req, res, next) => {
       });
 
       const insertQry = await createServiceHistory.save();
-      console.log(insertQry, "insertQry");
 
       if (insertQry) {
         return res.send({

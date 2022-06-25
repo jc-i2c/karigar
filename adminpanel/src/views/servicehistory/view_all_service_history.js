@@ -51,11 +51,8 @@ const ViewServices = () => {
     const updated = serviceHistory.sort((a, b) => {
       const date1 = new Date(a.createdAt);
       const date2 = new Date(b.createdAt);
-      // console.log(date1, date2);
       return date2 - date1;
     });
-
-    console.log(updated, "updated");
   }, [serviceHistory]);
 
   // Get all service histories list.
@@ -77,6 +74,7 @@ const ViewServices = () => {
                 serviceprovidername: record.serviceproviderid.name,
                 customername: record.customerid.name,
                 addresstype: record.addresstype,
+                address: record.address,
                 servicedate: record.servicedate,
                 sessiontime: record.sessiontime,
                 servicestatus: record.servicestatus,
@@ -108,6 +106,7 @@ const ViewServices = () => {
                 serviceprovidername: record.serviceproviderid.name,
                 customername: record.customerid.name,
                 addresstype: record.addresstype,
+                address: record.address,
                 servicedate: record.servicedate,
                 sessiontime: record.sessiontime,
                 servicestatus: record.servicestatus,
@@ -187,6 +186,7 @@ const ViewServices = () => {
                   )}
                   <CTableHeaderCell>Customer Name</CTableHeaderCell>
                   <CTableHeaderCell>Address Type</CTableHeaderCell>
+                  <CTableHeaderCell>Address</CTableHeaderCell>
                   <CTableHeaderCell>Service Date</CTableHeaderCell>
                   <CTableHeaderCell>Service Time</CTableHeaderCell>
                   {roleName === "SERVICEPROVIDER" && (
@@ -226,6 +226,10 @@ const ViewServices = () => {
                           ? "HOME"
                           : ""}
                       </div>
+                    </CTableDataCell>
+
+                    <CTableDataCell style={{ width: "250px" }}>
+                      <div>{item.address ? item.address : ""}</div>
                     </CTableDataCell>
 
                     <CTableDataCell>
